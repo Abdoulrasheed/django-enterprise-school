@@ -1,0 +1,276 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<!-- saved from url=(0083)https://mdbootstrap.com/previews/templates/admin-dashboard/html/dashboards/v-6.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <title>{{ school_name }} |{% block title %} Home{% endblock title %}</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'css/mdb/all.css' %}">
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="{% static 'css/mdb/bootstrap.min.css' %}">
+  <!-- Material Design Bootstrap -->
+  <link rel="stylesheet" href="{% static 'css/mdb/mdb.min.css' %}">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+  <!-- Your custom styles (optional) -->
+  <style>
+
+  </style>
+<style type="text/css">/* Chart.js */
+@-webkit-keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}@keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}</style></head>
+
+<body class="fixed-sn white-skin">
+
+  <!--Main Navigation-->
+  <header>
+
+    <!-- Sidebar navigation -->
+    <div id="slide-out" class="side-nav sn-bg-4 fixed" style="transform: translateX(-100%);">
+      <ul class="custom-scrollbar ps ps--theme_default" data-ps-id="abfb04e0-478a-fdaf-ec37-be23fad8b5b4">
+        <!-- Logo -->
+        <li class="logo-sn waves-effect">
+          <div class="text-center">
+            <a href="{% url 'home_page' %}" class="pl-0"><img width="90px" src="{{ school_logo }}" class=""></a>
+          </div>
+        </li>
+        <!--/. Logo -->
+
+        <!--Search Form-->
+        <li>
+          <form class="search-form" role="search">
+            <div class="form-group md-form mt-0 pt-1 waves-light waves-effect waves-light">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+          </form>
+        </li>
+        <!--/.Search Form-->
+        <!-- Side navigation links -->
+        <li>
+          <ul class="collapsible collapsible-accordion">
+            <li><a href="{% url 'home_page' %}" class="collapsible-header waves-effect"><i class=" far fas fa-tachometer-alt"></i>
+                Dashboard</a></li>
+            <li><a href="{% url 'students_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-user-graduate"></i>
+                Student</a></li>
+            <li><a href="{% url 'parents_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-user"></i>
+                Parent</a></li>
+              <li><a href="{% url 'teachers_list' %}" class="collapsible-header waves-effect"><i class=" far fa-user"></i>
+                Teacher</a></li>
+              <li><a class="collapsible-header waves-effect arrow-r"><i class="fa fa-school"></i><span style="margin-left: 11px !important">Academic</span><i class="fas fa-angle-down rotate-icon"></i></a>
+              <div class="collapsible-body">
+                <ul>
+                   <li>
+                    <a href="{% url 'class_list' %}" class="waves-effect">Class</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'subjects_list' %}" class="waves-effect">Subject</a>
+                  </li>
+                  <li>
+                    <a href="#" class="waves-effect">Assign Teacher</a>
+                  </li>
+                  <li>
+                    <a href="#" class="waves-effect">Assign Teacher</a>
+                  </li>
+                  <li>
+                    <a href="#" class="waves-effect">Section</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+                        <li><a href="#" class="collapsible-header waves-effect"><i class=" far fas fa-user"></i>
+                Attendance</a></li>
+            <li><a class="collapsible-header waves-effect arrow-r"><i class="fab fa-css3"></i> Exam<i class="fas fa-angle-down rotate-icon"></i></a>
+              <div class="collapsible-body">
+                <ul>
+                  <li><a href="#" class="waves-effect">Input Score</a>
+                  </li>
+                  <li><a href="#" class="waves-effect">Exam Timetable</a>
+                  </li>
+                                   <li><a href="#" class="waves-effect">Promotion</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li><a class="collapsible-header waves-effect arrow-r"><i class="fas fa-th"></i> Account<i class="fas fa-angle-down rotate-icon"></i></a>
+              <div class="collapsible-body">
+                <ul>
+                  <li><a href="#" class="waves-effect">Fee Type</a>
+                  </li>
+                  <li><a href="#" class="waves-effect">Payment</a>
+                  </li>
+                  <li><a href="#" class="waves-effect">Expense</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li><a class="collapsible-header waves-effect arrow-r"><i class="far fa-check-square"></i> Report<i class="fas fa-angle-down rotate-icon"></i></a>
+              <div class="collapsible-body">
+                <ul>
+                  <li><a href="#" class="waves-effect">Class Report</a>
+                  </li>
+                  <li><a href="#" class="waves-effect">Report Card Sheet</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li><a class="collapsible-header waves-effect arrow-r"><i class="fas fa-user-cog"></i></i>Administrator<i class="fas fa-angle-down rotate-icon"></i></a>
+              <div class="collapsible-body">
+                <ul>
+                  <li><a href="#" class="waves-effect">Academic Year</a>
+                  </li>
+                  <li><a href="#" class="waves-effect">System Admin</a>
+                  </li>
+                  <li><a href="#" class="waves-effect">Reset Password</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+        <!--/. Side navigation links -->
+      <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__scrollbar-y-rail" style="top: 0px; right: 0px;"><div class="ps__scrollbar-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></ul>
+      <div class="sidenav-bg mask-strong"></div>
+    </div>
+    <!--/. Sidebar navigation -->
+
+    <!-- Navbar -->
+    <nav class="navbar fixed-top navbar-expand-lg scrolling-navbar double-nav">
+      <!-- SideNav slide-out button -->
+      <div class="float-left">
+        <a href="#" data-activates="slide-out" class="button-collapse black-text"><i class="fas fa-bars"></i></a>
+      </div>
+      <!-- Breadcrumb-->
+      <div class="breadcrumb-dn mr-auto">
+        <p>{{ school_name }}</p>
+      </div>
+
+      <!--Navbar links-->
+      <ul class="nav navbar-nav nav-flex-icons ml-auto">
+
+        <!-- Dropdown -->
+        <li class="nav-item dropdown notifications-nav">
+          <a class="nav-link dropdown-toggle waves-effect" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="badge red">{{ all_session|length|add:1 }}</span> <i class="fas fa-layer-group"></i>
+            <span class="d-none d-md-inline-block">Academic Year</span>
+          </a>
+          <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+            {% for session in all_sessions %}
+            <a class="dropdown-item waves-effect waves-light" href="#">
+              <i class="fas fa-money mr-2" aria-hidden="true"></i>
+              <span>{{ session.name }}</span>
+              <span class="float-right"><i class="far  fa-clock" aria-hidden="true">
+                created {{ session.created_on|naturaltime }}
+              </i></span>
+            </a>
+            {% endfor %}
+          </div>
+        </li>
+        <!-- Dropdown -->
+        <li class="nav-item dropdown notifications-nav">
+          <a class="nav-link dropdown-toggle waves-effect" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="badge red">3</span> <i class="fas fa-bell"></i>
+            <span class="d-none d-md-inline-block">Notifications</span>
+          </a>
+          <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item waves-effect waves-light" href="#">
+              <i class="fas fa-money mr-2" aria-hidden="true"></i>
+              <span>New order received</span>
+              <span class="float-right"><i class="far  fa-clock" aria-hidden="true"></i> 13 min</span>
+            </a>
+            <a class="dropdown-item waves-effect waves-light" href="#">
+              <i class="fas fa-money mr-2" aria-hidden="true"></i>
+              <span>New order received</span>
+              <span class="float-right"><i class="far  fa-clock" aria-hidden="true"></i> 33 min</span>
+            </a>
+            <a class="dropdown-item waves-effect waves-light" href="#">
+              <i class="fas fa-line-chart mr-2" aria-hidden="true"></i>
+              <span>Your campaign is about to end</span>
+              <span class="float-right"><i class="far  fa-clock" aria-hidden="true"></i> 53 min</span>
+            </a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle waves-effect" href="#" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-user"></i> <span class="clearfix d-none d-sm-inline-block">Profile</span></a>
+          
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+            <a class="dropdown-item waves-effect waves-light" href="{% url 'logout' %}">Log Out</a>
+            <a class="dropdown-item waves-effect waves-light" href="">My account</a>
+             <a class="dropdown-item waves-effect waves-light" href="">Change Password</a>
+          </div>
+        </li>
+
+      </ul>
+      <!--/Navbar links-->
+    </nav>
+    <!-- /.Navbar -->
+
+  </header>
+  <!--Main Navigation-->
+    <main>
+{% block main %}
+
+{% endblock %}
+  </main>
+
+<!--Footer-->
+  <footer class="page-footer pt-0 mt-5 mdb-color lighten-4">
+
+    <!--Copyright-->
+    <div class="footer-copyright py-3 text-center">
+      <div class="container-fluid">
+        <span id="copy"></span> Copyright: &copy;
+        <a href="#"> Bitpoint limited</a>
+      </div>
+    </div>
+    <!--/.Copyright-->
+
+  </footer>
+  <!--/.Footer-->
+
+
+  <!-- SCRIPTS -->
+  <!-- JQuery -->
+  <script src="{% static 'js/mdb/jquery-3.3.1.min.js' %}"></script>
+  <!-- Bootstrap tooltips -->
+  <script type="text/javascript" src="{% static 'js/mdb/popper.min.js' %}"></script>
+  <!-- Bootstrap core JavaScript -->
+  <script type="text/javascript" src="{% static 'js/mdb/bootstrap.js' %}"></script>
+  <!-- MDB core JavaScript -->
+  <script type="text/javascript" src="{% static 'js/mdb/mdb.min.js' %}"></script><div class="hiddendiv common"></div>
+  <!--Initializations-->
+  <script>
+    // SideNav Initialization
+    $(".button-collapse").sideNav();
+
+    var container = document.querySelector('.custom-scrollbar');
+    Ps.initialize(container, {
+      wheelSpeed: 2,
+      wheelPropagation: true,
+      minScrollbarLength: 20
+    });
+
+    // Data Picker Initialization
+    $('.datepicker').pickadate();
+
+    // Material Select Initialization
+    $(document).ready(function () {
+      $('.mdb-select').material_select();
+    });
+
+    // Tooltips Initialization
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+
+  </script>
+  <script type="text/javascript">
+			var d = new Date();
+			var n = d.getFullYear();
+			document.getElementById("copy").innerHTML = n
+  </script>
+  {% block script %}
+
+  {% endblock script %}
+</body></html>

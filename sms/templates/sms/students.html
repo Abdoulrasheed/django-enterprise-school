@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Students {% endblock title %}
+
+{% block main %}
+
+<!--Main layout-->
+  <main>
+    <div class="container-fluid">
+
+      <!--Section: Basic examples-->
+      <section>
+        <!--Top Table UI-->
+        <div class="card p-2 mb-5">
+
+          <!--Grid row-->
+          <div class="row">
+
+            <!--Grid column-->
+            <div class="col-lg-3 col-md-12">
+            	<a class="btn btn-primary" href="{% url 'add_student' %}">
+            		Add Student
+            	</a>
+            </div>
+            <!--Grid column-->
+
+            <!--Grid column-->
+            <div class="col-lg-3 col-md-6">
+
+            </div>
+            <!--Grid column-->
+
+            <!--Grid column-->
+            <div class="col-lg-3 col-md-6">
+
+            </div>
+            <!--Grid column-->
+
+            <!--Grid column-->
+            <div class="col-lg-3 col-md-6">
+
+               <!--Blue select-->
+             <select id="select_class" class="mdb-select colorful-select dropdown-primary mx-2 md-form mt-3 md-dropdown">
+             	<option value="" disabled selected>Select Class</option>
+             	{% for class in classes %}
+                <option value="{{ class.id }}">{{ class }}</option>
+                {% empty %}
+                <option value="" disabled>No class is available</option>
+                {% endfor %}
+              </select>
+              <!--/Blue select-->
+            </div>
+            <!--Grid column-->
+          </div>
+          <!--Grid row-->
+
+        </div>
+        <!--Top Table UI-->
+
+        <div class="card card-cascade narrower z-depth-1">
+
+          <!--Card image-->
+          <div class="view view-cascade gradient-card-header blue-gradient narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center">
+
+            <div>
+              <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2"><i class="fas fa-th-large mt-0"></i> Excel</button>
+              <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2"><i class="fas fa-columns mt-0"> CSV</i></button>
+              <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2"><i class="fas fa-pencil-alt mt-0"></i> PDF</button>
+            </div>
+
+            <a href="#" id="class_name" class="white-text mx-3">Class Members</a>
+
+          </div>
+          <!--/Card image-->
+
+          <div class="px-4">
+
+            <div class="table-responsive">
+              <!--Table-->
+              <table id="table" class="table table-hover mb-0">
+              	<span id="no_data"></span>
+                <!--Table head-->
+                <thead>
+                  <tr>
+                    <th class="th-lg"><a>Full Name <i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a href="">Photo<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a href="">Roll<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a href="">Email<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a href="">Status<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a href="">Action<i class="fas fa-sort ml-1"></i></a></th>
+                  </tr>
+                </thead>
+                <!--Table head-->
+
+                <!--Table body-->
+                <tbody>
+
+                </tbody>
+                <!--Table body-->
+              </table>
+              <!--Table-->
+            </div>
+
+            <hr class="my-0">
+
+            <!--Bottom Table UI-->
+            <div class="d-flex justify-content-between">
+              <!--Pagination -->
+              <nav class="my-4">
+                <ul class="pagination pagination-circle pg-blue mb-0">
+                  <!--Arrow left-->
+                  <li class="page-item disabled">
+                    <a class="page-link" aria-label="Previous">
+                      <span aria-hidden="true">&laquo; Previous</span>
+                    </a>
+                  </li>
+                  <!--Arrow right-->
+                  <li class="page-item disabled">
+                    <a class="page-link" aria-label="Next">
+                      <span aria-hidden="true">&raquo; Next</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+              <!--/Pagination -->
+
+            </div>
+            <!--Bottom Table UI-->
+
+          </div>
+        </div>
+
+      </section>
+      <!--Section: Basic examples-->
+
+    </div>
+  </main>
+  <!--Main layout-->
+
+  {% endblock main %}
+  {% block script %}
+  <script src="{% static 'js/sms/sms_script.js' %}"></script>
+  {% endblock script %}

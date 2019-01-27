@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="white-bg-login" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <title>Sign in | {{ school_name }}</title>
+        <link rel="SHORTCUT ICON" href="{{ school_logo }}">
+        <!-- bootstrap 3.0.2 -->
+        <link href="{% static 'css/login/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+        <!-- font Awesome -->
+        <link href="{% static 'css/login/font-awesome.css' %}" rel="stylesheet" type="text/css">
+        <!-- Style -->
+        <link href="{% static 'css/login/style.css' %}" rel="stylesheet" type="text/css">
+        <!-- iNilabs css -->
+        <link href="{% static 'css/login/inilabs.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'css/login/responsive.css' %}" rel="stylesheet" type="text/css">
+    </head>
+
+    <body class="white-bg-login">
+
+        <div class="col-md-4 col-md-offset-4 marg" style="margin-top:30px;">
+            <center><img width="50" height="50" src="{{ school_logo }}"></center>        <center><h4>{{ school_name }} School Management System</h4></center>
+        </div>
+
+        
+    <div class="form-box" id="login-box">
+        <div class="header">Sign IN</div>
+        <form method="post" method="{% url 'login' %}">{% csrf_token %}
+
+            <!-- style="margin-top:40px;" -->
+
+            <div class="body white-bg">
+                {% for field in form %}
+                <div class="form-group">
+                    <input id="{{ field.id_for_label }}" class="form-control" placeholder="{{ field.label }}" name="{{ field.html_name }}" {% if field.html_name == "username" %}
+                     autofocus="" type="text" {% else %} type="password" {% endif %} 
+                     {% if field.html_name == "username" %}  {% endif %} value="">
+                </div>
+                {{ field.errors }}
+                {% endfor %}
+
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="Remember Me" name="remember">
+                        <span> &nbsp; Remember Me</span>
+                    </label>
+                    <span class="pull-right">
+                        <label>
+                            <a href="#"> Forgot Password?</a>
+                        </label>
+                    </span>
+                </div>
+
+                            
+                <input type="submit" class="btn btn-lg btn-success btn-block" value="SIGN IN">
+            </div>
+        </form>
+    </div>
+        <div class="col-md-4 col-md-offset-4 marg" style="margin-top:30px;">
+        	  <div style="text-align: center;" class="container-fluid">
+        	      <span>
+                   Designed and Developed by <a href="#">Bitpoint limited </a>
+        	      </span>
+        	</nav>
+        </div>
+        <script type="text/javascript" src="{% static 'js/login/jquery.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/login/bootstrap.min.js' %}"></script>
+    </body>
+</html>

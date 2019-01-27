@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/core.js" integrity="sha256-YCbKJH6u4siPpUlk130udu/JepdKVpXjdEyzje+z1pE=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+  <!--Main layout-->
+    <div class="container-fluid">
+
+      <!--Section: Button icon-->
+      <section>
+
+        <!--Grid row-->
+        <div class="row">
+
+          <!--Grid column-->
+          <div class="col-xl-3 col-md-6 mb-4">
+
+            <!--Card-->
+            <div class="card">
+
+              <!--Card Data-->
+              <div class="row mt-3">
+                <div class="col-md-5 col-5 text-left pl-4">
+                  <a type="button" class="btn-floating btn-lg primary-color ml-4 waves-effect waves-light"><i class="fas fa-user-tie" aria-hidden="true"></i></a>
+                </div>
+
+                <div class="col-md-7 col-7 text-right pr-5">
+                  <h5 class="ml-4 mt-4 mb-2 font-weight-bold">4,567 </h5>
+                  <p class="font-small grey-text">Teachers</p>
+                </div>
+              </div>
+              <!--/.Card Data-->
+
+            </div>
+            <!--/.Card-->
+
+          </div>
+          <!--Grid column-->
+
+          <!--Grid column-->
+          <div class="col-xl-3 col-md-6 mb-4">
+
+            <!--Card-->
+            <div class="card">
+
+              <!--Card Data-->
+              <div class="row mt-3">
+                <div class="col-md-5 col-5 text-left pl-4">
+                  <a type="button" class="btn-floating btn-lg warning-color ml-4 waves-effect waves-light"><i class="fas fa-user-graduate" aria-hidden="true"></i></a>
+                </div>
+
+                <div class="col-md-7 col-7 text-right pr-5">
+                  <h5 class="ml-4 mt-4 mb-2 font-weight-bold">4,567 </h5>
+                  <p class="font-small grey-text">Students</p>
+                </div>
+              </div>
+              <!--/.Card Data-->
+
+            </div>
+            <!--/.Card-->
+
+          </div>
+          <!--Grid column-->
+
+          <!--Grid column-->
+          <div class="col-xl-3 col-md-6 mb-4">
+
+            <!--Card-->
+            <div class="card">
+
+              <!--Card Data-->
+              <div class="row mt-3">
+                <div class="col-md-5 col-5 text-left pl-4">
+                  <a type="button" class="btn-floating btn-lg light-blue lighten-1 ml-4 waves-effect waves-light"><i class="fas fa-user" aria-hidden="true"></i></a>
+                </div>
+
+                <div class="col-md-7 col-7 text-right pr-5">
+                  <h5 class="ml-4 mt-4 mb-2 font-weight-bold">4,567 </h5>
+                  <p class="font-small grey-text">Parents</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Grid column-->
+
+          <!--Grid column-->
+          <div class="col-xl-3 col-md-6 mb-4">
+
+            <!--Card-->
+            <div class="card">
+
+              <!--Card Data-->
+              <div class="row mt-3">
+                <div class="col-md-5 col-5 text-left pl-4">
+                  <a type="button" class="btn-floating btn-lg red accent-2 ml-4 waves-effect waves-light"><i class="fas fa-book-open" aria-hidden="true"></i></a>
+                </div>
+
+                <div class="col-md-7 col-7 text-right pr-5">
+                  <h5 class="ml-4 mt-4 mb-2 font-weight-bold">4,567</h5>
+                  <p class="font-small grey-text">Subjects</p>
+                </div>
+              </div>
+              <!--/.Card Data-->
+
+            </div>
+            <!--/.Card-->
+
+          </div>
+          <!--Grid column-->
+
+        </div>
+        <!--Grid row-->
+
+      </section>
+      <!--/Section: Button icon-->
+
+      <div style="height: 5px"></div>     
+
+      <!-- Section: data tables -->
+      <section class="section">
+
+        <div class="row">
+          <div class="col-md-12 col-lg-4 ">
+
+            <div class="card mb-4">
+                    <!--Card-->
+      <div class="card testimonial-card">
+        <!--Background color-->
+        <div class="card-up blue-gradient"></div>
+        <!--Avatar-->
+        <div class="avatar mx-auto white">
+          <img src="{{ request.user.get_picture }}" class="rounded-circle img-fluid">
+        </div>
+        <div class="card-body">
+          <!--Name-->
+          <h4 class="font-weight-bold mb-4">{{ request.user|capfirst }}</h4>
+          <small>({{ user_type }})</small>
+          <hr>
+          <div style="text-align: left; margin-left: 65px;">
+	          {% if request.user.email %}<p>Email: {{ request.user.email }}</p>{% endif %}
+	          {% if request.user.phone %}<p>Phone: {{ request.user.phone }}</p>{% endif %}
+	          {% if request.user.address %}<p>Address: {{ request.user.address }}</p>{% endif %}
+      	  </div>
+        </div>
+      </div>
+
+            </div>
+
+          </div>
+
+          <div class="col-lg-8 col-md-12">
+
+            <div class="card mb-4">
+              <div class="card-body">
+             	<canvas id="income_and_expense_graph"></canvas>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+      <!-- /.Section: data tables -->
+  <!--Main layout-->
+  {% endblock %}
+
+  {% block script %}
+  	<script src="{% static 'js/sms/chart.js' %}"></script>
+  {% endblock script %}
