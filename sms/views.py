@@ -9,6 +9,7 @@ from django.core import serializers
 def home(request):
 	return render(request, 'sms/home.html', {})
 
+@login_required
 def expenditure_graph(request):
 	payments_received = 1000
 	expenditure = 13233
@@ -23,26 +24,36 @@ def expenditure_graph(request):
 		}
 	return JsonResponse(data)
 
+@login_required
 def students_view(request):
 	classes = Class.objects.all()
 	context = {"classes": classes}
 	return render(request, 'sms/students.html', context)
 
+
+@login_required
 def students_list_view(request, id):
 	students = ()
 	if request.is_ajax():
 		students = Student.objects.filter(in_class__pk=id)
 		classes = Class.objects.all()
-		ss = ()
-		for i in students:
-			ss += (i.user.first_name, i.user.get_picture(), i.user.last_name, i.roll_number, i.user.email, i.user.is_active)
-		print(ss)
+		record = ()
+		for student in students:
+			record += (student.user.get_full_name(), student.user.get_picture(), student.roll_number, student.user.email, student.user.is_active)
 		context = {
 			"classes": "classes",
-			"students": ss,
+			"students": record,
 		}
 		return JsonResponse(context)
 
+
+@login_required
+def add_student(request):
+	classes = Class.objects.all()
+	return render(request, 'sms/add_student.html', {"classes": classes})
+
+
+@login_required
 def teachers_view(request):
 	teachers = User.objects.filter(is_teacher=True)
 	context = {
@@ -51,6 +62,7 @@ def teachers_view(request):
 	return render(request, 'sms/teachers.html', context)
 
 
+@login_required
 def parents_view(request):
 	parents = User.objects.filter(is_parent=True)
 	context = {
@@ -58,6 +70,7 @@ def parents_view(request):
 	}
 	return render(request, 'sms/parents.html', context)
 
+@login_required
 def class_view(request):
 	classes = Class.objects.all()
 	context = {
@@ -65,6 +78,8 @@ def class_view(request):
 	}
 	return render(request, 'sms/class.html', context)
 
+
+@login_required
 def subjects_view(request):
 	subjects = Subject.objects.all()
 	context = {

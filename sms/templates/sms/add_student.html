@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Student Information</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Parent / Guardian Information</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Picture upload</a>
+  </li>
+</ul>
+
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+  <div class="row">
+    <div class="col-md-4">
+    <input type="text" class="form-control mb-4" placeholder="Firstname">
+    <input style="margin-bottom: 23px" type="text" class="form-control datepicker" placeholder="Date of birth">
+    <input type="text" class="form-control mb-4" placeholder="Address">
+    <input type="text" class="form-control mb-4" placeholder="Phone number">
+    <select class="mdb-select md-form">
+      <option value="" disabled selected>Select Class</option>
+      {% for class in classes %}
+      <option value="1">{{ class.name }}</option>
+      {% endfor %}
+    </select>
+    </div>
+  <div class="col-md-4">
+    <input type="text" class="form-control mb-4" placeholder="Surname">
+    <select class="mdb-select md-form">
+      <option value="" disabled selected>Select Gender</option>
+      <option value="1">Male</option>
+      <option value="2">Female</option>
+      <option value="3">Other</option>
+    </select>
+    <select class="mdb-select md-form">
+      <option value="" disabled selected>State</option>
+      <option value="1">Abia</option>
+      <option value="2">Adamawa</option>
+      <option value="3">Akwa Ibom</option>
+    </select>
+    <input type="text" class="form-control mb-4" placeholder="Email">
+    <input type="text" class="form-control mb-4" placeholder="Year admitted">
+    </div>
+    <div class="col-md-4">
+    <input type="text" class="form-control mb-4" placeholder="Othername">
+    <select class="mdb-select md-form">
+      <option value="" disabled selected>Religion</option>
+      <option value="1">Islam</option>
+      <option value="2">Christianity</option>
+      <option value="3">Other</option>
+    </select>
+    <select class="mdb-select md-form">
+      <option value="" disabled selected>Local Gov.</option>
+      <option value="1">Yola North</option>
+      <option value="2">Yola South</option>
+      <option value="3">Gerei</option>
+    </select>
+    <select class="mdb-select md-form">
+      <option value="" disabled selected>Blood group</option>
+      <option value="1">A+</option>
+      <option value="2">A-</option>
+      <option value="3">B</option>
+      <option value="3">B+</option>
+      <option value="3">O</option>
+      <option value="3">O-</option>
+      <option value="3">O+</option>
+    </select>
+    <input type="text" class="form-control mb-4" placeholder="Roll number">
+    </div>
+  </div>
+</div>
+
+    <!-- Parents -->
+
+  <div style="margin-bottom:125px"" class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+    <div class="row">
+      <div class="col-md-6">
+      <input type="text" class="form-control mb-4" placeholder="Firstname">
+      <input type="text" class="form-control mb-4" placeholder="Othername">
+      <input type="text" class="form-control mb-4" placeholder="Phone number">
+      </div>
+      <div class="col-md-6">
+      <input type="text" class="form-control mb-4" placeholder="Surname">
+      <select class="mdb-select md-form">
+        <option value="" disabled selected>State</option>
+        <option value="1">Abia</option>
+        <option value="2">Adamawa</option>
+        <option value="3">Akwa Ibom</option>
+      </select>
+      <input type="text" class="form-control mb-4" placeholder="Address">
+      </div>
+  </div>
+  </div>
+  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+  <div class="row">
+    <div class="col-md-4">
+    </div>
+   <div style="margin-bottom: 274px" class="col-md-4">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+      </div>
+      <div class="custom-file">
+        <input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
+      <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+  </div>
+</div>
+</div>
+<div class="col-md-4">
+</div>
+</div>
+  </div>
+</div>
+<a href="#" style="margin-bottom: 27px;" class="btn btn-primary">Save</a>
+{% endblock %}

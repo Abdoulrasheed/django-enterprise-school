@@ -34,6 +34,8 @@ class User(AbstractUser):
         full_name = self.username
         if self.first_name and self.last_name:
             full_name = self.first_name + " " + self.last_name
+            if self.other_name:
+            	full_name = self.first_name + " " + self.last_name + " " + self.other_name
         return full_name
 
 
@@ -71,9 +73,9 @@ class Class(models.Model):
 
 class Student(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
-	in_class = models.OneToOneField(Class, on_delete=models.CASCADE)
+	in_class = models.ForeignKey(Class, on_delete=models.CASCADE)
 	year_of_admission = models.CharField(max_length=100, blank=True, null=True)
-	roll_number = models.CharField(max_length=50)
+	roll_number = models.CharField(max_length=50, unique=True)
 
 
 class Subject(models.Model):

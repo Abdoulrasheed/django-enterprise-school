@@ -88,8 +88,15 @@
                     <td>{{ teacher.get_full_name }}</td>
                     <td>{{ teacher.get_picture }}</td>
                     <td>{{ teacher.email }}</td>
-                    <td></td>
-                    <td></td>
+                    <td>
+                      <span class="switch"><label><input type="checkbox" checked>
+                      <span class="lever"></span>
+                      </label></span></td>
+                    <td>
+                      <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
+                      <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                      <a title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                    </td>
                   </tr>
                   {% empty %}
                   <span>No data available</span>
