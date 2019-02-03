@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Students {% endblock title %}
+{% block main %}
+<main>
+   <div class="container-fluid">
+      <!-- Heading -->
+      <div class="card mb-4 wow fadeIn">
+         <!--Card content-->
+         <div class="card-body d-sm-flex justify-content-between">
+            <h6 class="mb-2 mb-sm-0 pt-1">
+               <a href="/">Home Page</a>
+               <span>/</span>
+               <span>Students</span>
+            </h6>
+         </div>
+      </div>
+      <!-- Heading -->
+          {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      
+      <!-- Editable table -->
+      <div class="card">
+         <h6 class="card-header text-left text-uppercase py-2 white-text">
+            <small class="text-left">Students :</small>
+               {% if selected_class %}
+               <small class="ml-xl-5">Class: {{ selected_class }}</small>
+               {% endif %}
+         </h6>
+         <div class="container">
+            <div class="row">
+               <div class="col-md-5">
+                  <a href="{% url 'add_student' %}" class="btn btn-info">Add Student</a>
+               </div>
+               <div class="col-md-3"></div>
+               <div class="col-md-4">
+                  <div class="dropdown">
+                     <button class="btn btn-info dropdown-toggle float-right" type="button" id="dropdownMenu3" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                     Select class
+                     </button>
+                     <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
+                        <h6  class="dropdown-header">Select Class</h6>
+                        {% for class in classes %}
+                        <a data-toggle="tooltip" title="{{ class }}" class="dropdown-item" href="{% url 'students_list_view' id=class.id %}">
+                        {{ class }}
+                        </a>
+                        {% empty %}
+                        <span>No class available</span>
+                        {% endfor %}
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="card-body">
+            <div id="table" class="table-editable">
+               <table class="table table-bordered table-responsive-md table-striped text-center">
+                  <tr>
+                     <th class="text-center">Fullname</th>
+                     <th class="text-center">Picture</th>
+                     <th class="text-center">Roll</th>
+                     <th class="text-center">Email</th>
+                     <th class="text-center">Status</th>
+                     <th class="text-center">Action</th>
+                  </tr>
+                  {% for student in students %}
+                  <tr>
+                     <td class="pt-3-half text-left" name="{{ student.user.first_name }}" contenteditable="false">
+                        {{ student.user.get_full_name }}
+                     </td>
+                     <td class="pt-3-half" name="{{ student.user.first_name }}" contenteditable="false">
+                        <img width="50px" src="{{ student.user.get_picture }}">
+                     </td>
+                     <td class="pt-3-half" contenteditable="false">{{ student.roll_number }}</td>
+                     <td class="pt-3-half" contenteditable="false">{{ student.user.email }}</td>
+                     <td class="pt-3-half">
+                     <div class="switch">
+                        <label>
+                          Off
+                          <input type="checkbox" checked>
+                          <span class="lever"></span> On
+                        </label>
+                      </div>
+                    </td>
+                     <td class="pt-3-half" contenteditable="false">
+                        <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
+                        <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                        <a href="{% url 'delete_student' id=student.user.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                     </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                     <td>No data available</td>
+                  </tr>
+                  {% endfor %}
+               </table>
+            </div>
+         </div>
+      </div>
+   </div>
+   </div>
+</main>
+{% endblock main %}

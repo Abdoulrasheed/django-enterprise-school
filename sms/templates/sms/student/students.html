@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Students {% endblock title %}
+{% block main %}
+<main>
+   <div class="container-fluid">
+   <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="/">Home Page</a>
+            <span>/</span>
+            <span>Students</span>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
+   <!-- Editable table -->
+   <div class="card">
+      <h6 class="card-header text-center white-text text-uppercase py-2">Students</h6>
+      <div class="container">
+         <div class="row">
+            <div class="col-md-5">
+              <a href="{% url 'add_student' %}" class="btn btn-info">Add Student</a>
+            </div>
+            <div class="col-md-3"><small></small></div>
+            <div class="col-md-4">
+               <div class="dropdown">
+                  <button class="btn btn-info dropdown-toggle float-right" type="button" id="dropdownMenu3" data-toggle="dropdown"
+                     aria-haspopup="true" aria-expanded="false">
+                  Select class
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
+                     <h6  class="dropdown-header">Select Class</h6>
+                     {% for class in classes %}
+                      <a data-toggle="tooltip" title="{{ class }}" class="dropdown-item" href="{% url 'students_list_view' id=class.id %}">
+                     {{ class }}
+                      </a>
+                     {% endfor %}
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="card-body">
+         <div id="table" class="table-editable">
+            <table class="table table-bordered table-responsive-md table-striped text-center">
+               <tr>
+                  <th class="text-center">Fullname</th>
+                  <th class="text-center">Picture</th>
+                  <th class="text-center">Roll</th>
+                  <th class="text-center">Email</th>
+                  <th class="text-center">Status</th>
+                  <th class="text-center">Action</th>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </div>
+</div>
+</main>
+{% endblock main %}

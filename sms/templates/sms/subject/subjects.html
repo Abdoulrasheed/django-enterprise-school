@@ -1,13 +1,25 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %} classes {% endblock title %}
+{% block title %} subjects {% endblock title %}
 
 {% block main %}
 
 <!--Main layout-->
   <main>
     <div class="container-fluid">
+         <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="/">Home Page</a>
+            <span>/</span>
+            <span>Subjects</span>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
 
       <!--Section: Basic examples-->
       <section>
@@ -19,8 +31,8 @@
 
             <!--Grid column-->
             <div class="col-lg-3 col-md-12">
-            	<a class="btn btn-primary" href="{% url 'add_class' %}">
-            		Add class
+            	<a class="btn btn-primary" href="{% url 'add_subject' %}">
+            		Add Subject
             	</a>
             </div>
             <!--Grid column-->
@@ -58,7 +70,7 @@
               <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2"><i class="fas fa-pencil-alt mt-0"></i> PDF</button>
             </div>
 
-            <a href="" class="white-text mx-3">classes</a>
+            <a href="" class="white-text mx-3">Subjects</a>
 
           </div>
           <!--/Card image-->
@@ -72,9 +84,8 @@
                 <!--Table head-->
                 <thead>
                   <tr>
-                    <th class="th-lg"><a>Class Name <i class="fas fa-sort ml-1"></i></a></th>
-                    <th class="th-lg"><a href="">Section<i class="fas fa-sort ml-1"></i></a></th>
-                    <th class="th-lg"><a href="">No. of Students<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a>Subject Name <i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a href="">Class<i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Action<i class="fas fa-sort ml-1"></i></a></th>
                   </tr>
                 </thead>
@@ -82,12 +93,15 @@
 
                 <!--Table body-->
                 <tbody>
-                	{% for class in classes %}
+                	{% for subject in subjects %}
                   <tr>
-                    <td>{{ class.name }}</td>
-                    <td>{{ class.section }}</td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ subject.name }}</td>
+                    <td>{{ subject.in_class }}</td>
+                    <td>
+                      <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
+                      <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                      <a title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                    </td>
                   </tr>
                   {% empty %}
                   <span>No data available</span>
@@ -97,6 +111,8 @@
               </table>
               <!--Table-->
             </div>
+
+            <hr class="my-0">
 
             <hr class="my-0">
 

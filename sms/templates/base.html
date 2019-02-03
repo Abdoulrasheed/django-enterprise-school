@@ -1,7 +1,6 @@
 {% load static %}
 {% load humanize %}
 <!DOCTYPE html>
-<!-- saved from url=(0083)https://mdbootstrap.com/previews/templates/admin-dashboard/html/dashboards/v-6.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -34,7 +33,8 @@
         <!-- Logo -->
         <li class="logo-sn waves-effect">
           <div class="text-center">
-            <a href="{% url 'home_page' %}" class="pl-0"><img width="90px" src="{{ school_logo }}" class=""></a>
+            <a href="{% url 'home_page' %}" class="pl-0">
+              <img width="90px" src="{{ school_logo }}" class=""></a>
           </div>
         </li>
         <!--/. Logo -->
@@ -69,23 +69,23 @@
                     <a href="{% url 'subjects_list' %}" class="waves-effect">Subject</a>
                   </li>
                   <li>
-                    <a href="#" class="waves-effect">Assign Teacher</a>
+                    <a href="{% url 'sections_list' %}" class="waves-effect">Section</a>
                   </li>
                   <li>
-                    <a href="#" class="waves-effect">Assign Teacher</a>
+                    <a href="{% url 'assign_teacher_list' %}" class="waves-effect">Subject Allocation</a>
                   </li>
                   <li>
-                    <a href="#" class="waves-effect">Section</a>
+                    <a href="{% url 'assign_section_list' %}" class="waves-effect">Section Allocation</a>
                   </li>
                 </ul>
               </div>
             </li>
-                        <li><a href="#" class="collapsible-header waves-effect"><i class=" far fas fa-user"></i>
+                        <li><a href="{% url 'attendance_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-user"></i>
                 Attendance</a></li>
             <li><a class="collapsible-header waves-effect arrow-r"><i class="fab fa-css3"></i> Exam<i class="fas fa-angle-down rotate-icon"></i></a>
               <div class="collapsible-body">
                 <ul>
-                  <li><a href="#" class="waves-effect">Input Score</a>
+                  <li><a href="{% url 'score_list' %}" class="waves-effect">Input Score</a>
                   </li>
                   <li><a href="#" class="waves-effect">Exam Timetable</a>
                   </li>

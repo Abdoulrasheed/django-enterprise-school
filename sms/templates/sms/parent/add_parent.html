@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<main>
+  <div style="margin-bottom: 259px;" class="container-fluid">
+       <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="/">Home Page</a>
+            <span>/</span>
+            <a href="{% url 'subjects_list' %}">Parent</a>
+            <span>/</span>
+            <span>Add Parent</span>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Information</a>
+  </li>
+</ul>
+
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+    <div class="row">
+      <div class="col-md-6">
+        <input type="text" class="form-control mb-4" placeholder="Username">
+        <input type="text" class="form-control mb-4" placeholder="Firstname">
+        <input type="text" class="form-control mb-4" placeholder="Othername">
+        <input type="text" class="form-control mb-4" placeholder="Phone number">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+          </div>
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
+            <label class="custom-file-label" for="inputGroupFile01">Profile Picture</label>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <input type="password" class="form-control mb-4" placeholder="Password">
+        <input type="text" class="form-control mb-4" placeholder="Surname">
+        <select class="mdb-select md-form">
+          <option value="" disabled selected>State</option>
+          <option value="1">Abia</option>
+          <option value="2">Adamawa</option>
+          <option value="3">Akwa Ibom</option>
+        </select>
+        <input type="email" class="form-control mb-4" placeholder="Email">
+        <input type="text" class="form-control mb-4" placeholder="Address">
+      </div>
+  </div>
+  </div>
+</div>
+<a href="#" style="margin-bottom: 27px;" class="btn btn-primary">Save</a>
+</div>
+</main>
+{% endblock %}

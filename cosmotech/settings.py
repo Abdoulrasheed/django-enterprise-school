@@ -119,6 +119,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'sms.User'
@@ -135,4 +137,3 @@ TEMPLATES[0]['OPTIONS']['context_processors'].append("sms.context_processors.sch
 
 # Session Setting
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_AGE = 3600

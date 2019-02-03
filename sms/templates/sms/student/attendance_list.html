@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Attendances {% endblock title %}
+{% block main %}
+<main>
+   <div class="container-fluid">
+   <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="/">Home Page</a>
+            <span>/</span>
+            <span>Attendance</span>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
+   <!-- Editable table -->
+   <div class="card">
+                        <div class="row">
+            <div class="col-md-3">
+              <a href="{% url 'add_attendance' %}" class="btn btn-info">Add Attendance</a>
+            </div>
+         </div>
+      <h6 class="card-header text-center white-text text-uppercase py-2">View Attendance</h6>
+      <div class="container">
+         <form method="post">{% csrf_token %}
+         <div class="row">
+            <div class="col-md-3">
+               <select name="class" class="mdb-select md-form">
+                <option value="" disabled selected>Select a class</option>
+                {% for class in classes %}
+                <option value="{{ class.id }}">{{ class.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-3">
+               <select name="term" class="mdb-select md-form">
+                <option value="" disabled selected>Select a term</option>
+                <option value="First">First</option>
+                <option value="Second">Second</option>
+                <option value="Third">Third</option>
+              </select>
+            </div>
+            <div class="md-form">
+              <input name="date" placeholder="Select a date" type="text" id="date-picker-example" class="form-control datepicker">
+              <label for="date-picker-example">Day of attendance</label>
+            </div>
+            <div style="text-align: right;" class="col-md-3">
+               <input type="submit" value="Get Report" name="submit" class="md-form form-control btn btn-primary">
+            </div>
+         </div>
+      </form>
+      </div>
+      <div class="card-body">
+         <div id="table" class="table-editable">
+            <table class="table table-bordered table-responsive-md table-striped text-center">
+               <tr>
+                  <th class="text-center">Student</th>
+                  <th class="text-center">Picture</th>
+                  <th class="text-center">Roll</th>
+                  <th class="text-center">Present / Absent</th>
+                  <th class="text-center">Is late</th>
+                  <th class="text-center">Action</th>
+               </tr>
+               {% for each in attendance %}
+                  <tr>
+                     <td class="pt-3-half" name="{{ each.student.get_full_name }}" contenteditable="false">
+                        {{ each.student.user.get_full_name }}
+                     </td>
+                     <td class="pt-3-half" name="{{ each.student.get_full_name }}" contenteditable="false">
+                        {{ each.student.user.get_picture }}
+                     </td>
+                     <td class="pt-3-half" contenteditable="false">
+                        {{ each.student.roll_number }}
+                     </td>
+                        {% if each.is_present %}
+                     <td class="pt-3-half" contenteditable="false">Present</td>
+                        {% if each.is_late %}
+                     <td class="pt-3-half" contenteditable="false">
+                        for {{ each.is_late_for }} min
+                     </td>
+                        {% endif %}
+                        {% else %}
+                     <td class="pt-3-half" contenteditable="false">Absent</td>
+                     <td class="pt-3-half" contenteditable="false">--</td>
+                        {% endif %}
+                     <td class="pt-3-half" contenteditable="false">
+                        <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
+                        <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                        <a title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                     </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                     <td>No data available</td>
+                  </tr>
+                  {% endfor %}
+            </table>
+         </div>
+      </div>
+   </div>
+</div>
+</main>
+{% endblock main %}

@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Score Entry {% endblock title %}
+{% block main %}
+<main>
+   <div class="container-fluid">
+   <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="/">Home Page</a>
+            <span>/</span>
+            <span>Score</span>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
+   <!-- Editable table -->
+   <div class="card">
+    <div class="row">
+            <div class="col-md-3">
+              <a href="{% url 'score_entry' %}" class="btn btn-info">Add Score</a>
+            </div>
+         </div>
+          <span class="card-header white-text text-uppercase py-1">
+      <small class="text-left">Score entry :</small>
+      {% if selected_class %}
+      <small class="ml-xl-5">Class: {{ selected_class }}</small>
+      {% endif %}
+      {% if selected_term %}
+      <small class="ml-xl-5">Term: {{ selected_term }}</small>
+      {% endif %}
+      {% if date %}
+      <small class="ml-xl-5">Date: {{ date|date:'l, F j, Y' }}</small>
+      {% endif %}
+    </span>
+      </h6>
+      <div class="container">
+         <form method="post">{% csrf_token %}
+         <div class="row">
+            <div class="col-md-3">
+               <select name="class" class="mdb-select md-form">
+                <option value="" disabled selected>Select a class</option>
+                {% for class in classes %}
+                  <option value="{{ class.name }}">{{ class.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-3">
+            <select name="subject" class="mdb-select md-form">
+                <option value="" disabled selected>Select a subject</option>
+                {% for subject in subjects %}
+                  <option value="{{ subject.name }}">{{ subject.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-3">
+               <select name="term" class="mdb-select md-form">
+                <option value="" disabled selected>Select a term</option>
+                <option value="First">First</option>
+                <option value="Second">Second</option>
+                <option value="Third">Third</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+               <input type="submit" value="Get Report" name="submit" class="md-form form-control btn btn-primary" style="margin-left: 60px">
+          </div>
+         </div>
+      </form>
+      </div>
+      <div class="card-body">
+         <div id="table" class="table-editable">
+            <table class="table table-bordered table-responsive-md table-striped text-center">
+               <tr>
+                  <th class="text-center">Student</th>
+                  <th class="text-center">Roll</th>
+                  <th class="text-center">CA 1</th>
+                  <th class="text-center">CA 2</th>
+                  <th class="text-center">Exam</th>
+                  <th class="text-center">Total</th>
+                  <th class="text-center">Grade</th>
+                  <th class="text-center">Remark</th>
+               </tr>
+               {% for each in students %}
+                  <tr>
+                     <td class="pt-3-half" name="{{ each.student.get_full_name }}" contenteditable="false">
+                        {{ each.user.get_full_name }}
+                     </td>
+                     <td class="pt-3-half" name="{{ each.student.get_full_name }}" contenteditable="false">
+                        {{ each.user.get_picture }}
+                     </td>
+                     <td class="pt-3-half" contenteditable="false">
+                        {{ each.roll_number }}
+                     </td>
+                        {% if each.is_present %}
+                     <td class="pt-3-half" contenteditable="false">Present</td>
+                        {% if each.is_late %}
+                     <td class="pt-3-half" contenteditable="false">
+                        for {{ each.is_late_for }} min
+                     </td>
+                        {% endif %}
+                        {% else %}
+                     <td class="pt-3-half" contenteditable="false">Absent</td>
+                     <td class="pt-3-half" contenteditable="false">--</td>
+                        {% endif %}
+                     <td class="pt-3-half" contenteditable="false">
+                        <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
+                        <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                        <a title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                     </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                     <td>No data available</td>
+                  </tr>
+                  {% endfor %}
+            </table>
+         </div>
+      </div>
+   </div>
+</div>
+</main>
+{% endblock main %}

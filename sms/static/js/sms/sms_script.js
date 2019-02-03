@@ -14,7 +14,7 @@ $(document).ready(function(){
                	    if(data.students[0] != undefined){
                	    	table.html("")
                	    	$('#no_data').text("")
-               	    	if(data.students[4] == true){
+            ,   	    	if(data.students[4] == true){
                	    		status_column = '<span class="switch"><label><input type="checkbox" checked>\
 								<span class="lever"></span>\
 								</label></span>'

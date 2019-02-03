@@ -26,8 +26,8 @@
                 </div>
 
                 <div class="col-md-7 col-7 text-right pr-5">
-                  <h5 class="ml-4 mt-4 mb-2 font-weight-bold">4,567 </h5>
-                  <p class="font-small grey-text">Teachers</p>
+                  <h5 class="ml-4 mt-4 mb-2 font-weight-bold">{{ no_teachers }}</h5>
+                  <p class="font-small grey-text">Teacher{{ no_teachers|pluralize }}</p>
                 </div>
               </div>
               <!--/.Card Data-->
@@ -51,8 +51,8 @@
                 </div>
 
                 <div class="col-md-7 col-7 text-right pr-5">
-                  <h5 class="ml-4 mt-4 mb-2 font-weight-bold">4,567 </h5>
-                  <p class="font-small grey-text">Students</p>
+                  <h5 class="ml-4 mt-4 mb-2 font-weight-bold">{{ no_students }}</h5>
+                  <p class="font-small grey-text">Student{{ no_students|pluralize }}</p>
                 </div>
               </div>
               <!--/.Card Data-->
@@ -76,8 +76,8 @@
                 </div>
 
                 <div class="col-md-7 col-7 text-right pr-5">
-                  <h5 class="ml-4 mt-4 mb-2 font-weight-bold">4,567 </h5>
-                  <p class="font-small grey-text">Parents</p>
+                  <h5 class="ml-4 mt-4 mb-2 font-weight-bold">{{ no_parents }} </h5>
+                  <p class="font-small grey-text">Parent{{ no_parents|pluralize }}</p>
                 </div>
               </div>
             </div>
@@ -97,8 +97,8 @@
                 </div>
 
                 <div class="col-md-7 col-7 text-right pr-5">
-                  <h5 class="ml-4 mt-4 mb-2 font-weight-bold">4,567</h5>
-                  <p class="font-small grey-text">Subjects</p>
+                  <h5 class="ml-4 mt-4 mb-2 font-weight-bold">{{ no_subjects }}</h5>
+                  <p class="font-small grey-text">Subject{{ no_subjects|pluralize }}</p>
                 </div>
               </div>
               <!--/.Card Data-->
@@ -125,25 +125,25 @@
 
             <div class="card mb-4">
                     <!--Card-->
-      <div class="card testimonial-card">
-        <!--Background color-->
-        <div class="card-up blue-gradient"></div>
-        <!--Avatar-->
-        <div class="avatar mx-auto white">
-          <img src="{{ request.user.get_picture }}" class="rounded-circle img-fluid">
-        </div>
-        <div class="card-body">
-          <!--Name-->
-          <h4 class="font-weight-bold mb-4">{{ request.user|capfirst }}</h4>
-          <small>({{ user_type }})</small>
-          <hr>
-          <div style="text-align: left; margin-left: 65px;">
-	          {% if request.user.email %}<p>Email: {{ request.user.email }}</p>{% endif %}
-	          {% if request.user.phone %}<p>Phone: {{ request.user.phone }}</p>{% endif %}
-	          {% if request.user.address %}<p>Address: {{ request.user.address }}</p>{% endif %}
-      	  </div>
-        </div>
-      </div>
+              <div class="card testimonial-card">
+                <!--Background color-->
+                <div class="card-up blue-gradient"></div>
+                <!--Avatar-->
+                <div class="avatar mx-auto white">
+                  <img src="{{ request.user.get_picture }}" class="rounded-circle img-fluid">
+                </div>
+                <div class="card-body">
+                  <!--Name-->
+                  <h4 class="font-weight-bold mb-4">{{ request.user|capfirst }}</h4>
+                  <small>({{ user_type }})</small>
+                  <hr>
+                  <div style="text-align: left; margin-left: 65px;">
+        	          {% if request.user.email %}<p>Email: {{ request.user.email }}</p>{% endif %}
+        	          {% if request.user.phone %}<p>Phone: {{ request.user.phone }}</p>{% endif %}
+        	          {% if request.user.address %}<p>Address: {{ request.user.address }}</p>{% endif %}
+              	  </div>
+                </div>
+              </div>
 
             </div>
 

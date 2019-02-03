@@ -59,15 +59,24 @@ class Section(models.Model):
 		return self.name
 
 
-class Class(models.Model):
-	name = models.CharField(max_length=100)
-	section = models.ForeignKey(Section, on_delete=models.CASCADE)
+
+class Subject(models.Model):
+	name = models.CharField(max_length=200)
 
 
 	def __str__(self):
 		return self.name
 
-	class meta:
+class Class(models.Model):
+	name = models.CharField(max_length=100)
+	section = models.ForeignKey(Section, on_delete=models.CASCADE)
+	subjects = models.ManyToManyField(Subject)
+
+
+	def __str__(self):
+		return self.name
+
+	class Meta:
 		verbose_name_plural = 'classes'
 
 
@@ -77,14 +86,15 @@ class Student(models.Model):
 	year_of_admission = models.CharField(max_length=100, blank=True, null=True)
 	roll_number = models.CharField(max_length=50, unique=True)
 
+	def __str__(self):
+		return self.user.get_full_name()
 
-class Subject(models.Model):
-	name = models.CharField(max_length=200)
-	in_section = models.ForeignKey(Section, on_delete=models.CASCADE)
-
+class Parent(models.Model):
+	parent = models.ForeignKey(User, on_delete=models.CASCADE)
+	student = models.ForeignKey(User, on_delete=models.CASCADE, related_name="childrens")
 
 	def __str__(self):
-		return self.name
+		return self.parent
 
 
 class SubjectAssign(models.Model):
@@ -93,9 +103,6 @@ class SubjectAssign(models.Model):
 	teacher = models.ForeignKey(User, on_delete=models.CASCADE)
 	subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
 
-
-	def __str__(self):
-		return self.teacher + " " + self.subject
 
 class SectionAssign(models.Model):
 	section_head = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -117,14 +124,17 @@ class Grade(models.Model):
 
 
 class Attendance(models.Model):
-	in_class = models.ForeignKey(Class, on_delete=models.CASCADE)
+	student = models.ForeignKey(Student, on_delete=models.CASCADE)
 	session = models.ForeignKey(Session, on_delete=models.CASCADE)
 	term = models.CharField(choices=TERM, max_length=7)
-	date = models.DateTimeField()
+	date = models.DateField()
+	is_present = models.BooleanField(default=False)
+	is_late = models.BooleanField(blank=True, null=True)
+	is_late_for = models.CharField(max_length=4, blank=True, null=True)
 
 
 	def __str__(self):
-		return self.in_class
+		return self.student.user.get_full_name()
 
 class FeeType(models.Model):
 	name = models.CharField(max_length=100)

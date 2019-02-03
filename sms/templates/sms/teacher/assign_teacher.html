@@ -1,16 +1,28 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %} Students {% endblock title %}
+{% block title %} Assign Teachers {% endblock title %}
 
 {% block main %}
 
 <!--Main layout-->
   <main>
     <div class="container-fluid">
+         <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="/">Home Page</a>
+            <span>/</span>
+            <span>Assign Teachers</span>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
 
-      <!--Section: Basic examples-->
-      <section>
+      <!--Assign Teacher: Basic examples-->
+      <Assign Teacher>
         <!--Top Table UI-->
         <div class="card p-2 mb-5">
 
@@ -19,9 +31,9 @@
 
             <!--Grid column-->
             <div class="col-lg-3 col-md-12">
-            	<a class="btn btn-primary" href="{% url 'add_student' %}">
-            		Add Student
-            	</a>
+              <a class="btn btn-primary" href="{% url 'add_assign_teacher' %}">
+                Assign Teacher
+              </a>
             </div>
             <!--Grid column-->
 
@@ -39,17 +51,6 @@
 
             <!--Grid column-->
             <div class="col-lg-3 col-md-6">
-
-               <!--Blue select-->
-             <select id="select_class" class="mdb-select colorful-select dropdown-primary mx-2 md-form mt-3 md-dropdown">
-             	<option value="" disabled selected>Select Class</option>
-             	{% for class in classes %}
-                <option value="{{ class.id }}">{{ class }}</option>
-                {% empty %}
-                <option value="" disabled>No class is available</option>
-                {% endfor %}
-              </select>
-              <!--/Blue select-->
             </div>
             <!--Grid column-->
           </div>
@@ -69,7 +70,7 @@
               <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2"><i class="fas fa-pencil-alt mt-0"></i> PDF</button>
             </div>
 
-            <a href="#" id="class_name" class="white-text mx-3">Class Members</a>
+            <a href="" class="white-text mx-3">Assign Teacher</a>
 
           </div>
           <!--/Card image-->
@@ -79,15 +80,12 @@
             <div class="table-responsive">
               <!--Table-->
               <table id="table" class="table table-hover mb-0">
-              	<span id="no_data"></span>
+
                 <!--Table head-->
                 <thead>
                   <tr>
-                    <th class="th-lg"><a>Full Name <i class="fas fa-sort ml-1"></i></a></th>
-                    <th class="th-lg"><a href="">Photo<i class="fas fa-sort ml-1"></i></a></th>
-                    <th class="th-lg"><a href="">Roll<i class="fas fa-sort ml-1"></i></a></th>
-                    <th class="th-lg"><a href="">Email<i class="fas fa-sort ml-1"></i></a></th>
-                    <th class="th-lg"><a href="">Status<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a>Teacher<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a href="">Subject<i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Action<i class="fas fa-sort ml-1"></i></a></th>
                   </tr>
                 </thead>
@@ -95,12 +93,26 @@
 
                 <!--Table body-->
                 <tbody>
-
+                  {% for each_assign_teacher in assigned_teachers %}
+                  <tr>
+                    <td>{{ each_assign_teacher.teacher|capfirst }}</td>
+                    <td>{{ each_assign_teacher.subject|capfirst }}</td>
+                    <td>
+                      <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
+                      <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                      <a title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <span>No data available</span>
+                  {% endfor %}
                 </tbody>
                 <!--Table body-->
               </table>
               <!--Table-->
             </div>
+
+            <hr class="my-0">
 
             <hr class="my-0">
 
@@ -131,8 +143,8 @@
           </div>
         </div>
 
-      </section>
-      <!--Section: Basic examples-->
+      </Assign Teacher>
+      <!--Assign Teacher: Basic examples-->
 
     </div>
   </main>

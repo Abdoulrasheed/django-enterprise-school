@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Add section {% endblock title %}
+
+{% block main %}
+<!--Main layout-->
+<main>
+  <div style="margin-bottom: 259px;" class="container-fluid">
+       <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="/">Home Page</a>
+            <span>/</span>
+            <a href="{% url 'sections_list' %}">Section</a>
+            <span>/</span>
+            <span>Add section</span>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
+    <div>
+      <div aria-labelledby="add_a_class">
+        <div class="row">
+          <div class="col-md-6">
+            <form method="post">{% csrf_token %}
+            <input type="text" class="form-control mb-4" placeholder="Section name">
+            <input type="text" class="form-control mb-4" placeholder="Note">
+
+              <a href="#" style="" class="btn btn-primary">Save</a>
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</main>
+{% endblock %}
