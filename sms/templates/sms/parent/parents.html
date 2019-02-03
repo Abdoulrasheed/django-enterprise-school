@@ -20,7 +20,14 @@
       </div>
    </div>
    <!-- Heading -->
-
+          {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
       <!--Section: Basic examples-->
       <section>
         <!--Top Table UI-->
@@ -113,7 +120,7 @@
                     <td>
                       <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
                       <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
-                      <a title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                      <a href="{% url 'delete_user' id=parent.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
                     </td>
                   </tr>
                   {% empty %}

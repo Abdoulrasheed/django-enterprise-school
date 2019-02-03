@@ -24,7 +24,7 @@
           </div>
         {% endfor %}
       {% endif %}
-      
+
       <!-- Editable table -->
       <div class="card">
          <h6 class="card-header text-left text-uppercase py-2 white-text">
@@ -92,7 +92,7 @@
                      <td class="pt-3-half" contenteditable="false">
                         <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
                         <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
-                        <a href="{% url 'delete_student' id=student.user.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                        <a href="{% url 'delete_user' id=student.user.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
                      </td>
                   </tr>
                   {% empty %}

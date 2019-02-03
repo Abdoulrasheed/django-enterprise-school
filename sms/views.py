@@ -51,14 +51,32 @@ def students_view(request):
 	return render(request, 'sms/student/students.html', context)
 
 
-def delete_student(request, id):
+def delete_user(request, id):
 	user = User.objects.get(pk=id)
-	student = Student.objects.get(user__pk=user.pk)
-	class_id = student.in_class.pk
-	stud_name = student.user.get_full_name()
-	user.delete()
-	messages.success(request, stud_name + ' Successfully deleted !')
-	return redirect('students_list_view', id=class_id)
+	if user:
+		user_name = user.get_full_name()
+		if user.is_student:
+			student = Student.objects.get(user__pk=user.pk)
+			class_id = student.in_class.pk
+			user.delete()
+			messages.success(request, user_name + ' Successfully deleted !')
+			return redirect('students_list_view', id=class_id)
+		elif user.is_teacher:
+			user.delete()
+			messages.success(request, user_name + ' Successfully deleted !')
+			return redirect('teachers_list')
+		elif user.is_parent:
+			user.delete()
+			messages.success(request, user_name + ' Successfully deleted !')
+			return redirect('parents_list')
+		else:
+			user.delete()
+			messages.success(request, user_name + ' Successfully deleted !')
+			return redirect('home')
+	else:
+		messages.error(request,' Please dont trick me, nothing is deleted !')
+		return redirect('teachers_list')
+
 
 @login_required
 def students_list_view(request, id):
@@ -190,32 +208,25 @@ def add_student(request):
 						picture = parent_picture,
 						is_parent = True,
 						)
-						send_mail(
-						    'Welcome to cosmotech',
-						    'we are happy to have you join our school',
-						    'noreply@cosmotech.com',
-						    ['abdlrasheedibrahim47@gmail.com'],
-						    fail_silently=False,
-						)
 				else:
 					parent = existing_parent
-					user = User.objects.create(
-					username = stud_username, 
-					password = make_password(stud_password),
-					first_name = stud_fname,
-					last_name = stud_sname,
-					other_name = stud_oname,
-					gender = stud_gender,
-					email = stud_email,
-					religion = stud_religion,
-					state = stud_state,
-					lga =stud_lga,
-					dob = stud_dob,
-					address = stud_address,
-					phone = stud_phone_number,
-					picture = stud_picture,
-					is_student = True,
-					)
+				user = User.objects.create(
+				username = stud_username, 
+				password = make_password(stud_password),
+				first_name = stud_fname,
+				last_name = stud_sname,
+				other_name = stud_oname,
+				gender = stud_gender,
+				email = stud_email,
+				religion = stud_religion,
+				state = stud_state,
+				lga =stud_lga,
+				dob = stud_dob,
+				address = stud_address,
+				phone = stud_phone_number,
+				picture = stud_picture,
+				is_student = True,
+				)
 				selected_class = Class.objects.get(pk=stud_class)
 				student = Student.objects.create(
 				user=user, 
@@ -223,6 +234,12 @@ def add_student(request):
 				year_of_admission=stud_year_of_admission,
 				roll_number = stud_roll_number,
 				)
+				stud = User.objects.get(username=stud_username, first_name=stud_fname, last_name=stud_sname)
+				if existing_parent == '':
+					par = User.objects.get(username=parent_username, first_name=parent_fname, last_name=parent_sname)
+				else:
+					par = User.objects.get(username=parent)
+				Parent.objects.create(student=stud, parent=par)
 				messages.success(request, stud_fname +' Successfully Recorded! ')
 				return HttpResponseRedirect(reverse_lazy('add_student'))
 				

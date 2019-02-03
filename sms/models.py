@@ -94,7 +94,7 @@ class Parent(models.Model):
 	student = models.ForeignKey(User, on_delete=models.CASCADE, related_name="childrens")
 
 	def __str__(self):
-		return self.parent
+		return self.parent.get_full_name()
 
 
 class SubjectAssign(models.Model):
