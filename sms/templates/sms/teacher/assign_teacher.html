@@ -31,10 +31,28 @@
 
             <!--Grid column-->
             <div class="col-lg-3 col-md-12">
-              <a class="btn btn-primary" href="{% url 'add_assign_teacher' %}">
+              <a class="btn btn-info" href="{% url 'add_assign_teacher' %}">
                 Assign Teacher
               </a>
             </div>
+            <div class="col-lg-3 col-md-12">
+            </div>
+            <div class="col-lg-3 col-md-12">  
+            </div>
+            <form method="post">{% csrf_token %}
+               <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown"
+                     aria-haspopup="true" aria-expanded="false">
+                  Select class
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
+                     <h6  class="dropdown-header">Select Term</h6>
+                      <input type="submit" name="" value="First" id="firstTerm" data-toggle="tooltip" title="Select a term" class="dropdown-item" value="First Term">
+                      <input type="submit" value="Second" name="" id="secondTerm" data-toggle="tooltip" title="Select a term" class="dropdown-item" value="Second Term">
+                      <input type="submit" value="Third" id="thirdTerm" name="" data-toggle="tooltip" title="Select a term" class="dropdown-item" value="Third Term">
+                  </div>
+               </div>
+          </form>
             <!--Grid column-->
 
             <!--Grid column-->
@@ -70,7 +88,9 @@
               <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2"><i class="fas fa-pencil-alt mt-0"></i> PDF</button>
             </div>
 
-            <a href="" class="white-text mx-3">Assign Teacher</a>
+            <a href="" class="white-text mx-3">
+              Teacher Allocation {% if term %} for {{ term }} {% endif %}
+            </a>
 
           </div>
           <!--/Card image-->
@@ -85,7 +105,7 @@
                 <thead>
                   <tr>
                     <th class="th-lg"><a>Teacher<i class="fas fa-sort ml-1"></i></a></th>
-                    <th class="th-lg"><a href="">Subject<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg ml-xl-5"><a href="">Subject(s)<i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Action<i class="fas fa-sort ml-1"></i></a></th>
                   </tr>
                 </thead>
@@ -96,7 +116,15 @@
                   {% for each_assign_teacher in assigned_teachers %}
                   <tr>
                     <td>{{ each_assign_teacher.teacher|capfirst }}</td>
-                    <td>{{ each_assign_teacher.subject|capfirst }}</td>
+                    <td>
+                      {% for subject in each_assign_teacher.subjects.all %}
+                        {{ subject.name|capfirst }}
+                      </td>
+                      {% empty %}
+                        <small>No subject is allocated
+                          <a class="small blue-text" href="{% url 'add_assign_teacher' %}">Click to allocate</a>
+                        </small>
+                      {% endfor %}
                     <td>
                       <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
                       <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
@@ -153,4 +181,19 @@
   {% endblock main %}
   {% block script %}
   <script src="{% static 'js/sms/sms_script.js' %}"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+       $("#firstTerm").click(function(){
+          $("#firstTerm").attr('name', 'term')
+        });
+
+       $("#secondTerm").click(function(){
+          $("#secondTerm").attr('name', 'term')
+        });
+
+       $("#thirdTerm").click(function(){
+          $("#thirdTerm").attr('name', 'term')
+        });
+    });
+  </script>
   {% endblock script %}

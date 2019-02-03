@@ -106,7 +106,7 @@
                 	{% for parent in parents %}
                   <tr>
                     <td>{{ parent.get_full_name }}</td>
-                    <td>{{ parent.get_picture }}</td>
+                    <td><img src="{{ parent.get_picture }}" width="50"></td>
                     <td>{{ parent.email }}</td>
                     <td>
                       <div class="switch">

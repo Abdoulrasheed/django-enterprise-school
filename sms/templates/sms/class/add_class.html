@@ -21,13 +21,44 @@
       </div>
    </div>
    <!-- Heading -->
+  {% if messages %}
+     {% for message in messages %}
+        <div class="alert alert-info alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message|safe }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% if form %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
     <div>
       <div aria-labelledby="add_a_class">
         <div class="row">
           <div class="col-md-6">
             <form method="post">{% csrf_token %}
-            <input type="text" class="form-control mb-4" placeholder="Class name">
-              <select class="mdb-select md-form">
+
+              <input type="text" name="name" class="form-control mb-4" placeholder="Class name">
+          
+              
+              <select name="section" class="mdb-select md-form">
                 <option value="" disabled selected>Select section</option>
                   {% for section in sections %}
                 <option value="{{ section.id }}">{{ section.name }}</option>
@@ -35,7 +66,19 @@
                 <option value="" disabled="">No section available</option>
                   {% endfor %}
               </select>
-              <a href="#" style="" class="btn btn-primary">Save</a>
+              
+
+              <select name="subjects" class="mdb-select md-form colorful-select dropdown-primary" multiple searchable="Search here..">
+                  <option value="" disabled selected>Choose subjects</option>
+                   {% for subject in subjects %}
+                  <option value="{{ subject.id }}">{{ subject.name }}</option>
+                  {% empty %}
+                <option value="" disabled="">No subject available</option>
+                  {% endfor %}
+              </select>
+              
+
+              <input type="submit" name="submit" value="save" class="btn btn-primary">
             </form>
             </div>
           </div>

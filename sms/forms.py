@@ -40,3 +40,41 @@ class AddStudentForm(forms.Form):
     parent_picture = forms.ImageField(required=False, label="Parent picture")
 
     existing_parent = forms.CharField(max_length=100, required=False, label="Existing parent")
+
+
+class AddParentForm(forms.Form):
+    username = forms.CharField(max_length=50, label="Username")
+    password = forms.CharField(max_length=40, label="Password")
+    firstname = forms.CharField(max_length=50, label="Firstname")
+    surname = forms.CharField(max_length=50, label="Surname")
+    othername = forms.CharField(max_length=50, required=False, label="Othername")
+    state = forms.CharField(max_length=50, required=False, label="State")
+    phone = forms.CharField(max_length=50, required=False, label="Phone number")
+    email = forms.CharField(max_length=120, required=False, label="Email Address")
+    address = forms.CharField(max_length=500, required=False, label="Home / Office Address")
+    picture = forms.ImageField(required=False, label="Picture")
+
+
+class AddTeacherForm(forms.Form):
+    username = forms.CharField(max_length=50, label="Username")
+    password = forms.CharField(max_length=40, label="Password")
+    firstname = forms.CharField(max_length=50, label="Firstname")
+    surname = forms.CharField(max_length=50, label="Surname")
+    othername = forms.CharField(max_length=50, required=False, label="Othername")
+    state = forms.CharField(max_length=50, required=False, label="State")
+    phone = forms.CharField(max_length=50, required=False, label="Phone number")
+    email = forms.CharField(max_length=120, required=False, label="Email Address")
+    address = forms.CharField(max_length=500, required=False, label="Home / Office Address")
+    picture = forms.ImageField(required=False, label="Picture")
+
+class AddClassForm(forms.Form):
+    name = forms.CharField(max_length=50, label="Class Name")
+    section = forms.CharField(max_length=100, label="Section")
+    subjects = forms.ModelMultipleChoiceField(queryset=Subject.objects.all())
+
+class AddSubjectForm(forms.Form):
+    subject = forms.CharField(max_length=100, label="Subject name")
+
+class AddSectionForm(forms.Form):
+    section = forms.CharField(max_length=50, label="Section name")
+    note = forms.CharField(max_length=100, label="Section Description", required=False)

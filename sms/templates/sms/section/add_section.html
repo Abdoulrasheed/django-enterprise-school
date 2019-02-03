@@ -21,15 +21,42 @@
       </div>
    </div>
    <!-- Heading -->
+       {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message|safe }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% if form %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
     <div>
       <div aria-labelledby="add_a_class">
         <div class="row">
           <div class="col-md-6">
             <form method="post">{% csrf_token %}
-            <input type="text" class="form-control mb-4" placeholder="Section name">
-            <input type="text" class="form-control mb-4" placeholder="Note">
-
-              <a href="#" style="" class="btn btn-primary">Save</a>
+            <input name="section" type="text" class="form-control mb-4" placeholder="Section name">
+            <input name="note" type="text" class="form-control mb-4" placeholder="Note">
+              <input type="submit" name="submit" value="Save" class="btn btn-primary">
             </form>
             </div>
           </div>

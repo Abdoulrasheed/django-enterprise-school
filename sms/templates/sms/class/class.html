@@ -20,6 +20,34 @@
       </div>
    </div>
    <!-- Heading -->
+          {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% if form %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
 
       <!--Section: Basic examples-->
       <section>
@@ -70,7 +98,7 @@
               <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2"><i class="fas fa-pencil-alt mt-0"></i> PDF</button>
             </div>
 
-            <a href="" class="white-text mx-3">classes</a>
+            <a href="" class="white-text mx-3">Class</a>
 
           </div>
           <!--/Card image-->
@@ -86,6 +114,7 @@
                   <tr>
                     <th class="th-lg"><a>Class Name <i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Section<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a href="">No. of Subjects<i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Action<i class="fas fa-sort ml-1"></i></a></th>
                   </tr>
                 </thead>
@@ -97,10 +126,11 @@
                   <tr>
                     <td>{{ class.name }}</td>
                     <td>{{ class.section }}</td>
+                    <td>{{ class.subjects.all|length }}</td>
                     <td>
                       <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
                       <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
-                      <a title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                      <a href="{% url 'delete_class' id=class.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
                     </td>
                   </tr>
                   {% empty %}

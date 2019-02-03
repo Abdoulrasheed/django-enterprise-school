@@ -51,7 +51,7 @@ class Session(models.Model):
 
 
 class Section(models.Model):
-	name = models.CharField(max_length=100)
+	name = models.CharField(max_length=100, unique=True)
 	note = models.CharField(max_length=200, blank=True, null=True)
 
 
@@ -61,7 +61,7 @@ class Section(models.Model):
 
 
 class Subject(models.Model):
-	name = models.CharField(max_length=200)
+	name = models.CharField(max_length=200, unique=True)
 
 
 	def __str__(self):
@@ -101,7 +101,7 @@ class SubjectAssign(models.Model):
 	session = models.ForeignKey(Session, on_delete=models.CASCADE)
 	term = models.CharField(choices=TERM, max_length=7)
 	teacher = models.ForeignKey(User, on_delete=models.CASCADE)
-	subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+	subjects = models.ManyToManyField(Subject, blank=True)
 
 
 class SectionAssign(models.Model):

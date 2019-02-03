@@ -5,7 +5,12 @@ from .decorators import teacher_required, student_required, parent_required
 from .models import *
 from django.core import serializers
 from datetime import datetime
-from .forms import AddStudentForm
+from .forms import (AddStudentForm, 
+					AddParentForm, 
+					AddTeacherForm, 
+					AddClassForm, 
+					AddSubjectForm,
+					AddSectionForm)
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 from django.http import HttpResponseRedirect
@@ -98,12 +103,24 @@ def section_view(request):
 
 @login_required
 def assign_teacher_view(request):
-	assigned_teachers = SubjectAssign.objects.all()
-	subjects = Subject.objects.all()
-	context = {
-	"subjects": subjects,
-	"assigned_teachers": assigned_teachers,
-	}
+	context = {}
+	if request.method == "POST":
+		if request.POST['term'] == '':
+			messages.error(request, ' ERROR: please select a term !')
+			return redirect('assign_teacher_list')
+		elif '<' or '>' in request.POST['term']:
+			messages.error(request, ' ERROR: better stop trying !')
+			return redirect('assign_teacher_list')
+		else:
+			print("hiuuuuuuuuuuuuuuuuuuuuuuuuuuuuu")
+			term = request.POST['term']
+			assigned_teachers = SubjectAssign.objects.all(term=term)
+			subjects = Subject.objects.all()
+			context = {
+			"term": term,
+			"subjects": subjects,
+			"assigned_teachers": assigned_teachers,
+			}
 	return render(request, 'sms/teacher/assign_teacher.html', context)
 
 
@@ -240,7 +257,7 @@ def add_student(request):
 				else:
 					par = User.objects.get(username=parent)
 				Parent.objects.create(student=stud, parent=par)
-				messages.success(request, stud_fname +' Successfully Recorded! ')
+				messages.success(request, stud_fname + " " + stud_sname +' Was Successfully Recorded! ')
 				return HttpResponseRedirect(reverse_lazy('add_student'))
 				
 		else:
@@ -258,29 +275,197 @@ def add_student(request):
 		context = {"classes": classes, "parents": parents,}
 		return render(request, 'sms/student/add_student.html', context)
 
-
 @login_required
 def add_parent(request):
+	if request.method == "POST":
+		form = AddParentForm(request.POST, request.FILES)
+		if form.is_valid():
+			username = form.cleaned_data.get('username')
+			password = form.cleaned_data.get('password')
+			firstname = form.cleaned_data.get('firstname')
+			surname = form.cleaned_data.get('surname')
+			othername = form.cleaned_data.get('othername')
+			state = form.cleaned_data.get('state')
+			phone = form.cleaned_data.get('phone')
+			email = form.cleaned_data.get('email')
+			address = form.cleaned_data.get('address')
+			picture = form.cleaned_data['picture']
+
+			if User.objects.filter(username=username).exists():
+				messages.success(request, "A user with username "+ username + " had already exists !")
+				return HttpResponseRedirect(reverse_lazy('add_parent'))
+			User.objects.create(
+				username=username, 
+				password=make_password(password), 
+				first_name=firstname,
+				last_name=surname,
+				other_name=othername,
+				address=address,
+				state=state,
+				phone=phone,
+				email=email,
+				picture=picture,
+				is_parent=True,
+				)
+			messages.success(request, firstname + " " + surname +' Was Successfully Recorded! ')
+			return HttpResponseRedirect(reverse_lazy('add_parent'))
+		else:
+			form = AddParentForm(request.POST, request.FILES)
+			context =  {
+				"form": form, 
+				}
 	return render(request, 'sms/parent/add_parent.html', {})
 
 
 @login_required
 def add_teacher(request):
+	if request.method == "POST":
+		form = AddTeacherForm(request.POST, request.FILES)
+		if form.is_valid():
+			username = form.cleaned_data.get('username')
+			password = form.cleaned_data.get('password')
+			firstname = form.cleaned_data.get('firstname')
+			surname = form.cleaned_data.get('surname')
+			othername = form.cleaned_data.get('othername')
+			state = form.cleaned_data.get('state')
+			phone = form.cleaned_data.get('phone')
+			email = form.cleaned_data.get('email')
+			address = form.cleaned_data.get('address')
+			picture = form.cleaned_data['picture']
+
+			if User.objects.filter(username=username).exists():
+				messages.success(request, "A user with username "+ username + " had already exists !")
+				return HttpResponseRedirect(reverse_lazy('add_teacher'))
+			User.objects.create(
+				username=username, 
+				password=make_password(password), 
+				first_name=firstname,
+				last_name=surname,
+				other_name=othername,
+				address=address,
+				state=state,
+				phone=phone,
+				email=email,
+				picture=picture,
+				is_teacher=True,
+				)
+			messages.success(request, firstname + " " + surname +' Was successfully added! ')
+			return HttpResponseRedirect(reverse_lazy('add_teacher'))
+		else:
+			form = AddParentForm(request.POST, request.FILES)
+			context =  {
+				"form": form, 
+				}
 	return render(request, 'sms/teacher/add_teacher.html', {})
 
 @login_required
 def add_class(request):
-	sections = Section.objects.all()
-	return render(request, 'sms/class/add_class.html', {"sections": sections})
+	if request.method == "POST":
+		sections = Section.objects.all()
+		subjects = Subject.objects.all()
+		form = AddClassForm(request.POST)
+		if form.is_valid():
+			name = form.cleaned_data.get('name')
+			section_id = form.cleaned_data.get('section')
+			selected_subjects = form.cleaned_data.get('subjects')
+			if Class.objects.filter(name=name).exists():
+				class_id = str(Class.objects.get(name=name).pk)
+				messages.error(request, name + ' Already exists! <a href="/class/update/'+class_id+'/">click here to update its subjects</a>')
+				return HttpResponseRedirect(reverse_lazy('add_class'))
+			else:
+				ids = ()
+				section = Section.objects.get(pk=section_id)
+				new_class = Class.objects.create(name=name, section=section)
+				for i in range(0, len(selected_subjects)):
+					ids += (selected_subjects[i].name,)
+					new_class.subjects.add(selected_subjects[i])
+				messages.success(request, new_class.name +' Was successfully added')
+				return HttpResponseRedirect(reverse_lazy('class_list'))
+		else:
+			form = AddParentForm(request.POST)
+			context =  {
+				"form": form, 
+				}
+		context = {
+			"sections": sections,
+			"subjects": subjects,
+			}
+	else:
+		sections = Section.objects.all()
+		subjects = Subject.objects.all()
+		context = {
+			"sections": sections,
+			"subjects": subjects,
+			}
+	return render(request, 'sms/class/add_class.html', context)
+
+@login_required
+def delete_class(request, id):
+	selected_class = Class.objects.get(pk=id)
+	class_name = selected_class.name
+	selected_class.delete()
+	messages.success(request, "Successfully deleted "+ class_name)
+	return HttpResponseRedirect(reverse_lazy('class_list'))
+
+@login_required
+def delete_subject(request, id):
+	selected_subject = Subject.objects.get(pk=id)
+	subject_name = selected_subject.name
+	selected_subject.delete()
+	messages.success(request, "Successfully deleted "+ subject_name)
+	return HttpResponseRedirect(reverse_lazy('subjects_list'))
+
+def delete_section(request, id):
+	selected_section = Section.objects.get(pk=id)
+	section_name = selected_section.name
+	selected_section.delete()
+	messages.success(request, "Successfully deleted "+ str(selected_section))
+	return HttpResponseRedirect(reverse_lazy('sections_list'))
+
+def with_held_subject(request, id):
+	pass
+
+
 
 @login_required
 def add_subject(request):
 	classes = Class.objects.all()
-	return render(request, 'sms/subject/add_subject.html', {"classes": classes})
+	context = {"classes": classes}
+	if request.method == "POST":
+		form = AddSubjectForm(request.POST)
+		if form.is_valid():
+			name = form.cleaned_data.get('subject')
+			if Subject.objects.filter(name=name).exists():
+				messages.info(request, name + " Already exists !")
+				return HttpResponseRedirect(reverse_lazy('add_subject'))
+			else:
+				subject = Subject(name=name).save()
+				messages.success(request, "Successfully added "+ name)
+				return HttpResponseRedirect(reverse_lazy('subjects_list'))
+		context =  {"form": form,}
+	return render(request, 'sms/subject/add_subject.html', context)
 
 @login_required
 def add_section(request):
-	return render(request, 'sms/section/add_section.html', {})
+	context = {}
+	if request.method == "POST":
+		form = AddSectionForm(request.POST)
+		if form.is_valid():
+			section_name = form.cleaned_data.get('section').title()
+			section_note = form.cleaned_data.get('note')
+			if Section.objects.filter(name=section_name).exists():
+				messages.info(request, section_name + " Section Already exists !")
+				return HttpResponseRedirect(reverse_lazy('add_section'))
+			elif "Section" in section_name:
+				messages.info(request, " You don't need to include the word 'Section' in section name, just write <code>"+ section_name.replace('Section', '') +"</code>")
+				return HttpResponseRedirect(reverse_lazy('add_section'))
+			else:
+				Section(name=section_name, note=section_note).save()
+				messages.success(request, "Successfully added "+ section_name)
+				return HttpResponseRedirect(reverse_lazy('sections_list'))
+		else:
+			context =  {"form": form,}
+	return render(request, 'sms/section/add_section.html', context)
 
 
 @login_required
