@@ -105,16 +105,13 @@ def section_view(request):
 def assign_teacher_view(request):
 	context = {}
 	if request.method == "POST":
-		if request.POST['term'] == '':
+		print(request.POST['term'])
+		if not request.POST['term'] in ['First', 'Second', 'Third']:
 			messages.error(request, ' ERROR: please select a term !')
 			return redirect('assign_teacher_list')
-		elif '<' or '>' in request.POST['term']:
-			messages.error(request, ' ERROR: better stop trying !')
-			return redirect('assign_teacher_list')
 		else:
-			print("hiuuuuuuuuuuuuuuuuuuuuuuuuuuuuu")
 			term = request.POST['term']
-			assigned_teachers = SubjectAssign.objects.all(term=term)
+			assigned_teachers = SubjectAssign.objects.filter(term=term)
 			subjects = Subject.objects.all()
 			context = {
 			"term": term,

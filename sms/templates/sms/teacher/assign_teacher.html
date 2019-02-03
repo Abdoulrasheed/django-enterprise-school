@@ -20,7 +20,14 @@
       </div>
    </div>
    <!-- Heading -->
-
+       {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
       <!--Assign Teacher: Basic examples-->
       <Assign Teacher>
         <!--Top Table UI-->
@@ -89,7 +96,7 @@
             </div>
 
             <a href="" class="white-text mx-3">
-              Teacher Allocation {% if term %} for {{ term }} {% endif %}
+              Subject allocation {% if term %} for {{ term }} term {% endif %}
             </a>
 
           </div>
@@ -118,13 +125,16 @@
                     <td>{{ each_assign_teacher.teacher|capfirst }}</td>
                     <td>
                       {% for subject in each_assign_teacher.subjects.all %}
-                        {{ subject.name|capfirst }}
-                      </td>
-                      {% empty %}
-                        <small>No subject is allocated
-                          <a class="small blue-text" href="{% url 'add_assign_teacher' %}">Click to allocate</a>
-                        </small>
+                            {% if forloop.counter >= 2 %}
+                            ,
+                            {% endif %}
+                            {{ subject.name|capfirst }}
+                        {% empty %}
+                          <small>No subject is allocated
+                            <a class="small blue-text" href="{% url 'add_assign_teacher' %}">Click to allocate</a>
+                          </small>
                       {% endfor %}
+                    </td>
                     <td>
                       <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
                       <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
