@@ -15,17 +15,24 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# SECURE_CONTENT_TYPE_NOSNIFF = True
+# SECURE_BROWSER_XSS_FILTER =True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# X_FRAME_OPTIONS = 'DENY'
+# SECURE_SSL_REDIRECT = True
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'na=95lmj_9o6sjgt1*u@2u1tpfnkes-1lww$qhix(k9atxi3su'
+with open(BASE_DIR + '/key/secret_key.txt') as f:
+    SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
