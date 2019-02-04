@@ -78,3 +78,19 @@ class AddSubjectForm(forms.Form):
 class AddSectionForm(forms.Form):
     section = forms.CharField(max_length=50, label="Section name")
     note = forms.CharField(max_length=100, label="Section Description", required=False)
+
+class SubjectAllocationForm(forms.Form):
+    session = forms.CharField(max_length=50, label="Session")
+    term = forms.CharField(max_length=100, label="Term")
+    teacher =forms.CharField(max_length=100, label="Teacher")
+    subjects = forms.ModelMultipleChoiceField(queryset=Subject.objects.all())
+
+class SectionAllocationForm(forms.Form):
+    section = forms.CharField(max_length=50, label="Section")
+    section_head = forms.CharField(max_length=50, label="Section Head")
+    placeholder = forms.CharField(max_length=100, label="placeholder")
+    signature = forms.ImageField(label="Signature", required=False)
+
+class AttendanceListForm(forms.Form):
+    selected_class = forms.ModelChoiceField(queryset=Class.objects.all())
+    selected_term = forms.CharField(widget=forms.Select(choices=TERM))

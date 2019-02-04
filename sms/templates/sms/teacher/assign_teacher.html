@@ -39,7 +39,7 @@
             <!--Grid column-->
             <div class="col-lg-3 col-md-12">
               <a class="btn btn-info" href="{% url 'add_assign_teacher' %}">
-                Assign Teacher
+                Allocate Subject
               </a>
             </div>
             <div class="col-lg-3 col-md-12">
@@ -89,12 +89,6 @@
           <!--Card image-->
           <div class="view view-cascade gradient-card-header blue-gradient narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center">
 
-            <div>
-              <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2"><i class="fas fa-th-large mt-0"></i> Excel</button>
-              <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2"><i class="fas fa-columns mt-0"> CSV</i></button>
-              <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2"><i class="fas fa-pencil-alt mt-0"></i> PDF</button>
-            </div>
-
             <a href="" class="white-text mx-3">
               Subject allocation {% if term %} for {{ term }} term {% endif %}
             </a>
@@ -120,15 +114,27 @@
 
                 <!--Table body-->
                 <tbody>
-                  {% for each_assign_teacher in assigned_teachers %}
+                  {% for i in assigned_teachers %}
                   <tr>
-                    <td>{{ each_assign_teacher.teacher|capfirst }}</td>
+                    <td class="teachername" teacher="{{ i.teacher|capfirst }}">{{ i.teacher|capfirst }}</td>
                     <td>
-                      {% for subject in each_assign_teacher.subjects.all %}
-                            {% if forloop.counter >= 2 %}
-                            ,
+                      {% for subject in i.subjects.all %}
+                            {% if forloop.counter|divisibleby:2 %}
+                            
+                            <span class="btn subject_name btn-sm btn-blue-grey">
+                              {% if forloop.counter >= 2 %},
+                              {% endif %}
+                              {{ subject.name|capfirst }}
+                            </span>
+                            
+                            {% else %}
+                            <span class="btn subject_name btn-sm btn-indigo">
+                              {{ subject.name|capfirst }}
+                              {% if forloop.counter >= 2 %},
+                              {% endif %}
+                            </span>
                             {% endif %}
-                            {{ subject.name|capfirst }}
+
                         {% empty %}
                           <small>No subject is allocated
                             <a class="small blue-text" href="{% url 'add_assign_teacher' %}">Click to allocate</a>
@@ -138,7 +144,7 @@
                     <td>
                       <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
                       <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
-                      <a title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                      <a object-id="{% url 'delete_all_allocated_subjects' id=i.pk %}" href="#" title="delete" class="red-text deallocate_all" data-toggle="modal" data-target="#modalConfirmDelete"><i class="fa fa-times"></i></a>
                     </td>
                   </tr>
                   {% empty %}
@@ -183,7 +189,41 @@
 
       </Assign Teacher>
       <!--Assign Teacher: Basic examples-->
+      <!-- Button trigger modal-->
 
+        <!--Modal: modalConfirmDelete-->
+        <div class="modal fade" id="modalConfirmDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
+            <!--Content-->
+            <div class="modal-content text-center">
+              <!--Header-->
+              <div class="modal-header d-flex justify-content-center">
+                <p class="heading">This will remove all subjects allocated to 
+                  <b id="allocatedto"></b></p>
+              </div>
+
+              <!--Body-->
+              <div class="modal-body">
+                <small>All of the following subjects will be deleted</small>
+                
+                <i class="fas fa-times fa-4x animated rotateIn"></i>
+                <ul class="list-group" id="lsub"></ul>
+                <small>Are sure to continue ?</small>
+                <p>You cannot undo this operation</p>
+
+              </div>
+
+              <!--Footer-->
+              <div class="modal-footer flex-center">
+                <a href="" id="confirmed" class="btn  btn-outline-danger">Yes</a>
+                <a type="button" class="btn  btn-danger waves-effect" data-dismiss="modal">No</a>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+        <!--Modal: modalConfirmDelete-->
     </div>
   </main>
   <!--Main layout-->
@@ -204,6 +244,28 @@
        $("#thirdTerm").click(function(){
           $("#thirdTerm").attr('name', 'term')
         });
+
+       $(".deallocate_all").click(function(){
+          var row = $(this).closest("tr > td");
+          var link = $(row).find(".deallocate_all").attr('object-id');
+          $("#confirmed").attr('href', link);
+
+          var row1 = $(this).closest("tbody > tr");
+          var teacher = $(row1).find(".teachername").attr('teacher');
+          $("#allocatedto").text(teacher);
+
+          var row2 = $(this).closest("tbody > tr");
+          var subject = $(row2).find(".subject_name").text();
+          // $("#lsub").html(
+
+          //   )
+          var a = subject.split(",")
+          var arr = new Array()
+          for (var i = a.length - 1; i >= 0; i--) {
+            arr.push('<li class="list-group-item">'+a[i]+'</li>');
+          $("#lsub").html(arr)
+          }
+       });
     });
   </script>
   {% endblock script %}

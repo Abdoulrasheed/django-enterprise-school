@@ -16,6 +16,34 @@
       </div>
    </div>
    <!-- Heading -->
+   {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message|safe }}
+          </div>
+        {% endfor %}
+      {% endif %}
+   {% if form %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+   {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
    <!-- Editable table -->
    <div class="card">
                         <div class="row">
@@ -23,12 +51,19 @@
               <a href="{% url 'add_attendance' %}" class="btn btn-info">Add Attendance</a>
             </div>
          </div>
-      <h6 class="card-header text-center white-text text-uppercase py-2">View Attendance</h6>
+      <h6 class="card-header text-left text-uppercase py-2 white-text">
+            <small class="text-left">Attendance :</small>
+               {% if selected_class %}
+               <small class="ml-xl-5">Class: {{ selected_class }}</small>
+               <small class="ml-xl-5">Term: {{ selected_term }}</small>
+               <small class="ml-xl-5">Date: {{ selected_date|date:'l, F j, Y' }}</small>
+               {% endif %}
+         </h6>
       <div class="container">
          <form method="post">{% csrf_token %}
          <div class="row">
             <div class="col-md-3">
-               <select name="class" class="mdb-select md-form">
+               <select name="selected_class" class="mdb-select md-form">
                 <option value="" disabled selected>Select a class</option>
                 {% for class in classes %}
                 <option value="{{ class.id }}">{{ class.name }}</option>
@@ -36,7 +71,7 @@
               </select>
             </div>
             <div class="col-md-3">
-               <select name="term" class="mdb-select md-form">
+               <select name="selected_term" class="mdb-select md-form">
                 <option value="" disabled selected>Select a term</option>
                 <option value="First">First</option>
                 <option value="Second">Second</option>
@@ -70,7 +105,7 @@
                         {{ each.student.user.get_full_name }}
                      </td>
                      <td class="pt-3-half" name="{{ each.student.get_full_name }}" contenteditable="false">
-                        {{ each.student.user.get_picture }}
+                        <img width="50" alt="{{each.student.user.get_full_name}}'s picture" src="{{ each.student.user.get_picture }}">
                      </td>
                      <td class="pt-3-half" contenteditable="false">
                         {{ each.student.roll_number }}
@@ -89,7 +124,7 @@
                      <td class="pt-3-half" contenteditable="false">
                         <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
                         <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
-                        <a title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                        <a href="#" object-id="{% url 'delete_attendance' id=each.pk %}" title="delete" class="red-text objecttodelete"><i class="fa fa-times"></i></a>
                      </td>
                   </tr>
                   {% empty %}
@@ -103,4 +138,15 @@
    </div>
 </div>
 </main>
+{% block script %}
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $(".objecttodelete").click(function(){
+          var row = $(this).closest("tr > td");
+          var link = $(row).find(".objecttodelete").attr('object-id');
+          $(".objecttodelete").attr('href', link);
+      });
+    });
+  </script>
+{% endblock %}
 {% endblock main %}

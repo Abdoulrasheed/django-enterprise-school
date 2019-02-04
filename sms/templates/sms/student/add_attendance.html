@@ -81,17 +81,18 @@
                         {{ each.roll_number }}
                      </td>
                      <td title="Check to toggle between present and absent" class="pt-3-half" contenteditable="false">
-                      <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="materialChecked2"/>
-                          <label class="form-check-label" for="materialChecked2">Absent</label>
-                        </div>
+                      <div class="form-group">
+                        <label class="custom-control custom-checkbox">
+                          <input id="goo" type="checkbox" unchecked name="status" class="custom-control-input" tabindex="5">
+                        <span class="custom-control-label" for="status"> Absent</span>
+                      </div>
                      </td>
                        
-                     <td data-toggle="tooltip"  title="Student must be Present for this to work" class="pt-3-half" contenteditable="false">
-                       <div class="switch">
+                     <td data-toggle="tooltip"  title="Student must be Present for this  to work" class="pt-3-half" contenteditable="false">
+                      <div class="switch">
                         <label>
                           No
-                          <input type="checkbox" class="is_late" disabled>
+                          <input type="checkbox" id="is_late" disabled>
                           <span class="lever"></span> Yes
                         </label>
                       </div>

@@ -15,11 +15,39 @@
          <h6 class="mb-2 mb-sm-0 pt-1">
             <a href="/">Home Page</a>
             <span>/</span>
-            <span>Assign Teachers</span>
+            <span>Section Allocation</span>
          </h6>
       </div>
    </div>
    <!-- Heading -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message|safe }}
+          </div>
+        {% endfor %}
+      {% endif %}
+   {% if form %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+   {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
 
       <!--Assign Teacher: Basic examples-->
       <Assign Teacher>
@@ -32,7 +60,7 @@
             <!--Grid column-->
             <div class="col-lg-3 col-md-12">
               <a class="btn btn-primary" href="{% url 'add_assign_section' %}">
-                Add Assign Teacher
+                Allocate Now
               </a>
             </div>
             <!--Grid column-->
@@ -64,13 +92,9 @@
           <!--Card image-->
           <div class="view view-cascade gradient-card-header blue-gradient narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center">
 
-            <div>
-              <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2"><i class="fas fa-th-large mt-0"></i> Excel</button>
-              <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2"><i class="fas fa-columns mt-0"> CSV</i></button>
-              <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2"><i class="fas fa-pencil-alt mt-0"></i> PDF</button>
-            </div>
+ 
 
-            <a href="" class="white-text mx-3">Assign Teacher</a>
+            <a href="" class="white-text mx-3">Allocated Sections</a>
 
           </div>
           <!--/Card image-->
@@ -93,14 +117,14 @@
 
                 <!--Table body-->
                 <tbody>
-                  {% for each_assigned_section in assigned_sections %}
+                  {% for section in sections %}
                   <tr>
-                    <td>{{ each_assigned_section.section_head.get_full_name|capfirst }}</td>
-                    <td>{{ each_assigned_section.section.name|capfirst }}</td>
+                    <td>{{ section.section_head.get_full_name|capfirst }}</td>
+                    <td>{{ section.section.name|capfirst }}</td>
                     <td>
                       <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
                       <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
-                      <a title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                      <a href="{% url 'del_section_allocation' id=section.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
                     </td>
                   </tr>
                   {% empty %}
@@ -143,7 +167,7 @@
           </div>
         </div>
 
-      </Assign Teacher>
+      </Assign>
       <!--Assign Teacher: Basic examples-->
 
     </div>

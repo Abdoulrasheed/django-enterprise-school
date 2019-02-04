@@ -10,7 +10,11 @@ from .forms import (AddStudentForm,
 					AddTeacherForm, 
 					AddClassForm, 
 					AddSubjectForm,
-					AddSectionForm)
+					AddSectionForm,
+					SubjectAllocationForm,
+					SectionAllocationForm,
+					AttendanceListForm,
+					)
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 from django.http import HttpResponseRedirect
@@ -105,7 +109,6 @@ def section_view(request):
 def assign_teacher_view(request):
 	context = {}
 	if request.method == "POST":
-		print(request.POST['term'])
 		if not request.POST['term'] in ['First', 'Second', 'Third']:
 			messages.error(request, ' ERROR: please select a term !')
 			return redirect('assign_teacher_list')
@@ -123,34 +126,115 @@ def assign_teacher_view(request):
 
 @login_required
 def add_assign_teacher(request):
+	context = {}
+	sessions = Session.objects.all()
 	teachers = User.objects.filter(is_teacher=True)
 	subjects = Subject.objects.all()
-	context = {
-	"subjects": subjects,
-	"teachers": teachers,
-	}
-	return render(request, 'sms/teacher/add_assign_teacher.html', context)
+
+	if request.method == "POST":
+		form = SubjectAllocationForm(request.POST)
+		if form.is_valid():
+			session = form.cleaned_data.get('session')
+			term = form.cleaned_data.get('term')
+			teacher = form.cleaned_data.get('teacher')
+			subjects = form.cleaned_data.get('subjects')
+
+			session = Session.objects.get(pk=session)
+			teacher = User.objects.get(is_teacher=True, pk=teacher)
+
+			if SubjectAssign.objects.filter(session=session, term=term, teacher=teacher).exists():
+				allocation_id = str(SubjectAssign.objects.get(session=session, term=term, teacher=teacher).pk)
+				messages.info(request, \
+					'This teacher has already been allocated a subject in '\
+					+ str(session) + ' in '+ term +' term \
+					<a href="/subject-allocation/update/'\
+					+allocation_id+'/">click here to edit the subjects list</a>')
+				return HttpResponseRedirect(reverse_lazy('add_assign_teacher'))
+			else:
+				record = SubjectAssign(session=session, term=term, teacher=teacher)
+				record.save()
+				ids = ()
+				for i in range(0, len(subjects)):
+					ids += (subjects[i].name,)
+					record.subjects.add(subjects[i])
+				messages.success(request, 'Subject was successfully allocated ')
+				return HttpResponseRedirect(reverse_lazy('assign_teacher_list'))
+		else:
+			form = SubjectAllocationForm(request.POST)
+			message = form
+			context =  {
+				"form": form, 
+				"message": message,
+				"sessions": sessions,
+				"subjects": subjects,
+				"teachers": teachers,
+			}
+	else:
+		context = {
+		"sessions": sessions,
+		"subjects": subjects,
+		"teachers": teachers,
+		}
+	return render(request, 'sms/teacher/allocate_subject.html', context)
 
 @login_required
-def assign_section_view(request):
-	assigned_sections = SectionAssign.objects.all()
-	subjects = Subject.objects.all()
-	context = {
-	"subjects": subjects,
-	"assigned_sections": assigned_sections,
-	}
-	return render(request, 'sms/section/assign_section.html', context)
+def section_allocation(request):
+	if request.method == "POST":
+		print(request.POST)
+	else:
+		sections = SectionAssign.objects.all()
+		subjects = Subject.objects.all()
+		context = {
+		"subjects": subjects,
+		"sections": sections,
+}
+	return render(request, 'sms/section/section_allocation.html', context)
 
 
 @login_required
-def add_assign_section(request):
+def add_section_allocation(request):
 	sections = Section.objects.all()
 	teachers = User.objects.filter(is_teacher=True)
 	context = {
 		"teachers": teachers,
 		"sections": sections,
 	}
-	return render(request, 'sms/section/add_assign_section.html', context)
+	if request.method == "POST":
+		form = SectionAllocationForm(request.POST, request.FILES)
+		if form.is_valid():
+			section = form.cleaned_data.get('section')
+			section_head = form.cleaned_data.get('section_head')
+			placeholder = form.cleaned_data.get('placeholder')
+			signature = form.cleaned_data.get('signature')
+			 
+			if SectionAssign.objects.filter(section=section).exists():
+				check = SectionAssign.objects.get(section=section)
+				section_name = check.section_head.get_full_name()
+				section_head = check.section.name
+				messages.info(request, "You've already allocated "+str(section_head)+" Section to "+ str(section_name) + " <a href='/section-allocation/update/"+str(check.pk)+"'/>Click here to edit this information</a>")
+				return redirect('add_assign_section')
+			else:
+				section = Section.objects.get(pk=section)
+				section_head = User.objects.get(pk=section_head)
+				SectionAssign.objects.create(
+					section=section, 
+					section_head=section_head, 
+					placeholder=placeholder, 
+					signature=signature)
+				messages.success(request, "Successfully allocated "+str(section)+" Section to "+ str(section_head.get_full_name()))
+				return redirect('section_allocation')
+		else:
+			form = SectionAllocationForm(request.POST, request.FILES)
+			message = form
+			context =  {
+				"form": form, 
+				"message": message,
+				"teachers": teachers,
+				"sections": sections,
+			}
+	else:
+		return render(request, 'sms/section/new_section_allocation.html', context)
+	return render(request, 'sms/section/new_section_allocation.html', context)
 
 
 @login_required
@@ -419,9 +503,27 @@ def delete_section(request, id):
 	messages.success(request, "Successfully deleted "+ str(selected_section))
 	return HttpResponseRedirect(reverse_lazy('sections_list'))
 
-def with_held_subject(request, id):
-	pass
+def delete_all_allocated_subjects(request, id):
+	subjects = SubjectAssign.objects.get(pk=id)
+	teacher = subjects.teacher
+	subjects.delete()
+	messages.success(request, "Successfully deleted all subjects allocated to "+ str(teacher))
+	return HttpResponseRedirect(reverse_lazy('assign_teacher_list'))
 
+
+def delete_section_allocation(request, id):
+	allocated_section = SectionAssign.objects.get(pk=id)
+	allocated_section.delete()
+	messages.success(request, "You've Successfully deallocated "+str(allocated_section.section)+" Section from "+ str(allocated_section.section_head.get_full_name()))
+	return HttpResponseRedirect(reverse_lazy('section_allocation'))
+
+def delete_attendance(request, id):
+	attendance = Attendance.objects.get(pk=id)
+	student = attendance.student
+	date = attendance.date
+	attendance.delete()
+	messages.success(request, "You've successfully deleted "+ str(student) +" from attendance of " + str(date))
+	return HttpResponseRedirect(reverse_lazy('attendance_list'))
 
 
 @login_required
@@ -502,36 +604,41 @@ def subjects_view(request):
 @login_required
 def attendance_view(request):
 	current_session = Session.objects.all(current_session=True)
-	in_class = Class.objects.filter(id=id)
-	context = {"in_class": classes}
+	select_class = Class.objects.filter(id=id)
+	context = {"in_class": select_class}
 	return render(request, 'sms/student/attendance.html', context)
 
 def attendance_list(request):
-	current_session = Session.objects.get(current_session=True)
+	session = Session.objects.get(current_session=True)
+	all_class = Class.objects.all()
 	if request.method == "POST":
-		in_class = Class.objects.all()
-		data = request.POST.copy()
-		data.pop('csrfmiddlewaretoken')
-		data.pop('submit')
-		date = data['date']
-		term = data['term']
-		class_id = data['class']
+		date = request.POST['date']
 		date = datetime.strptime(date, '%d %B, %Y')
-		students = Student.objects.filter(in_class__pk=class_id)
-		ids = ()
-		for i in students:
-			ids = (i.user.pk,)
-		q = Attendance.objects.filter(date=date, student__user__pk__in=ids, term=term, session=current_session)
-		context = {
-			"students": students,
-			"classes": in_class,
-			"attendance": q,
-		}
+		form = AttendanceListForm(request.POST)
+		if form.is_valid():
+			term = form.cleaned_data.get('selected_term')
+			selected_class = form.cleaned_data.get('selected_class')
+			students = Student.objects.filter(in_class=selected_class)
+			ids = ()
+			for i in students:
+				ids += (i.user.pk,)
+			q = Attendance.objects.filter(date=date, student__user__pk__in=ids, term=term, session=session)
+			print("query: " + str(q))
+			context = {
+				"students": students,
+				"classes": all_class,
+				"attendance": q,
+				"selected_class": selected_class,
+				"selected_term": term,
+				"selected_date": date,
+			}
+		else:
+			context =  {
+				"form": form,
+				"classes": all_class,
+			}
 	else:
-		in_class = Class.objects.all()
-		context = {
-			"classes": in_class,
-		}
+		context = {"classes": all_class}
 	return render(request, 'sms/student/attendance_list.html', context)
 
 @login_required
