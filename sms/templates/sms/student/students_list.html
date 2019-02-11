@@ -2,7 +2,6 @@
 {% load static %}
 {% block title %} Students {% endblock title %}
 {% block main %}
-<main>
    <div class="container-fluid">
       <!-- Heading -->
       <div class="card mb-4 wow fadeIn">
@@ -36,7 +35,9 @@
          <div class="container">
             <div class="row">
                <div class="col-md-5">
+                  {% if request.user.is_superuser %}
                   <a href="{% url 'add_student' %}" class="btn btn-info">Add Student</a>
+                  {% endif %}
                </div>
                <div class="col-md-3"></div>
                <div class="col-md-4">
@@ -62,24 +63,27 @@
          <div class="card-body">
             <div id="table" class="table-editable">
                <table class="table table-bordered table-responsive-md table-striped text-center">
-                  <tr>
+                  <tr class="mdb-color darken-3 white-text">
                      <th class="text-center">Fullname</th>
                      <th class="text-center">Picture</th>
                      <th class="text-center">Roll</th>
                      <th class="text-center">Email</th>
+                     {% if request.user.is_superuser %}
                      <th class="text-center">Status</th>
                      <th class="text-center">Action</th>
+                     {% endif %}
                   </tr>
                   {% for student in students %}
                   <tr>
                      <td class="pt-3-half text-left" name="{{ student.user.first_name }}" contenteditable="false">
-                        {{ student.user.get_full_name }}
+                        <a href="{% url 'profile' user=student.user %}">{{ student.user.get_full_name }}</a>
                      </td>
                      <td class="pt-3-half" name="{{ student.user.first_name }}" contenteditable="false">
                         <img width="50px" src="{{ student.user.get_picture }}">
                      </td>
                      <td class="pt-3-half" contenteditable="false">{{ student.roll_number }}</td>
                      <td class="pt-3-half" contenteditable="false">{{ student.user.email }}</td>
+                      {% if request.user.is_superuser %}
                      <td class="pt-3-half">
                      <div class="switch">
                         <label>
@@ -90,10 +94,11 @@
                       </div>
                     </td>
                      <td class="pt-3-half" contenteditable="false">
-                        <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
+                        <a href="{% url 'profile' user=student.user %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
                         <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
                         <a href="{% url 'delete_user' id=student.user.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
                      </td>
+                     {% endif %}
                   </tr>
                   {% empty %}
                   <tr>
@@ -106,5 +111,4 @@
       </div>
    </div>
    </div>
-</main>
 {% endblock main %}

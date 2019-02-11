@@ -4,8 +4,6 @@
 {% block title %} Add section {% endblock title %}
 
 {% block main %}
-<!--Main layout-->
-<main>
   <div style="margin-bottom: 259px;" class="container-fluid">
        <!-- Heading -->
    <div class="card mb-4 wow fadeIn">
@@ -54,12 +52,12 @@
         <div class="row">
           <div class="col-md-6">
             <form method="post">{% csrf_token %}
-              <select name="session" class="mdb-select md-form">
-                <option value="" disabled selected>Select Session</option>
-                  {% for session in sessions %}
-                <option value="{{ session.id }}">{{ session.name|capfirst }}</option>
+              <select name="clss" class="mdb-select md-form">
+                <option value="" disabled selected>Select class</option>
+                  {% for class in classes %}
+                <option value="{{ class.id }}">{{ class.name|capfirst }}</option>
                   {% empty %}
-                <option value="" disabled>No session available</option>
+                <option value="" disabled>No class available</option>
                   {% endfor %}
               </select>
               <select name="term" class="mdb-select md-form">
@@ -91,5 +89,4 @@
         </div>
       </div>
   </div>
-</main>
 {% endblock %}

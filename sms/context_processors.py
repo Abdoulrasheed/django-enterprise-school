@@ -1,7 +1,9 @@
 import datetime
 from django.conf import settings
-from sms.models import Setting, Session
+from sms.models import Setting, Session, Notification
 from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from django.core.files.storage import FileSystemStorage
 
 y = datetime.datetime.today()
 session = str(y.year) + " / " + str(y.year + 1)
@@ -24,24 +26,23 @@ def school_setting_processor(request):
 	else:
 		user_type = "Administrator"
 
+	notifications = {}
+	if not request.user.is_anonymous:
+		notifications = Notification.objects.filter(user=request.user)
+
 	current_session = Session.objects.get(current_session=True)
 	all_sessions = Session.objects.all()
-	default_logo = settings.STATIC_URL + 'img/logo.png'
+	default_logo = 'logo.png'
 	default_name = "Cosmotech"
-
-	if Setting.objects.all():
-		logo = Setting.objects.all()[0]
-		logo = logo.school_logo
-		school_logo = logo
+	if Setting.objects.filter(id=1).exists():
+		logo = Setting.objects.get(id=1)
+		school_logo = logo.school_logo.url
+		school_name = logo.school_name
 	else:
-		school_logo = default_logo
-
-	if Setting.objects.all():
-		name = Setting.objects.all()[0]
-		name = name.school_name
-		school_name = name
-	else:
-		school_name = default_name
+		Setting.objects.create(id=1, school_name=default_name, school_logo=default_logo)
+		logo = Setting.objects.get(id=1)
+		school_logo = logo.school_logo.url
+		school_name = logo.school_name
 
 	return {
 			"school_name": school_name, 
@@ -49,6 +50,7 @@ def school_setting_processor(request):
 			"current_session": current_session, 
 			"all_sessions": all_sessions,
 			"user_type": user_type,
+			"notifications": notifications,
 			}
 
 	

@@ -1,0 +1,43 @@
+<form method="post" action="{% url 'score_entry' %}">{% csrf_token %}
+   <input type="hidden" name="subject" id="sel_subject" value="">
+   <input type="hidden" name="term" id="sel_term" value="">
+   <table class="table table-bordered table-responsive-md table-striped text-center">
+      <tr>
+         {% for student, gr in gr %}
+         {{ student }}, {{gr.1.ca1}}
+         {% endfor %}
+         <th class="text-center">Student</th>
+         <th class="text-center">Picture</th>
+         <th class="text-center">Roll</th>
+         <th class="text-center">CA 1</th>
+         <th class="text-center">CA 2</th>
+         <th class="text-center">Exam</th>
+               </tr>
+               {% for each in students %}
+                  <tr>
+                     <td class="pt-3-half text-left" contenteditable="false">
+                        <input type="hidden" name="student_id" value="{{ each.id }}">
+                        {{ each.user.get_full_name }}
+                     </td>
+                     <td class="pt-3-half" contenteditable="false">
+                        <img src="{{ each.user.get_picture }}" class="rounded-circle" width="50">
+                     </td>
+                     <td class="pt-3-half" contenteditable="false">
+                        {{ each.roll_number }}
+                     </td>
+                        
+                     <td class="pt-3-half" contenteditable="false">
+                       <input value="{{ s.ca1 }}" style="border-style: inset; width: 50px;" max="30" type="number" name="ca1" class="form from-group">
+                     </td>
+                       
+                     <td class="pt-3-half" contenteditable="false">
+                       <input style="border-style: inset; width: 50px;" max="30" type="number" name="ca2" class="form from-group">
+                     </td>
+                     <td class="pt-3-half" contenteditable="false">
+                       <input style="border-style: inset; width: 50px;" max="30" type="number" name="exam" class="form from-group">
+                     </td>
+                  </tr>
+                  {% endfor %}
+         </table>
+      <input type="submit" name="submit" value="Save" class="btn btn-primary">
+</form>

@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Academic year {% endblock title %}
+{% block main %}
+<div style="margin-bottom: 180px" class="container-fluid">
+      <section>
+              <div class="card mb-4 wow fadeIn">
+         <!--Card content-->
+         <div class="card-body d-sm-flex justify-content-between">
+            <h6 class="mb-2 mb-sm-0 pt-1">
+               <a href="/">Home Page</a>
+               <span>/</span>
+               <span>Academic year setting</span>
+            </h6>
+         </div>
+      </div>
+                 <div class="row">
+            <div class="col-md-5">
+              <a href="" class="btn btn-info" data-toggle="modal" data-target="#modalSubscription">Add a New Session</a>
+            </div>
+          </div>
+             {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% if form %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+        <div class="my-5"></div>
+
+        <div class="card">
+          <div class="card-body">
+
+            <!--Table-->
+            <table class="table">
+
+              <!--Table head-->
+              <thead class="mdb-color darken-3">
+                <tr class="text-white">
+                  <th>#</th>
+                  <th>Session</th>
+                  <th>Note</th>
+                  <th>Active</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for session in sessions %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td>{{ session.name|title }}</td>
+                  <td>{{ session.note }}</td>
+                  <td>
+                     <div class="switch">
+                        <label>
+                          No
+                          <input disabled type="checkbox" {% if session.current_session %} checked {% endif %}>
+                          <span class="lever"></span> Yes
+                        </label>
+                      </div>
+                  </td>
+                  <td>
+                    
+                        <a data-toggle="tooltip" title="Edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+    <!--Modal: setup new session Form-->
+    <form method="post" action="{% url 'add_session' %}">{% csrf_token %}
+        <div class="modal fade" id="modalSubscription" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog cascading-modal" role="document">
+            <!--Content-->
+            <div class="modal-content">
+
+              <!--Header-->
+              <div class="modal-header mdb-color darken-3 white-text">
+                <h4 class="">Add an Academic Year (Session)</h4>
+                <button type="button" class="close waves-effect waves-light" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mb-0">
+
+                <div class="md-form form-sm">
+                  <input name="name" type="text" id="form28" class="form-control form-control-sm">
+                  <label for="form28">Session <small>e.g 2019 / 2020</small></label>
+                </div>     
+
+                <div class="md-form form-sm">
+                  <input name="note" type="text" id="form28" class="form-control form-control-sm">
+                  <label for="form28">Note<small> an optional description</small></label>
+                </div>
+
+                <div class="text-center mt-1-half">
+                  <input type="submit" name="submit" class="btn btn-info mb-1 fas fa-check ml-1">
+                </div>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+    </form>
+        <!--Modal: Subscription From-->
+{% endblock main %}

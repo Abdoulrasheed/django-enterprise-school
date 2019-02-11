@@ -1,0 +1,4 @@
+<option value="" disabled selected>Select a subject</option>
+{% for subject in subjects %}
+<option value="{{ subject.pk }}">{{ subject.name }}</option>
+{% endfor %}

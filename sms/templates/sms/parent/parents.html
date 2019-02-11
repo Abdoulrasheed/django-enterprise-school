@@ -4,9 +4,6 @@
 {% block title %} parents {% endblock title %}
 
 {% block main %}
-
-<!--Main layout-->
-  <main>
     <div class="container-fluid">
              <!-- Heading -->
    <div class="card mb-4 wow fadeIn">
@@ -31,12 +28,15 @@
       <!--Section: Basic examples-->
       <section>
         <!--Top Table UI-->
+         {% if request.user.is_superuser %}
         <div class="card p-2 mb-5">
 
           <!--Grid row-->
+         
           <div class="row">
 
             <!--Grid column-->
+             
             <div class="col-lg-3 col-md-12">
             	<a class="btn btn-primary" href="{% url 'add_parent' %}">
             		Add parent
@@ -62,9 +62,11 @@
             </div>
             <!--Grid column-->
           </div>
+         
           <!--Grid row-->
 
         </div>
+         {% endif  %}
         <!--Top Table UI-->
 
         <div class="card card-cascade narrower z-depth-1">
@@ -88,8 +90,10 @@
                     <th class="th-lg"><a>Full Name <i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Photo<i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Email<i class="fas fa-sort ml-1"></i></a></th>
+                    {% if request.user.is_superuser %}
                     <th class="th-lg"><a href="">Status<i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Action<i class="fas fa-sort ml-1"></i></a></th>
+                    {% endif %}
                   </tr>
                 </thead>
                 <!--Table head-->
@@ -98,10 +102,11 @@
                 <tbody>
                 	{% for parent in parents %}
                   <tr>
-                    <td>{{ parent.get_full_name }}</td>
+                    <td><a href="{% url 'profile' user=parent %}">{{ parent.get_full_name }}</td>
                     <td><img src="{{ parent.get_picture }}" width="50"></td>
                     <td>{{ parent.email }}</td>
                     <td>
+                      {% if request.user.is_superuser %}
                       <div class="switch">
                         <label>
                           Off
@@ -111,10 +116,11 @@
                       </div>
                     </td>
                     <td>
-                      <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
+                      <a href="{% url 'profile' user=parent %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
                       <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
                       <a href="{% url 'delete_user' id=parent.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
                     </td>
+                    {% endif %}
                   </tr>
                   {% empty %}
                   <span>No data available</span>
@@ -158,8 +164,6 @@
       <!--Section: Basic examples-->
 
     </div>
-  </main>
-  <!--Main layout-->
 
   {% endblock main %}
   {% block script %}

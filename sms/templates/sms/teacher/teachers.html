@@ -5,8 +5,6 @@
 
 {% block main %}
 
-<!--Main layout-->
-  <main>
     <div class="container-fluid">
                    <!-- Heading -->
    <div class="card mb-4 wow fadeIn">
@@ -30,6 +28,7 @@
       {% endif %}
       <!--Section: Basic examples-->
       <section>
+        {% if request.user.is_superuser %}
         <!--Top Table UI-->
         <div class="card p-2 mb-5">
 
@@ -64,12 +63,13 @@
           <!--Grid row-->
 
         </div>
+        {% endif %}
         <!--Top Table UI-->
 
         <div class="card card-cascade narrower z-depth-1">
 
           <!--Card image-->
-          <div class="view view-cascade gradient-card-header blue-gradient narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center">
+          <div class="view view-cascade gradient-card-header mdb-color darken-3 narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center">
 
             <a href="" class="white-text mx-3">Teachers</a>
 
@@ -88,8 +88,10 @@
                     <th class="th-lg"><a>Full Name <i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Photo<i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Email<i class="fas fa-sort ml-1"></i></a></th>
+                    {% if request.user.is_superuser %}
                     <th class="th-lg"><a href="">Status<i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Action<i class="fas fa-sort ml-1"></i></a></th>
+                    {% endif %}
                   </tr>
                 </thead>
                 <!--Table head-->
@@ -98,17 +100,19 @@
                 <tbody>
                 	{% for teacher in teachers %}
                   <tr>
-                    <td>{{ teacher.get_full_name }}</td>
-                    <td>{{ teacher.get_picture }}</td>
+                    <td><a href="{% url 'profile' user=teacher %}">{{ teacher.get_full_name }}</a></td>
+                    <td><img src="{{ teacher.get_picture }}" class="rounded-circle" width="50"></td>
                     <td>{{ teacher.email }}</td>
                     <td>
                       <span class="switch"><label><input type="checkbox" checked>
                       <span class="lever"></span>
                       </label></span></td>
                     <td>
-                      <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
+                      {% if request.user.is_superuser %}
+                      <a href="{% url 'profile' user=teacher %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
                       <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
-                      <a title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                      <a href="{% url 'delete_user' id=teacher.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                      {% endif %}
                     </td>
                   </tr>
                   {% empty %}
@@ -153,8 +157,6 @@
       <!--Section: Basic examples-->
 
     </div>
-  </main>
-  <!--Main layout-->
 
   {% endblock main %}
   {% block script %}

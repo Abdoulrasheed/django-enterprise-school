@@ -64,6 +64,8 @@
           <!--Grid column-->
 
           <!--Grid column-->
+                  <!--Grid column-->
+                  {% if request.user.is_student %}
           <div class="col-xl-3 col-md-6 mb-4">
 
             <!--Card-->
@@ -72,16 +74,50 @@
               <!--Card Data-->
               <div class="row mt-3">
                 <div class="col-md-5 col-5 text-left pl-4">
-                  <a type="button" class="btn-floating btn-lg light-blue lighten-1 ml-4 waves-effect waves-light"><i class="fas fa-user" aria-hidden="true"></i></a>
+                  <a type="button" class="btn-floating btn-lg warning-color ml-4 waves-effect waves-light"><i class="fas fa-user-graduate" aria-hidden="true"></i></a>
                 </div>
 
                 <div class="col-md-7 col-7 text-right pr-5">
-                  <h5 class="ml-4 mt-4 mb-2 font-weight-bold">{{ no_parents }} </h5>
-                  <p class="font-small grey-text">Parent{{ no_parents|pluralize }}</p>
+                  {% for i in p %}
+                  <small class="ml-4 mt-4 mb-2 font-weight-bold">{{  i.term }} term: {{ i.payment_status }}</small>
+                  {% endfor %}
+                  <p class="font-small grey-text">Fee summary ({{ current_session }})</p>
                 </div>
               </div>
+              <!--/.Card Data-->
+
             </div>
+            <!--/.Card-->
+
           </div>
+          <!--Grid column-->
+          {% else %}
+
+          <!--Grid column-->
+          <div class="col-xl-3 col-md-6 mb-4">
+
+            <!--Card-->
+            <div class="card">
+
+              <!--Card Data-->
+              <div class="row mt-3">
+                <div class="col-md-5 col-5 text-left pl-4">
+                  <a type="button" class="btn-floating btn-lg warning-color ml-4 waves-effect waves-light"><i class="fas fa-user-graduate" aria-hidden="true"></i></a>
+                </div>
+
+                <div class="col-md-7 col-7 text-right pr-5">
+                  <h5 class="ml-4 mt-4 mb-2 font-weight-bold">{{ no_parents }}</h5>
+                  <p class="font-small grey-text">Parents{{ no_parents|pluralize }}</p>
+                </div>
+              </div>
+              <!--/.Card Data-->
+
+            </div>
+            <!--/.Card-->
+
+          </div>
+          <!--Grid
+          {% endif %}
           <!--Grid column-->
 
           <!--Grid column-->
@@ -137,28 +173,80 @@
                   <h4 class="font-weight-bold mb-4">{{ request.user|capfirst }}</h4>
                   <small>({{ user_type }})</small>
                   <hr>
-                  <div style="text-align: left; margin-left: 65px;">
+                  <small style="text-align: left; margin-left: 65px;">
         	          {% if request.user.email %}<p>Email: {{ request.user.email }}</p>{% endif %}
         	          {% if request.user.phone %}<p>Phone: {{ request.user.phone }}</p>{% endif %}
         	          {% if request.user.address %}<p>Address: {{ request.user.address }}</p>{% endif %}
-              	  </div>
+              	  </small>
                 </div>
               </div>
 
             </div>
 
           </div>
-
+           {% if request.user.is_superuser %}
           <div class="col-lg-8 col-md-12">
-
             <div class="card mb-4">
               <div class="card-body">
              	<canvas id="income_and_expense_graph"></canvas>
               </div>
-
             </div>
-
           </div>
+          {% elif request.user.is_student %}
+           <div class="col-lg-8 col-md-12">
+          <div class="list-group">
+          <button type="button" class="list-group-item list-group-item-action active">
+            Class Subjects ({{ student.in_class }})
+          </button>
+          {% for subject in subjects %}
+          <button type="button" class="list-group-item list-group-item-action">
+            {{ subject.name }}
+          </button>
+          {% empty %}
+           <button type="button" class="list-group-item list-group-item-action">
+            No subject added in your class
+          </button>
+          {% endfor %}
+        </div>
+        </div>
+        {% elif request.user.is_teacher %}
+        <div class="col-lg-8 col-md-12">
+          <div class="list-group">
+          <button type="button" class="list-group-item list-group-item-action active">
+            Subjects allocated to you ({{ student.in_class }})
+          </button>
+          {% for subject in subjects %}
+          ({{ subject.clss }}):
+          {% for each in subject.subjects.all %}
+          <button type="button" class="list-group-item list-group-item-action">
+            {{ each }}
+          </button>
+          {% endfor %}
+          {% empty %}
+           <button type="button" class="list-group-item list-group-item-action">
+            No subject is allocated to you !
+          </button>
+          {% endfor %}
+        </div>
+        </div>
+        {% elif request.user.is_parent %}
+        <div class="col-lg-8 col-md-12">
+          <div class="list-group">
+          <button type="button" class="list-group-item list-group-item-action active">
+            Ward(s) Information
+          </button>
+          {% for ward in wards %}
+          <button type="button" class="list-group-item list-group-item-action">
+            {{ ward.student }} ({{ ward.student.in_class }})
+          </button>
+          {% empty %}
+           <button type="button" class="list-group-item list-group-item-action">
+            Wards not available
+          </button>
+          {% endfor %}
+        </div>
+        </div>
+            {% endif %}
         </div>
 
       </section>

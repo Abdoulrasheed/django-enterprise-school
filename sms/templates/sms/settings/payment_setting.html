@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} School Fee {% endblock title %}
+{% block main %}
+<div style="margin-bottom: 180px" class="container-fluid">
+      <section>
+              <div class="card mb-4 wow fadeIn">
+         <!--Card content-->
+         <div class="card-body d-sm-flex justify-content-between">
+            <h6 class="mb-2 mb-sm-0 pt-1">
+               <a href="/">Home Page</a>
+               <span>/</span>
+               <span>Students</span>
+            </h6>
+         </div>
+      </div>
+                 <div class="row">
+            <div class="col-md-5">
+              <a href="" class="btn btn-info" data-toggle="modal" data-target="#modalSubscription">Setup New Payment</a>
+            </div></div>
+        <div class="my-5"></div>
+
+        <div class="card">
+          <div class="card-body">
+
+            <!--Table-->
+            <table class="table">
+
+              <!--Table head-->
+              <thead class="mdb-color darken-3">
+                <tr class="text-white">
+                  <th>#</th>
+                  <th>Class</th>
+                  <th>Amount to payment</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for class in classes %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td>{{ class.name|upper }}</td>
+                  <td>{{ class.amount_to_pay }}</td>
+                  <td>
+                    
+                        <a data-toggle="tooltip" title="Click on Setup new payment and select the class to update it" class="teal-text"><i class="fa fa-pen"></i></a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+    <!--Modal: setup new payment Form-->
+    <form method="post" action="{% url 'set_payment' %}">{% csrf_token %}
+        <div class="modal fade" id="modalSubscription" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog cascading-modal" role="document">
+            <!--Content-->
+            <div class="modal-content">
+
+              <!--Header-->
+              <div class="modal-header mdb-color darken-3 white-text">
+                <h4 class=""> Payment Setup</h4>
+                <button type="button" class="close waves-effect waves-light" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mb-0">
+
+                <select tabindex="6" name="class" class="mdb-select md-form">
+                  <option value="" disabled selected>Select Class</option>
+                  {% for class in classes %}
+                  <option value="{{ class.id }}">{{ class.name }}</option>
+                  {% empty %}
+                  <option value="" disabled selected>No class is available</option>
+                  {% endfor %}
+                </select>
+
+                <div class="md-form form-sm">
+                  <input name="amount_to_pay" type="number" id="form28" class="form-control form-control-sm">
+                  <label for="form28">Enter Amount <small>to be paid by the students the class selected class above</small></label>
+                </div>
+
+                <div class="text-center mt-1-half">
+                  <input type="submit" name="submit" class="btn btn-info mb-1 fas fa-check ml-1">
+                </div>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+    </form>
+        <!--Modal: Subscription From-->
+{% endblock main %}

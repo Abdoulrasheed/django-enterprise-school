@@ -1,0 +1,17 @@
+    {% for payment in payments %}
+    <tr>
+      <td>{{ payment.student }}</td>
+      <td><img src="{{ payment.student.user.get_picture }}" class="rounded-circle" width="55"></td>
+      <td>{{ payment.paid_amount }}</td>
+      <td>{{ payment.due_amount }}</td>
+      <td>{{ payment.payment_method }}</td>
+      <td>{{ payment.payment_status }}</td>
+      <td>{{ payment.term }}</td>
+      <td>{{ payment.date_paid }}</td>
+      <td>{{ payment.teller_number }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+      <span>No data is available !</span>
+    </tr>
+    {% endfor %}

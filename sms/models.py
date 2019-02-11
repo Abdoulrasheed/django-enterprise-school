@@ -71,6 +71,7 @@ class Class(models.Model):
 	name = models.CharField(max_length=100)
 	section = models.ForeignKey(Section, on_delete=models.CASCADE)
 	subjects = models.ManyToManyField(Subject)
+	amount_to_pay = models.FloatField(blank=True, null=True)
 
 
 	def __str__(self):
@@ -91,7 +92,7 @@ class Student(models.Model):
 
 class Parent(models.Model):
 	parent = models.ForeignKey(User, on_delete=models.CASCADE)
-	student = models.ForeignKey(User, on_delete=models.CASCADE, related_name="childrens")
+	student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="childrens")
 
 	def __str__(self):
 		return self.parent.get_full_name()
@@ -100,6 +101,7 @@ class Parent(models.Model):
 class SubjectAssign(models.Model):
 	session = models.ForeignKey(Session, on_delete=models.CASCADE)
 	term = models.CharField(choices=TERM, max_length=7)
+	clss = models.ForeignKey(Class, on_delete=models.CASCADE)
 	teacher = models.ForeignKey(User, on_delete=models.CASCADE)
 	subjects = models.ManyToManyField(Subject, blank=True)
 
@@ -113,14 +115,30 @@ class SectionAssign(models.Model):
 class Grade(models.Model):
 	session = models.ForeignKey(Session, on_delete=models.CASCADE)
 	term = models.CharField(choices=TERM, max_length=7)
-	student = models.ForeignKey(User, on_delete=models.CASCADE)
+	student = models.ForeignKey(Student, on_delete=models.CASCADE)
 	subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-	fca = models.FloatField()
-	sca = models.FloatField()
-	exam = models.FloatField()
-	total = models.FloatField()
-	grade = models.CharField(choices=GRADE, max_length=1)
-	remark = models.CharField(max_length=50)
+	fca = models.CharField(max_length=10)
+	sca = models.CharField(max_length=10)
+	exam = models.CharField(max_length=10)
+	total = models.CharField(max_length=3, blank=True, null=True)
+	grade = models.CharField(choices=GRADE, max_length=1, blank=True, null=True)
+	remark = models.CharField(max_length=50, blank=True, null=True)
+
+	def compute_position(self, term):
+		cs = Session.objects.get(current_session=True)
+		total = 0
+		all_score = Grade.objects.filter(student__id=self.student.id)
+		for i in all_score:
+			if i.total == None:
+				total += 0
+			else:
+				total += float(i.total)
+		rnk, created = Ranking.objects.update_or_create(session=cs, term=term, student=self.student, cumulative=total)
+		if not created:
+			rnk.cumulative=total
+			rnk.save()
+		a = list(Ranking.objects.filter(term=term, student__in_class=self.student.in_class))
+		print(a)
 
 
 class Attendance(models.Model):
@@ -138,7 +156,7 @@ class Attendance(models.Model):
 
 class FeeType(models.Model):
 	name = models.CharField(max_length=100)
-	section = models.ForeignKey(Section, on_delete=models.CASCADE)
+	for_class = models.ManyToManyField(Class)
 	amount = models.FloatField()
 	session = models.ForeignKey(Session, on_delete=models.CASCADE)
 	term = models.CharField(choices=TERM, max_length=7)
@@ -147,34 +165,72 @@ class FeeType(models.Model):
 		return self.name
 
 class Payment(models.Model):
-	payment = models.ForeignKey(FeeType, on_delete=models.CASCADE)
+	student = models.ForeignKey(Student, on_delete=models.CASCADE)
+	paid_amount = models.FloatField()
 	due_amount = models.FloatField()
-	payment_status = models.CharField(choices=PAYMENT_STATUS, max_length=50)
 	date_paid = models.DateTimeField(auto_now_add=True)
 	payment_method = models.CharField(choices=PAYMENT_METHOD, max_length=50)
-	session = models.ForeignKey(Session, on_delete=models.CASCADE)
+	payment_status = models.CharField(choices=PAYMENT_STATUS, max_length=50)
 	term = models.CharField(choices=TERM, max_length=7)
+	session = models.ForeignKey(Session, on_delete=models.CASCADE)
+	teller_number = models.CharField(max_length=100, blank=True, null=True)
 
 	def __str__(self):
-		return self.payment
+		return self.student.roll_number
 
 class Expense(models.Model):
 	item = models.CharField(max_length=100)
 	description = models.CharField(max_length=500, blank=True, null=True)
 	session = models.ForeignKey(Session, on_delete=models.CASCADE)
 	term = models.CharField(choices=TERM, max_length=7)
+	amount = models.FloatField()
 
 	def __str__(self):
 		return self.item
 
 class Setting(models.Model):
 	school_name = models.CharField(max_length=100)
-	school_logo = models.ImageField(upload_to="school/")
-	school_address = models.CharField(max_length=150)
-	school_slogan = models.CharField(max_length=200)
-	ft_begins = models.DateField()
-	ft_ends = models.DateField()
-	st_begins = models.DateField()
-	st_ends = models.DateField()
-	tt_begins = models.DateField()
-	tt_ends = models.DateField()
+	school_logo = models.ImageField(upload_to="pictures/", blank=True, null=True)
+	school_address = models.CharField(max_length=150, blank=True, null=True)
+	school_slogan = models.CharField(max_length=200, blank=True, null=True)
+	ft_begins = models.DateField(blank=True, null=True)
+	ft_ends = models.DateField(blank=True, null=True)
+	st_begins = models.DateField(blank=True, null=True)
+	st_ends = models.DateField(blank=True, null=True)
+	tt_begins = models.DateField(blank=True, null=True)
+	tt_ends = models.DateField(blank=True, null=True)
+
+	def get_logo(self):
+		no_logo = settings.STATIC_URL + 'img/logo.png'
+		try:
+			return self.school_logo.url
+		except:
+			return no_logo
+
+class Notification(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	title = models.CharField(max_length=100)
+	body = models.CharField(max_length=300)
+	unread = models.BooleanField(default=False)
+	time = models.DateTimeField(auto_now_add=True)
+	message_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPE)
+
+class GradeScale(models.Model):
+	grade = models.CharField(choices=GRADE, max_length=100, unique=True)
+	mark_from = models.IntegerField(unique=True)
+	mark_upto = models.IntegerField(unique=True)
+	remark = models.CharField(max_length=20, unique=True)
+
+
+class Sms(models.Model):
+	to_user = models.CharField(max_length=10)
+	title = models.CharField(max_length=100)
+	date_send = models.DateTimeField(auto_now_add=True)
+	body = models.CharField(max_length=250)
+
+class Ranking(models.Model):
+	student = models.ForeignKey(Student, on_delete=models.CASCADE)
+	term = models.CharField(max_length=12, choices=TERM)
+	session = models.ForeignKey(Session, on_delete=models.CASCADE)
+	cumulative = models.FloatField()
+	rank = models.CharField(max_length=5, blank=True, null=True)

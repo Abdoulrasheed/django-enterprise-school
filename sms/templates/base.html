@@ -34,7 +34,7 @@
         <li class="logo-sn waves-effect">
           <div class="text-center">
             <a href="{% url 'home_page' %}" class="pl-0">
-              <img width="90px" src="{{ school_logo }}" class=""></a>
+              <img width="90px" src="{{ school_logo }}" class="rounded-circle"></a>
           </div>
         </li>
         <!--/. Logo -->
@@ -53,12 +53,19 @@
           <ul class="collapsible collapsible-accordion">
             <li><a href="{% url 'home_page' %}" class="collapsible-header waves-effect"><i class=" far fas fa-tachometer-alt"></i>
                 Dashboard</a></li>
+                {% if request.user.is_superuser or request.user.is_teacher %}
             <li><a href="{% url 'students_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-user-graduate"></i>
                 Student</a></li>
+                {% endif %}
+                 {% if request.user.is_superuser or request.user.is_teacher %}
             <li><a href="{% url 'parents_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-user"></i>
                 Parent</a></li>
+                {% endif %}
+                {% if request.user.is_superuser or request.user.is_teacher %}
               <li><a href="{% url 'teachers_list' %}" class="collapsible-header waves-effect"><i class=" far fa-user"></i>
                 Teacher</a></li>
+                {% endif %}
+                {% if request.user.is_superuser %}
               <li><a class="collapsible-header waves-effect arrow-r"><i class="fa fa-school"></i><span style="margin-left: 11px !important">Academic</span><i class="fas fa-angle-down rotate-icon"></i></a>
               <div class="collapsible-body">
                 <ul>
@@ -80,28 +87,48 @@
                 </ul>
               </div>
             </li>
-                        <li><a href="{% url 'attendance_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-user"></i>
+            {% endif %}
+            {% if request.user.is_superuser  or request.user.is_teacher %}
+            <li><a href="{% url 'attendance_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-user"></i>
                 Attendance</a></li>
+                {% endif %}
+          {% if request.user.is_superuser %}
+            <li><a href="{% url 'sms_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-envelope"></i>
+                Mail / Sms</a></li>
+                {% endif %}
             <li><a class="collapsible-header waves-effect arrow-r"><i class="fab fa-css3"></i> Exam<i class="fas fa-angle-down rotate-icon"></i></a>
               <div class="collapsible-body">
                 <ul>
+                  {% if request.user.is_superuser  or request.user.is_teacher %}
+                  <li><a href="{% url 'view_score_list' %}" class="waves-effect">View Score</a>
+                  </li>
+                  {% endif %}
+                  {% if request.user.is_superuser  or request.user.is_teacher %}
                   <li><a href="{% url 'score_list' %}" class="waves-effect">Input Score</a>
                   </li>
+                   {% endif %}
+                   {% if request.user.is_parent  or request.user.is_student %}
+                   <li><a href="{% url 'score_list' %}" class="waves-effect">View Results</a>
+                  </li>
+                   {% endif %}
                   <li><a href="#" class="waves-effect">Exam Timetable</a>
                   </li>
-                                   <li><a href="#" class="waves-effect">Promotion</a>
+                  {% if request.user.is_superuser %}
+                  <li><a href="#" class="waves-effect">Promotion</a>
                   </li>
+                  {% endif %}
                 </ul>
               </div>
             </li>
+             {% if request.user.is_superuser %}
             <li><a class="collapsible-header waves-effect arrow-r"><i class="fas fa-th"></i> Account<i class="fas fa-angle-down rotate-icon"></i></a>
               <div class="collapsible-body">
                 <ul>
-                  <li><a href="#" class="waves-effect">Fee Type</a>
+                  <li><a href="{% url 'set_payment' %}" class="waves-effect">Set Payment</a>
                   </li>
-                  <li><a href="#" class="waves-effect">Payment</a>
+                  <li><a href="{% url 'view_payments' %}" class="waves-effect">Payment</a>
                   </li>
-                  <li><a href="#" class="waves-effect">Expense</a>
+                  <li><a href="{% url 'view_expenses' %}" class="waves-effect">Expense</a>
                   </li>
                 </ul>
               </div>
@@ -119,15 +146,18 @@
             <li><a class="collapsible-header waves-effect arrow-r"><i class="fas fa-user-cog"></i></i>Administrator<i class="fas fa-angle-down rotate-icon"></i></a>
               <div class="collapsible-body">
                 <ul>
-                  <li><a href="#" class="waves-effect">Academic Year</a>
+                  <li><a href="{% url 'session_list' %}" class="waves-effect">Academic Year</a>
                   </li>
-                  <li><a href="#" class="waves-effect">System Admin</a>
+                  <li><a href="{% url 'system_admin' %}" class="waves-effect">System Admin</a>
                   </li>
-                  <li><a href="#" class="waves-effect">Reset Password</a>
+                  <li><a href="{% url 'reset_users_password_view' %}" class="waves-effect">Reset Password</a>
+                  </li>
+                  <li><a href="{% url 'general_setting' %}" class="waves-effect">General Settings</a>
                   </li>
                 </ul>
               </div>
             </li>
+            {% endif %}
         <!--/. Side navigation links -->
       <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__scrollbar-y-rail" style="top: 0px; right: 0px;"><div class="ps__scrollbar-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></ul>
       <div class="sidenav-bg mask-strong"></div>
@@ -151,14 +181,14 @@
         <!-- Dropdown -->
         <li class="nav-item dropdown notifications-nav">
           <a class="nav-link dropdown-toggle waves-effect" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="badge red">{{ all_session|length|add:1 }}</span> <i class="fas fa-layer-group"></i>
+            <span class="badge red">{{ all_sessions.count }}</span> <i class="fas fa-layer-group"></i>
             <span class="d-none d-md-inline-block">Academic Year</span>
           </a>
           <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
             {% for session in all_sessions %}
-            <a class="dropdown-item waves-effect waves-light" href="#">
+            <a class="dropdown-item waves-effect waves-light" href="{% url 'toggle_session' id=session.pk %}">
               <i class="fas fa-money mr-2" aria-hidden="true"></i>
-              <span>{{ session.name }}</span>
+              <span>{{ session.name }} {% if session.current_session %} - <span class="blue-text">current</span> {% endif %}</span>
               <span class="float-right"><i class="far  fa-clock" aria-hidden="true">
                 created {{ session.created_on|naturaltime }}
               </i></span>
@@ -169,14 +199,28 @@
         <!-- Dropdown -->
         <li class="nav-item dropdown notifications-nav">
           <a class="nav-link dropdown-toggle waves-effect" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="badge red">1</span> <i class="fas fa-bell"></i>
+            <span {% if notifications %} class="badge red" {% endif %}>{{ notifications.count }}</span> <i class="fas fa-bell"></i>
             <span class="d-none d-md-inline-block">Notifications</span>
           </a>
           <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item waves-effect waves-light" href="#">
+              {% for notification in notifications %}
               <i class="fas fa-money mr-2" aria-hidden="true"></i>
-              <span>You've been assigned a subject</span>
-              <span class="float-right"><i class="far  fa-clock" aria-hidden="true"></i> 13 min</span>
+              <span data-toggle="tooltip" title="{{ notification.body }} - {{ notification.time }}" class="indigo-text">
+                  {{ notification.title }}
+                </span><br>
+                  <span class="text-sm-left indigo-text">
+                    {{ notification.body|truncatechars:42 }}
+                  </span>
+              <small class="float-left">
+                <i class="far  fa-clock" aria-hidden="true"></i> 
+                {{ notification.time }}
+              </small>
+              <br><br>
+              {% empty %}
+              <span><i class="far fa-bell" aria-hidden="true"></i> You have no notification
+              </span>
+              {% endfor %}
             </a>
           </div>
         </li>
@@ -186,7 +230,7 @@
           
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
             <a class="dropdown-item waves-effect waves-light" href="{% url 'logout' %}">Log Out</a>
-            <a class="dropdown-item waves-effect waves-light" href="">My account</a>
+            <a class="dropdown-item waves-effect waves-light" href="{% url 'profile' user=request.user %}">My account</a>
              <a class="dropdown-item waves-effect waves-light" href="">Change Password</a>
           </div>
         </li>
@@ -254,8 +298,6 @@
       $('[data-toggle="tooltip"]').tooltip()
     })
 
-  </script>
-  <script type="text/javascript">
 			var d = new Date();
 			var n = d.getFullYear();
 			document.getElementById("copy").innerHTML = n

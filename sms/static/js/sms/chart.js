@@ -1,4 +1,4 @@
-var endpoint = 'api/chart'
+        var endpoint = 'api/chart'
         var data_to_send = []
         var labels = []
         cs = []

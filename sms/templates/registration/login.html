@@ -22,7 +22,7 @@
     <body class="white-bg-login">
 
         <div class="col-md-4 col-md-offset-4 marg" style="margin-top:30px;">
-            <center><img width="50" height="50" src="{{ school_logo }}"></center>        <center><h4>{{ school_name }} School Management System</h4></center>
+            <center><img width="50" height="50" src="{{ school_logo }}"></center>        <center><h4>{{ school_name }}</h4></center>
         </div>
 
         
@@ -37,7 +37,7 @@
                 <div class="form-group">
                     <input id="{{ field.id_for_label }}" class="form-control" placeholder="{{ field.label }}" name="{{ field.html_name }}" {% if field.html_name == "username" %}
                      autofocus="" type="text" {% else %} type="password" {% endif %} 
-                     {% if field.html_name == "username" %}  {% endif %} value="">
+                      value="">
                 </div>
                 {{ field.errors }}
                 {% endfor %}

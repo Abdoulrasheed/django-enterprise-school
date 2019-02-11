@@ -1,0 +1,7 @@
+
+<option value="" disabled selected="">Whose password you wants to change ?</option>
+{% for user in users %}}
+<option value="{{ user.username }}">{{ user.username }} ({{ user.first_name }} {{ user.last_name }})</option>
+{% empty %}
+<option value="admin">No user is available !</option>
+{% endfor %}

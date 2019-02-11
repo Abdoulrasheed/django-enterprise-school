@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block main %}
-<main>
   <div style="margin-bottom: 259px;" class="container-fluid">
        <!-- Heading -->
    <div class="card mb-4 wow fadeIn">
@@ -18,46 +17,75 @@
       </div>
    </div>
    <!-- Heading -->
+             {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message|safe }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% if form %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+   <!-- Editable table -->
     <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
     <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Information</a>
   </li>
 </ul>
-
+<form method="post">{% csrf_token %}
 <div class="tab-content" id="myTabContent">
   <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
     <div class="row">
       <div class="col-md-6">
-        <input type="text" class="form-control mb-4" placeholder="Username">
-        <input type="text" class="form-control mb-4" placeholder="Firstname">
-        <input type="text" class="form-control mb-4" placeholder="Othername">
-        <input type="text" class="form-control mb-4" placeholder="Phone number">
+        <input name="username" type="text" class="form-control mb-4" placeholder="Username">
+        <input name="firstname" type="text" class="form-control mb-4" placeholder="Firstname">
+        <input name="othername" type="text" class="form-control mb-4" placeholder="Othername">
+        <input name="phone" type="text" class="form-control mb-4" placeholder="Phone number">
         <div class="input-group">
           <div class="input-group-prepend">
             <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
           </div>
           <div class="custom-file">
-            <input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
+            <input name="picture" type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
             <label class="custom-file-label" for="inputGroupFile01">Profile Picture</label>
           </div>
         </div>
       </div>
       <div class="col-md-6">
-        <input type="password" class="form-control mb-4" placeholder="Password">
-        <input type="text" class="form-control mb-4" placeholder="Surname">
+        <input name="password" type="password" class="form-control mb-4" placeholder="Password">
+        <input name="surname" type="text" class="form-control mb-4" placeholder="Surname">
         <select class="mdb-select md-form">
           <option value="" disabled selected>State</option>
           <option value="1">Abia</option>
           <option value="2">Adamawa</option>
           <option value="3">Akwa Ibom</option>
         </select>
-        <input type="email" class="form-control mb-4" placeholder="Email">
-        <input type="text" class="form-control mb-4" placeholder="Address">
+        <input name="email" type="email" class="form-control mb-4" placeholder="Email">
+        <input name="address" type="text" class="form-control mb-4" placeholder="Address">
       </div>
   </div>
   </div>
 </div>
-<a href="#" style="margin-bottom: 27px;" class="btn btn-primary">Save</a>
+<input type="submit" name="submit" value="Save" style="margin-bottom: 27px;" class="btn btn-primary">
+</form>
 </div>
-</main>
 {% endblock %}

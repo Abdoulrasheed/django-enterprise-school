@@ -5,10 +5,27 @@
 
 {% block main %}
 
-<!--Main layout-->
-  <main>
     <div class="container-fluid">
-
+             <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="/">Home Page</a>
+            <span>/</span>
+            <a>Parents</a>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
+          {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
       <!--Section: Basic examples-->
       <section>
         <!--Top Table UI-->
@@ -19,8 +36,8 @@
 
             <!--Grid column-->
             <div class="col-lg-3 col-md-12">
-            	<a class="btn btn-primary" href="{% url 'add_parent' %}">
-            		Add parent
+            	<a class="btn btn-primary" href="{% url 'add_system_admin' %}">
+            		Add New System Admin
             	</a>
             </div>
             <!--Grid column-->
@@ -42,6 +59,9 @@
               <!--/Blue select-->
             </div>
             <!--Grid column-->
+          </div>
+          <!--Grid row-->
+
         </div>
         <!--Top Table UI-->
 
@@ -49,14 +69,7 @@
 
           <!--Card image-->
           <div class="view view-cascade gradient-card-header blue-gradient narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center">
-
-            <div>
-              <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2"><i class="fas fa-th-large mt-0"></i> Excel</button>
-              <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2"><i class="fas fa-columns mt-0"> CSV</i></button>
-              <button type="button" class="btn btn-outline-white btn-rounded btn-sm px-2"><i class="fas fa-pencil-alt mt-0"></i> PDF</button>
-            </div>
-
-            <a href="" class="white-text mx-3">Class Members</a>
+            <a href="" class="white-text mx-3">System Administrators</a>
 
           </div>
           <!--/Card image-->
@@ -81,24 +94,29 @@
 
                 <!--Table body-->
                 <tbody>
-                	{% for parent in parents %}
+                	{% for user in users %}
                   <tr>
-                    <td>{{ parent.get_full_name }}</td>
-                    <td>{{ parent.get_picture }}</td>
-                    <td>{{ parent.email }}</td>
+                    <td>{{ user.get_full_name }}</td>
+                    <td><img src="{{ user.get_picture }}" width="50"></td>
+                    <td>{{ user.email }}</td>
                     <td>
+                      {% if not user.id == request.user.id %}
                       <div class="switch">
                         <label>
                           Off
-                          <input type="checkbox" checked>
+                          <input type="checkbox"{% if user.is_active %} checked {% endif  %}>
                           <span class="lever"></span> On
                         </label>
                       </div>
+                      {% endif %}
                     </td>
                     <td>
+                      {% if not user.id == request.user.id %}
                       <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
                       <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
-                      <a title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                      <a href="{% url 'delete_user' id=user.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i>
+                      </a>
+                      {% endif %}
                     </td>
                   </tr>
                   {% empty %}
@@ -143,8 +161,6 @@
       <!--Section: Basic examples-->
 
     </div>
-  </main>
-  <!--Main layout-->
 
   {% endblock main %}
   {% block script %}

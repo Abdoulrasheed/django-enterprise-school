@@ -56,8 +56,6 @@ C = "C"
 D = "D"
 E = "E"
 F = "F"
-PASS = "PASS"
-FAIL = "FAIL"
 
 GRADE = (
 		(A, 'A'),
@@ -66,4 +64,14 @@ GRADE = (
 		(D, 'D'),
 		(E, 'E'),
 		(F, 'F'),
+	)
+
+
+SUCCESS = "Success"
+ERROR = "Error"
+INFO = "Info"
+NOTIFICATION_TYPE = (
+	(SUCCESS, "Success"),
+	(ERROR, "Error"),
+	(INFO, "Info"),
 	)

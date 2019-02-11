@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+  <div style="margin-bottom: 259px;" class="container-fluid">
+       <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="/">Home Page</a>
+            <span>/</span>
+            <a href="{% url 'system_admin' %}">System Admin</a>
+            <span>/</span>
+            <span>Add System Admin</span>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
+       {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% if form %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Information</a>
+  </li>
+</ul>
+
+<div class="tab-content" id="myTabContent">
+  <form method="post" enctype="mutltipart/form-data">{% csrf_token %}
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+    <div class="row">
+      <div class="col-md-6">
+        <span class="red-text">*</span>
+        <input tabindex="1" name="username" type="text" maxlength="50" class="form-control mb-4" placeholder="Username">
+        <span class="red-text">*</span>
+        <input tabindex="3" name="firstname" maxlength="50" type="text" class="form-control mb-4" placeholder="Firstname">
+        <input tabindex="5" name="oname" type="text" maxlength="50" class="form-control mb-4" placeholder="Othername">
+        <input tabindex="7" name="phone" type="number" maxlength="12" class="form-control mb-4" placeholder="Phone number">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+          </div>
+          <div class="custom-file">
+            <input tabindex="9" name="picture" type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
+            <label class="custom-file-label" for="inputGroupFile01">Profile Picture</label>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <span class="red-text">*</span>
+        <input tabindex="2" name="password" type="password" class="form-control mb-4" placeholder="Password">
+        <span class="red-text">*</span>
+        <input tabindex="4" name="surname" type="text" class="form-control mb-4" placeholder="Surname">
+        <select tabindex="6" name="state" class="mdb-select md-form">
+          <option value="" disabled selected>State</option>
+          <option value="1">Abia</option>
+          <option value="2">Adamawa</option>
+          <option value="3">Akwa Ibom</option>
+        </select>
+        <input tabindex="8" name="email" type="email" class="form-control mb-4" placeholder="Email">
+        <input tabindex="10" name="address" type="text" class="form-control mb-4" placeholder="Address">
+      </div>
+  </div>
+  </div>
+  <input type="submit" name="submit" class="btn btn-primary" value="Save">
+</form>
+</div>
+</div>
+{% endblock %}

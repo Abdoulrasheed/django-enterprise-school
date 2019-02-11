@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} General Setting {% endblock title %}
+{% block main %}
+  <div style="margin-bottom: 259px;" class="container-fluid">
+       <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="/">Home Page</a>
+            <span>/</span>
+            <span>General Setting</span>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message|safe }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% if form %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+   <!-- Editable table -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Information</a>
+  </li>
+</ul>
+<form method="post" enctype="multipart/form-data">{% csrf_token %}
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+    <div class="row">
+      <div class="col-md-6">
+        <input value="{{ school_name }}" name="school_name" type="text" class="form-control mb-4" placeholder="School name">
+        <input value="{{ s.school_address }}" name="school_address" type="text" class="form-control mb-4" placeholder="School address">
+        <input value="{{ s.school_slogan }}" name="school_slogan" type="text" class="form-control mb-4" placeholder="School slogan">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+          </div>
+          <div class="custom-file">
+            <input value="{{ s.school_logo.url }}" name="school_logo" type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
+            <label class="custom-file-label" for="inputGroupFile01">School logo</label>
+          </div>
+        </div><br>
+        {% if url %}
+        Uploaded logo: <img src="{{ url }}" width="65" class="rounded-circle">
+        {% endif %}
+        current logo: <img src="{{ s.school_logo.url }}" width="65" class="rounded-circle">
+        <br>
+        <span>Third term ends</span>
+        <input value="{{ s.tt_ends }}" name="tt_ends" type="date" class="form-control mb-4">
+      </div>
+      <div class="col-md-6">
+        <span>First term begins</span>
+        <input value="{{ s.ft_begins }}" name="ft_begins" type="date" class="form-control mb-4">
+        <span>First term Ends</span>
+        <input value="{{ s.ft_ends }}" name="ft_ends" type="date" class="form-control mb-4">
+        <span>Second term begins</span>
+        <input value="{{ s.st_begins }}" name="st_begins" type="date" class="form-control mb-4">
+        <span>Second term ends</span>
+        <input value="{{ s.st_ends }}" name="st_ends" type="date" class="form-control mb-4">
+         <span>Third term begins</span>
+        <input value="{{ s.tt_begins }}" name="tt_begins" type="date" class="form-control mb-4">
+  </div>
+  </div>
+</div>
+<input type="submit" name="submit" value="Save" style="margin-bottom: 27px;" class="btn btn-primary">
+</form>
+</div>
+{% endblock %}

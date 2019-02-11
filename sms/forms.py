@@ -80,7 +80,7 @@ class AddSectionForm(forms.Form):
     note = forms.CharField(max_length=100, label="Section Description", required=False)
 
 class SubjectAllocationForm(forms.Form):
-    session = forms.CharField(max_length=50, label="Session")
+    clss = forms.CharField(max_length=50, label="Class")
     term = forms.CharField(max_length=100, label="Term")
     teacher =forms.CharField(max_length=100, label="Teacher")
     subjects = forms.ModelMultipleChoiceField(queryset=Subject.objects.all())
@@ -92,5 +92,54 @@ class SectionAllocationForm(forms.Form):
     signature = forms.ImageField(label="Signature", required=False)
 
 class AttendanceListForm(forms.Form):
-    selected_class = forms.ModelChoiceField(queryset=Class.objects.all())
-    selected_term = forms.CharField(widget=forms.Select(choices=TERM))
+    selected_class = forms.ModelChoiceField(queryset=Class.objects.all(), label="class")
+    selected_term = forms.CharField(widget=forms.Select(choices=TERM), label="term")
+
+class AttendanceSaveForm(forms.Form):
+    selected_term = forms.CharField(widget=forms.Select(choices=TERM), label="Term")
+    selected_date = forms.DateField(label="Date")
+
+class UpdateProfileForm(forms.Form):
+    username = forms.CharField(max_length=100)
+    email = forms.EmailField(label="Email Address", required=False)
+    phone = forms.CharField(max_length=12, label="Phone number", required=False)
+    firstname = forms.CharField(max_length=30, label="Firstname", required=False)
+    surname = forms.CharField(max_length=30, label="Firstname", required=False)
+    address = forms.CharField(max_length=120, label="Address", required=False)
+    othername = forms.CharField(max_length=50, label="Othername", required=False)
+    religion = forms.CharField(widget=forms.Select(choices=RELIGION), label="Religion", required=False)
+
+
+class ExpenseForm(forms.Form):
+    item = forms.CharField(max_length=100, min_length=3, label="Item")
+    amount = forms.FloatField(label="Amount")
+    description = forms.CharField(max_length=150, label="Description", required=False)
+    term = forms.CharField(widget=forms.Select(choices=TERM), label="Term")
+
+class PaymentForm(forms.Form):
+    student = forms.CharField(max_length=100, label="Student")
+    paid_amount = forms.CharField(max_length=150, label="Amount")
+    payment_method = forms.CharField(widget=forms.Select(choices=PAYMENT_METHOD), label="Payment method")
+    term = forms.CharField(widget=forms.Select(choices=TERM), label="Term")
+    tnumber = forms.CharField(max_length=100, label="Teller number", required=False)
+
+class SessionForm(forms.Form):
+    name = forms.CharField(max_length=20, label="Session")
+    note = forms.CharField(max_length=50, label="Note")
+
+class SmsForm(forms.Form):
+    title = forms.CharField(max_length=100, label="Message title")
+    body = forms.CharField(max_length=250, label="Message Body")
+    to_user = forms.CharField(max_length=10)
+
+class SettingForm(forms.Form):
+    school_name = forms.CharField(max_length=150, label="School name")
+    school_logo = forms.ImageField(label="School logo", required=False)
+    school_address = forms.CharField(max_length=150, label="School address", required=False)
+    school_slogan = forms.CharField(max_length=200, label="Motto / Slogan", required=False)
+    ft_begins = forms.DateField(required=False)
+    ft_ends  = forms.DateField(required=False)
+    st_begins = forms.DateField(required=False)
+    st_ends = forms.DateField(required=False)
+    tt_begins = forms.DateField(required=False)
+    tt_ends = forms.DateField(required=False)

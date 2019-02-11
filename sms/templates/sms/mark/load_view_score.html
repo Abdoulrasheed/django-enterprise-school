@@ -1,0 +1,15 @@
+{% for grade in grades %}
+<tr>
+  <td><a href="{% url 'profile' user=grade.student.user %}">{{ grade.student }}</td>
+  <td><img src="{{ grade.student.user.get_picture }}" class="rounded-circle" width="50"></td>
+  <td>{{ grade.student.roll_number }}</td>
+  <td>{{ grade.fca }}</td>
+  <td>{{ grade.sca }}</td>
+  <td>{{ grade.exam }}</td>
+  <td>{{ grade.total }}</td>
+  <td>{{ grade.grade }}</td>
+  <td>{{ grade.remark }}</td>
+</tr>
+{% empty %}
+<td>No data available</td>
+{% endfor %}

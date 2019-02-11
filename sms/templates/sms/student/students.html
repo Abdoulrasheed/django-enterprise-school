@@ -2,7 +2,6 @@
 {% load static %}
 {% block title %} Students {% endblock title %}
 {% block main %}
-<main>
    <div class="container-fluid">
    <!-- Heading -->
    <div class="card mb-4 wow fadeIn">
@@ -18,12 +17,16 @@
    <!-- Heading -->
    <!-- Editable table -->
    <div class="card">
-      <h6 class="card-header text-center white-text text-uppercase py-2">Students</h6>
+      <h6 class="mdb-color darken-3 card-header text-center white-text text-uppercase py-2">Students</h6>
       <div class="container">
          <div class="row">
-            <div class="col-md-5">
-              <a href="{% url 'add_student' %}" class="btn btn-info">Add Student</a>
-            </div>
+ 
+               <div class="col-md-5">
+                  {% if request.user.is_superuser %}
+                  <a href="{% url 'add_student' %}" class="btn btn-info">Add Student</a>
+               {% endif %}
+               </div>
+               
             <div class="col-md-3"><small></small></div>
             <div class="col-md-4">
                <div class="dropdown">
@@ -43,7 +46,7 @@
             </div>
          </div>
       </div>
-      <div class="card-body">
+      <div style="margin-bottom: 190px" class="card-body">
          <div id="table" class="table-editable">
             <table class="table table-bordered table-responsive-md table-striped text-center">
                <tr>
@@ -59,5 +62,4 @@
       </div>
    </div>
 </div>
-</main>
 {% endblock main %}

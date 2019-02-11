@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Send E-mail {% endblock title %}
+{% block main %}
+<div style="margin-bottom: 180px" class="container-fluid">
+      <section>
+              <div class="card mb-4 wow fadeIn">
+         <!--Card content-->
+         <div class="card-body d-sm-flex justify-content-between">
+            <h6 class="mb-2 mb-sm-0 pt-1">
+               <a href="/">Home Page</a>
+               <span>/</span>
+               <span>Mail</span>
+            </h6>
+         </div>
+      </div>
+                 <div class="row">
+            <div class="col-md-5">
+              <a href="" class="btn btn-info" data-toggle="modal" data-target="#modalSubscription">Send an email</a>
+            </div>
+          </div>
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% if form %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+        <div class="my-5"></div>
+
+        <div class="card">
+          <div class="card-body">
+
+            <!--Table-->
+            <table class="table">
+
+              <!--Table head-->
+              <thead class="mdb-color darken-3">
+                <tr class="text-white">
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Message</th>
+                  <th>Status</th>
+                  <th>To</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for sms in sms %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td>{{ sms.title }}</td>
+                  <td>{{ sms.body }}</td>
+                  <td>
+                     <div class="switch">
+                        <label>
+                          No
+                          <input disabled type="checkbox" {% if sms.delivered %} checked {% endif %}>
+                          <span class="lever"></span> Yes
+                        </label>
+                      </div>
+                  </td>
+                  <td>
+                    {{ sms.to_user }}
+                  </td>
+                  <td>
+                  <a data-toggle="tooltip" title="Edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+    <!--Modal: setup new session Form-->
+    <form method="post" action="{% url 'send_sms' %}">{% csrf_token %}
+        <div class="modal fade" id="modalSubscription" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog cascading-modal" role="document">
+            <!--Content-->
+            <div class="modal-content">
+
+              <!--Header-->
+              <div class="modal-header mdb-color darken-3 white-text">
+                <h4 class="">Send SMS</h4>
+                <button type="button" class="close waves-effect waves-light" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mb-0">
+
+              <select name="to_user" class="mdb-select md-form">
+                <option value="" disabled selected>To User</option>
+                <option value="Admin">Admin</option>
+                <option value="Teacher">Teacher</option>
+                <option value="Student">Student</option>
+                <option value="Parent">Parent</option>
+              </select>  
+
+                <div class="form-group shadow-textarea">
+                  <label for="exampleFormControlTextarea6">Message Body</label>
+                  <textarea name="body" class="form-control z-depth-1" id="exampleFormControlTextarea6" rows="3" placeholder="Write your message here...">
+                    
+                  </textarea>
+                </div>
+
+                <div class="text-center mt-1-half">
+                  <input type="submit" name="submit" class="btn btn-info mb-1 fas fa-check ml-1">
+                </div>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+    </form>
+        <!--Modal: Subscription From-->
+{% endblock main %}
