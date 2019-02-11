@@ -6,7 +6,6 @@ from .models import *
 from .constants import *
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-import ranking
 from django.core import serializers
 from datetime import datetime
 from .remark import getRemark, getGrade
@@ -1115,8 +1114,8 @@ def get_student_position(request):
 	print(sorted(overall_total, reverse=True))
 	print(sorted(all_ids, reverse=True))
 	total_scores = sorted(overall_total, reverse=True)
-	positions = ranking.Ranking(total_scores, start=1)
-	return HttpResponse(positions)
+	#positions = ranking.Ranking(total_scores, start=1)
+	return HttpResponse(total_scores)
 
 
 @login_required
