@@ -191,8 +191,8 @@ class Expense(models.Model):
 class Setting(models.Model):
 	school_name = models.CharField(max_length=100)
 	school_logo = models.ImageField(upload_to="pictures/", blank=True, null=True)
-	school_address = models.CharField(max_length=150, blank=True, null=True, blank=True, null=True)
-	school_slogan = models.CharField(max_length=200, blank=True, null=True, blank=True, null=True)
+	school_address = models.CharField(max_length=150, blank=True, null=True)
+	school_slogan = models.CharField(max_length=200, blank=True, null=True)
 	ft_begins = models.DateField(blank=True, null=True)
 	ft_ends = models.DateField(blank=True, null=True)
 	st_begins = models.DateField(blank=True, null=True)
