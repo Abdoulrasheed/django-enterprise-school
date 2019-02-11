@@ -39,7 +39,18 @@ def school_setting_processor(request):
 		school_logo = logo.school_logo.url
 		school_name = logo.school_name
 	else:
-		Setting.objects.create(id=1, school_name=default_name, school_logo=default_logo, school_address="Yola", school_slogan="Great movement")
+		Setting.objects.create(
+			id=1, school_name=default_name, 
+			school_logo=default_logo, 
+			school_address="Yola", 
+			school_slogan="Great movement",
+			ft_begins=y.today(),
+			ft_ends=y.today(),
+			st_begins=y.today(),
+			st_ends=y.today(),
+			tt_begins=y.today(),
+			tt_ends=y.today()
+			)
 		logo = Setting.objects.get(id=1)
 		school_logo = logo.school_logo.url
 		school_name = logo.school_name
