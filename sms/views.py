@@ -989,20 +989,7 @@ def score_entry(request):
 
 		for i in range(0, len(stud_id)):
 			student = Student.objects.get(pk=stud_id[i])
-			if ca1[i] == '' and ca2[i] == '':
-				total = int(exam[i])
-			elif ca2[i] == '' and exam[i] == '':
-				total = int(ca1[i])
-			elif exam[i] == '' and ca1[i] == '':
-				total = int(ca2[i])
-			elif ca1[i] == '':
-				total = int(ca2[i]) + int(exam[i])
-			elif ca2[i] == '':
-				total = int(ca1[i]) + int(exam[i])
-			elif exam[i] == '':
-				total = ca1[i] + ca2[i]
-			else:
-				total = int(ca1[i]) + int(ca2[i]) + int(exam[i])
+			total = int(ca1[i]) + int(ca2[i]) + int(exam[i])
 			grade, created = Grade.objects.get_or_create(session=session, term=term, student=student, subject=subject)
 			if not created:
 					grade.fca=ca1[i]
