@@ -1,13 +1,24 @@
-from django.http import HttpResponse, JsonResponse
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
-from .decorators import teacher_required, student_required, parent_required
-from .models import *
-from .constants import *
+from datetime import datetime
+
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.core import serializers
-from datetime import datetime
+from django.core.mail import send_mail
+from django.contrib import messages
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.decorators import login_required
+from django.db.models import Avg, Count, Min, Sum, CharField, Value, Q
+from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404, redirect, render
+
+from django.template import Context
+from django.template.loader import get_template
+from .decorators import teacher_required, student_required, parent_required
+from .models import *
+from .constants import *
+
 from .remark import getRemark, getGrade
 from .forms import (AddStudentForm, 
 					AddParentForm, 
@@ -26,14 +37,117 @@ from .forms import (AddStudentForm,
 					SmsForm,
 					SettingForm,
 					)
-from django.contrib import messages
-from django.contrib.auth.hashers import make_password
-from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy
-from django.core.mail import send_mail
+
 
 from .send_message import ACCOUNT_SID, AUTH_TOKEN, client
+INDEX = lambda items, key, item: list(items.values_list(key, flat=True)).index(item)+1
 
+def get_item_index(items, key, item):
+	try:
+		return INDEX(items, key, item)
+	except Exception as e:
+		return 0
+
+def get_subject_report_data(grades, subjects, student, student_grades):
+	result = []
+	for subject in subjects:
+		sub_grades = grades.filter(subject=subject)
+		sub_student_grades = student_grades.filter(subject=subject)
+		if sub_student_grades.exists():
+			sub_rank = get_item_index(sub_grades, 'pk', sub_student_grades.first().pk)
+			sub_student_grades = sub_student_grades.annotate(rank=Value(sub_rank, output_field=CharField()))
+			result+=sub_student_grades.values()
+	return result
+
+
+
+@login_required
+def report_student(request):
+	data = request.POST
+	obj_id = data.get('pk') or None
+	template ='sms/student/report_student.html'
+	class_id = data.get('class')
+	term = data.get('term')
+	if not any([class_id, term]):
+		messages.success(request, 'Missing data class %s in term %r '%(class_id, term))
+		return redirect('create_report_student')
+	clss = get_object_or_404(Class, pk=class_id)
+	current_session = Session.objects.get(current_session=True)
+	students = Student.objects.filter(in_class=clss)
+	if not students.exists():
+		messages.success(request, 'No students exists for class %s in term %r '%(clss, term))
+		return redirect('create_report_student')
+
+	subjects = clss.subjects.all()
+
+	if not subjects.exists():
+		messages.success(request, 'No subjects exists for class %s in term %r '%(clss, term))
+		return redirect('create_report_student')
+
+	grades = Grade.objects.filter(term=term, student__in_class=clss,session=current_session).order_by('-total')
+	if not grades.exists():
+		messages.success(request, 'No grades exists for class %s in term %r '%(clss, term))
+		return redirect('create_report_student')
+
+
+	grades_ordered= grades\
+	.values('student')\
+	.annotate(total_mark=Sum('total')) \
+	.order_by('-total_mark')
+	records = {}
+	highest = grades_ordered.first()['total_mark']
+	lowest = grades_ordered.last()['total_mark']
+	count = 0
+	for student in students:
+		print(student,'-11-------------',student.pk,student)
+		studen_rank = get_item_index(grades_ordered, 'student', student.pk)
+		if studen_rank:
+			count += 1
+			print(student,'--22------------',studen_rank)
+			student_grades = grades.filter(student=student)
+			data = get_subject_report_data(grades, subjects, student, student_grades)
+			# raise Warning(grades_ordered.get(student=student.pk)['total_mark'])
+			# student = student.annotate(total_mark=Value(grades_ordered.get(student=student.pk)['total_mark'], output_field=CharField()))
+			total_mark = (grades_ordered.get(student=student.pk)['total_mark'])
+			setattr(student, 'total_mark', total_mark)
+			print(student.total_mark,'=====================')
+			records[studen_rank] = (student,data)
+	if not count:
+		messages.success(request, 'No reports exists for class %s in term %r '%(clss, term))
+		return redirect('create_report_student')
+
+	response = HttpResponse(content_type='application/pdf')
+	response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+	setting = Setting.objects.first()
+	context = {'results':records,'term':term,'setting':setting, 'highest':highest, 'lowest':lowest, 'number_of_student': grades_ordered.count()}
+	# return render(request, template, context)
+	
+	from weasyprint import HTML, CSS
+	template = get_template(template)
+	html = template.render(context)
+
+	css_string = """@page {
+		size: a4 portrait;
+		margin: 1mm;
+		counter-increment: page;
+	}"""
+
+	pdf_file = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(
+			stylesheets=[CSS(string=css_string)],presentational_hints=True)
+
+	
+	response = HttpResponse(pdf_file, content_type='application/pdf')
+	response['Content-Disposition'] = 'filename="home_page.pdf"'
+	return response
+	return HttpResponse(response.getvalue(), content_type='application/pdf')
+
+
+@login_required
+@teacher_required
+def create_report_student(request):
+	classes = Class.objects.all()
+	context = {"classes": classes}
+	return render(request, 'sms/student/create_report_student.html', context)
 
 @login_required
 def home(request):
@@ -245,7 +359,7 @@ def add_assign_teacher(request):
 			form = SubjectAllocationForm(request.POST)
 			message = form
 			context =  {
-				"form": form, 
+				"form": form,
 				"message": message,
 				"classes": classes,
 				"subjects": subjects,
@@ -290,7 +404,7 @@ def add_section_allocation(request):
 			section_head = form.cleaned_data.get('section_head')
 			placeholder = form.cleaned_data.get('placeholder')
 			signature = form.cleaned_data.get('signature')
-			 
+
 			if SectionAssign.objects.filter(section=section).exists():
 				check = SectionAssign.objects.get(section=section)
 				section_name = check.section_head.get_full_name()
@@ -301,9 +415,9 @@ def add_section_allocation(request):
 				section = Section.objects.get(pk=section)
 				section_head = User.objects.get(pk=section_head)
 				SectionAssign.objects.create(
-					section=section, 
-					section_head=section_head, 
-					placeholder=placeholder, 
+					section=section,
+					section_head=section_head,
+					placeholder=placeholder,
 					signature=signature)
 				Notification(user=section_head, message_type=SUCCESS, title="Section Allocation !", body="You've been allocated as the "+ str(placeholder)  +" of " +str(section)+" Section.").save()
 				messages.success(request, "Successfully allocated "+str(section)+" Section to "+ str(section_head.get_full_name()))
@@ -312,7 +426,7 @@ def add_section_allocation(request):
 			form = SectionAllocationForm(request.POST, request.FILES)
 			message = form
 			context =  {
-				"form": form, 
+				"form": form,
 				"message": message,
 				"teachers": teachers,
 				"sections": sections,
@@ -382,7 +496,7 @@ def add_student(request):
 						return redirect('add_student')
 					else:
 						parent = User.objects.create(
-						username = parent_username, 
+						username = parent_username,
 						password = make_password(parent_password),
 						first_name = parent_fname,
 						last_name = parent_sname,
@@ -398,7 +512,7 @@ def add_student(request):
 				else:
 					parent = existing_parent
 				user = User.objects.create(
-				username = stud_username, 
+				username = stud_username,
 				password = make_password(stud_password),
 				first_name = stud_fname,
 				last_name = stud_sname,
@@ -416,8 +530,8 @@ def add_student(request):
 				)
 				selected_class = Class.objects.get(pk=stud_class)
 				student = Student.objects.create(
-				user=user, 
-				in_class=selected_class, 
+				user=user,
+				in_class=selected_class,
 				year_of_admission=stud_year_of_admission,
 				roll_number = stud_roll_number,
 				)
@@ -429,12 +543,12 @@ def add_student(request):
 				Parent.objects.create(student=stud, parent=par)
 				messages.success(request, stud_fname + " " + stud_sname +' Was Successfully Recorded! ')
 				return HttpResponseRedirect(reverse_lazy('add_student'))
-				
+
 		else:
 			form = AddStudentForm(request.POST)
 			message = form
 			context =  {
-				"form": form, 
+				"form": form,
 				"message": message,
 				"parents": parents,
 				"classes": classes,
@@ -467,8 +581,8 @@ def add_parent(request):
 				messages.success(request, "A user with username "+ username + " had already exists !")
 				return HttpResponseRedirect(reverse_lazy('add_parent'))
 			User.objects.create(
-				username=username, 
-				password=make_password(password), 
+				username=username,
+				password=make_password(password),
 				first_name=firstname,
 				last_name=surname,
 				other_name=othername,
@@ -484,7 +598,7 @@ def add_parent(request):
 		else:
 			form = AddParentForm(request.POST, request.FILES)
 			context =  {
-				"form": form, 
+				"form": form,
 				}
 	return render(request, 'sms/parent/add_parent.html', context)
 
@@ -511,8 +625,8 @@ def add_teacher(request):
 				messages.success(request, "A user with username "+ username + " had already exists !")
 				return HttpResponseRedirect(reverse_lazy('add_teacher'))
 			User.objects.create(
-				username=username, 
-				password=make_password(password), 
+				username=username,
+				password=make_password(password),
 				first_name=firstname,
 				last_name=surname,
 				other_name=othername,
@@ -528,7 +642,7 @@ def add_teacher(request):
 		else:
 			form = AddParentForm(request.POST, request.FILES)
 			context =  {
-				"form": form, 
+				"form": form,
 				}
 	return render(request, 'sms/teacher/add_teacher.html', context)
 
@@ -561,7 +675,7 @@ def add_class(request):
 		else:
 			form = AddParentForm(request.POST)
 			context =  {
-				"form": form, 
+				"form": form,
 				}
 		context = {
 			"sections": sections,
@@ -713,8 +827,8 @@ def add_system_admin(request):
 				messages.success(request, "A user with username "+ username + " had already exists !")
 				return HttpResponseRedirect(reverse_lazy('add_system_admin'))
 			User.objects.create(
-				username=username, 
-				password=make_password(password), 
+				username=username,
+				password=make_password(password),
 				first_name=firstname,
 				last_name=surname,
 				other_name=othername,
@@ -730,7 +844,7 @@ def add_system_admin(request):
 		else:
 			form = AddParentForm(request.POST, request.FILES)
 			context =  {
-				"form": form, 
+				"form": form,
 				}
 	return render(request, 'sms/users/add_user.html', context)
 
@@ -959,26 +1073,41 @@ def load_subjects(request):
 			subjects = i.subjects.filter(subjectassign__clss=clss)
 	return render(request, 'sms/mark/subject_dropdown_list_options.html', {'subjects': subjects})
 
+def get_terms():
+	term = 'First'
+	now = tz.now()
+	date = tz.localtime(now).date()
+	setting = Setting.objects.first()
 
+	if setting:
+		st_begins, st_ends = setting.st_begins, setting.st_ends
+		tt_begins, tt_ends = setting.tt_begins, setting.tt_ends
+		if (st_begins and st_begins) and (date >= st_begins) and (date <=st_ends):
+			term = 'Second'
+		if (tt_begins and tt_ends) and (date >= tt_begins) and (date <=tt_ends):
+			term = 'Third'
+	return term
 @login_required
 @teacher_required
 def score_list(request):
 	current_session = Session.objects.filter(current_session=True)
 	classes = Class.objects.all()
-	context = {"classes": classes}
+	context = {"classes": classes, 'term':get_terms()}
 	if request.user.is_teacher:
 		assigned_subjects = SubjectAssign.objects.filter(teacher__id=request.user.id)
-		context = {"assigned_subjects": assigned_subjects}
-		for i in assigned_subjects:
-			print(i.clss)
+		context.update({"assigned_subjects": assigned_subjects})
 	return render(request, 'sms/mark/get_score_list.html', context)
 
-
+from django.utils import timezone as tz
 @login_required
 @teacher_required
 def score_entry(request):
+	session = Session.objects.get(current_session=True)
+	classes = Class.objects.all()
+	term = get_terms()
+	context = {"classes": classes, 'term':get_terms()}
+
 	if request.method == 'POST':
-		session = Session.objects.get(current_session=True)
 		term = request.POST.get('term')
 		subject = request.POST.get('subject')
 		subject = Subject.objects.get(pk=subject)
@@ -989,7 +1118,7 @@ def score_entry(request):
 
 		for i in range(0, len(stud_id)):
 			student = Student.objects.get(pk=stud_id[i])
-			total = int(ca1[i]) + int(ca2[i]) + int(exam[i])
+			total = int(ca1[i] or '0') + int(ca2[i] or '0') + int(exam[i] or '0')
 			grade, created = Grade.objects.get_or_create(session=session, term=term, student=student, subject=subject)
 			if not created:
 					grade.fca=ca1[i]
@@ -1002,9 +1131,9 @@ def score_entry(request):
 					grade.save()
 			else:
 				a = Grade.objects.get(
-				session=session, 
-				term=term, 
-				student=student, 
+				session=session,
+				term=term,
+				student=student,
 				subject=subject)
 				a.fca=ca1[i]
 				a.sca=ca2[i]
@@ -1015,23 +1144,37 @@ def score_entry(request):
 				a.compute_position(term)
 				a.save()
 		messages.success(request, "Score Successfully Recorded !")
-	classes = Class.objects.all()
-	context = {"classes": classes}
+
 	selected_class = request.GET.get('class')
 	selected_term = request.GET.get('term')
 	selected_subject = request.GET.get('subject')
 	if request.user.is_superuser:
 		if not None in [selected_class, selected_term, selected_subject]:
 			selected_class = Class.objects.get(pk=selected_class)
-			current_session = Session.objects.filter(current_session=True)
+			current_session = session
 			students = Student.objects.filter(in_class__name=selected_class)
-			context = {
+			print('#######################################')
+			student_data = []
+			for student in students:
+				term = request.GET.get('term')
+				subject = request.GET.get('subject')
+				subject = Subject.objects.get(pk=subject)
+				# grade, created = Grade.objects.get_or_create(session=session, term=term, student=student, subject=subject)
+				grade_obj = Grade.objects.filter(
+				session=current_session,
+				term=term,
+				student=student,
+				subject=subject).first() or Grade.objects.none()
+
+				student_data += [(student, grade_obj)]
+			context.update({
 				"classes": classes,
 				"selected_subject": selected_subject,
 				"selected_class": selected_class,
 				"selected_term": selected_term,
 				"students": students,
-				}
+				"student_data":student_data
+				})
 			return render(request, 'sms/mark/load_score_table.html', context)
 	elif request.user.is_teacher:
 		if not None in [selected_term, selected_subject]:
@@ -1042,14 +1185,14 @@ def score_entry(request):
 			students = Student.objects.filter(in_class__name=selected_class)
 			gr = Grade.objects.filter(student__in_class__pk=selected_class.pk)
 			gr = zip(students, gr)
-			context = {
+			context.update({
 				"classes": classes,
 				"selected_subject": selected_subject,
 				"selected_class": selected_class,
 				"selected_term": selected_term,
 				"students": students,
 				"gr":gr,
-				}
+				})
 			return render(request, 'sms/mark/load_score_table.html', context)
 	return render(request, 'sms/mark/get_score_list.html', context)
 
@@ -1261,8 +1404,8 @@ def load_payment_table(request):
 	term = request.GET.get('term')
 	class_id = request.GET.get('class')
 	payments = Payment.objects.filter(
-		student__in_class__pk=class_id, 
-		term=term, 
+		student__in_class__pk=class_id,
+		term=term,
 		session=session)
 	print("payments"+str(payments))
 	return render(request, 'sms/payments/ajax_load_payment.html', {"payments": payments})
@@ -1352,7 +1495,7 @@ def send_sms(request):
 							phone = str(user.phone)[1:]
 							phone = '+234'+phone
 							message = client.messages.create(
-						    	to=phone, 
+						    	to=phone,
 						    	from_="+14026034086",
 						    	body=title+" \n "+body)
 							print(message.sid)
@@ -1361,7 +1504,7 @@ def send_sms(request):
 			context = {
 				"sms": sms,
 				"title": title,
-				"body": body, 
+				"body": body,
 				"to_user": to_user
 			}
 			messages.success(request, ' Messages delivered successfully')

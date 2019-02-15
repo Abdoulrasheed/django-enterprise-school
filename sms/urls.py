@@ -58,4 +58,7 @@ urlpatterns = [
 	path('ajax/load-subjects/', views.load_subjects, name='ajax_load_subjects'),
 	path('ajax/load-payment/', views.load_payment_table, name="ajax_load_payments"),
 	path('ajax/load-students/', views.load_students_of_class, name="ajax_load_students"),
+	path('report/student/', views.create_report_student, name="create_report_student"),
+	path('report/pdf/', views.report_student, name="report_student"),
+
 	]

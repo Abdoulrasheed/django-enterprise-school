@@ -1,0 +1,194 @@
+{% load static %}
+{% load i18n %}
+{% load tags %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <title>Title</title>
+        <style type="text/css">
+
+        body {
+            font-weight: 400;
+            font-size: 14px;
+        }
+        .outer{
+            display: table;
+            margin: 0 auto;
+        }
+        .inner {
+            display: table;
+            float: left;
+        }
+        .logo {
+            display: table;
+            float: left;
+
+        }
+        .item_l{
+            width:170px;
+            display:inline-block;
+            margin-bottom: 5px;
+        }
+        .item_r{
+            width:70px;
+            display:inline-block;
+            margin-bottom: 5px;
+        }
+            
+        table {
+            border-collapse: collapse;
+            width: 100%;
+
+        }
+
+        td, th {
+            border: 1px solid grey;
+            text-align: left;
+            padding: 14px;
+            /*height*/
+        }
+        th{
+            color: grey;
+            border-bottom: 2px solid grey;
+        }
+
+      
+     
+        </style>
+    </head>
+    <body>
+        {% for index, result in results.items %}
+        <div class="outer" style="width:100%">
+             <div class="logo">
+                 <img src="{% static 'img/logo.png' %}" alt="" width="100px" height="100px"  />
+          </div>
+          <div class="inner" style="margin-left:100px">
+            <h3>{{setting.school_name}}</h3>
+            <p>{{setting.school_address}}</p>
+            <p>{{setting.school_slogan}}</p>
+          </div>
+        </div>
+<hr/>
+        <div class='wrapper'>
+        <div>
+            <div style='width:100%;'>
+            <div style='width:35%;display:inline-block;vertical-align: top;'>
+                <div>
+            <div class="item_l">Name:</div>
+            <div class="item_r">{{result.0.user}}</div>
+                </div>
+                <div>
+            <div class="item_l">CLASS:</div>
+            <div class="item_r">{{result.0.in_class}}</div>
+                </div>
+                <div>
+            <div class="item_l">ROLL. NO.:</div>
+            <div class="item_r">{{result.0.roll_number}}</div>
+                </div>
+                 <div>
+            <div class="item_l">SESSION:</div>
+            <div class="item_r">{{result.0.year_of_admission}}</div>
+                </div>
+                <div>
+            <div class="item_l">TERM:</div>
+            <div class="item_r">{{term}}</div>
+                </div>
+                <div>
+            <div class="item_l">NO. IN CLASS:</div>
+            <div class="item_r">{{number_of_student}}</div>
+                </div>
+            </div>
+
+            <div style='width:35%;display:inline-block;vertical-align: top;'>
+                <div>
+            <div class="item_l">POSITION IN CLASS:</div>
+            <div class="item_r">{{index}}</div>
+                </div>
+                <div>
+            <div class="item_l">TOTAL SCORE:</div>
+            <div class="item_r">{{result.0.total_mark }}</div>
+                </div>
+                <div>
+            <div class="item_l">HIGHEST IN CLASS:</div>
+            <div class="item_r">{{highest}}</div>
+                </div>
+                <div>
+            <div class="item_l">LOWEST IN CLASS:</div>
+            <div class="item_r">{{lowest}}</div>
+                </div>
+            </div>
+
+            <div style='width:20%;display:inline-block;vertical-align: top;margin-left:30px'>
+             
+               
+                <img src="{{ result.0.user.get_picture }}" width="100" height="100">
+                  
+            </div>
+           
+
+            </div>
+    
+    </div>
+    <p><b>Terminal Report</b></p>
+        <table>
+          <tr>
+            <th>Subjects</th>
+            <th>CA1</th>
+            <th>CA2</th>
+            <th>EXAM</th>
+            <th>TOTAL</th>
+            <th>POSITION</th>
+            <th>GRADE</th>
+            <th>REMAKRS</th>
+
+          </tr>
+          {% for item in result.1 %}
+              <tr>
+                <td>{% get_subject item.subject_id %}</td>
+                <td>{{item.sca}}</td>
+                <td>{{item.fca}}</td>
+                <td>{{item.exam}}</td>
+                <td>{{item.total|default_if_none:''}}</td>
+                <td>{{item.rank|default_if_none:''}}</td>
+                <td>{{item.grade|default_if_none:''}}</td>
+                <td>{{item.remark|default_if_none:''}}</td>
+              </tr>
+           {% endfor %}
+          <tr>
+            <td colspan="5"></td>
+            <td colspan="4"></td>
+        </tr>        
+        <tr>
+            <td colspan="2">Prometed TO</td>
+            <td colspan="7"></td>
+        </tr>
+        <tr>
+            <td colspan="2">Attendance</td>
+            <td colspan="7"></td>
+        </tr>
+        <tr>
+            <td colspan="2">From Teacher Remarks</td>
+            <td colspan="7"></td>
+        </tr>
+        <tr>
+            <td colspan="2">House Teacher Remarks</td>
+            <td colspan="7"></td>
+        </tr>
+        <tr>
+            <td colspan="2">Principal Remarks</td>
+            <td colspan="7"></td>
+        </tr>
+            <tr>
+            <td colspan="2">Interpretation of Grades</td>
+            <td colspan="7">A = 70 - 80, B = 60 - 70, C = 50 - 60, C - 40 - 50, D = 30 - 40, F = 0 - 29</td>
+        </tr>
+            
+
+        </table>
+    </div>
+     
+    <p style="page-break-after: always"/> 
+    {% endfor %}
+
+    </body>
+</html>

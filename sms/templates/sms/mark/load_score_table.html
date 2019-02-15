@@ -12,7 +12,7 @@
          <th class="text-center">CA 2</th>
          <th class="text-center">Exam</th>
                </tr>
-               {% for each in students %}
+               {% for each, grade in student_data %}
                   <tr>
                      <td class="pt-3-half text-left" contenteditable="false">
                         <input type="hidden" name="student_id" value="{{ each.id }}">
@@ -24,16 +24,16 @@
                      <td class="pt-3-half" contenteditable="false">
                         {{ each.roll_number }}
                      </td>
-                        
+
                      <td class="pt-3-half" contenteditable="false">
-                       <input value="{{ s.ca1 }}" style="border-style: inset; width: 50px;" max="30" type="number" name="ca1" class="form from-group">
+                       <input value="{{ grade.fca }}"  style="border-style: inset; width: 50px;" max="30" type="number" name="ca1" class="form from-group">
                      </td>
                        
                      <td class="pt-3-half" contenteditable="false">
-                       <input style="border-style: inset; width: 50px;" max="30" type="number" name="ca2" class="form from-group">
+                       <input value="{{ grade.sca }}" style="border-style: inset; width: 50px;" max="30" type="number" name="ca2" class="form from-group">
                      </td>
                      <td class="pt-3-half" contenteditable="false">
-                       <input style="border-style: inset; width: 50px;" max="30" type="number" name="exam" class="form from-group">
+                       <input value="{{ grade.exam }}" style="border-style: inset; width: 50px;" max="30" type="number" name="exam" class="form from-group">
                      </td>
                   </tr>
                   {% endfor %}

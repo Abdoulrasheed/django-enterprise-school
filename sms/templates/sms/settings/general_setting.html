@@ -76,15 +76,15 @@
       </div>
       <div class="col-md-6">
         <span>First term begins</span>
-        <input value="{{ s.ft_begins }}" name="ft_begins" type="date" class="form-control mb-4">
+        <input value="{{ s.ft_begins|date:"Y-m-d" }}" name="ft_begins" type="date" class="form-control mb-4">
         <span>First term Ends</span>
-        <input value="{{ s.ft_ends }}" name="ft_ends" type="date" class="form-control mb-4">
+        <input value="{{ s.ft_ends|date:"Y-m-d" }}" name="ft_ends" type="date" class="form-control mb-4">
         <span>Second term begins</span>
-        <input value="{{ s.st_begins }}" name="st_begins" type="date" class="form-control mb-4">
+        <input value="{{ s.st_begins|date:"Y-m-d" }}" name="st_begins" type="date" class="form-control mb-4">
         <span>Second term ends</span>
-        <input value="{{ s.st_ends }}" name="st_ends" type="date" class="form-control mb-4">
+        <input value="{{ s.st_ends|date:"Y-m-d" }}" name="st_ends" type="date" class="form-control mb-4">
          <span>Third term begins</span>
-        <input value="{{ s.tt_begins }}" name="tt_begins" type="date" class="form-control mb-4">
+        <input value="{{ s.tt_begins|date:"Y-m-d" }}" name="tt_begins" type="date" class="form-control mb-4">
   </div>
   </div>
 </div>

@@ -35,8 +35,8 @@
    <div class="card">
       <span class="mdb-color darken-3 card-header white-text text-uppercase py-1">
         <small class="text-left">Score entry :</small>
-        <span id="headers" hidden>
-          <small id="term_header" class="ml-xl-2"></small>
+        <span id="headers">
+          <small id="term_header" class="ml-xl-2">{{term}}</small>
         </span>
     </span>
       <div class="container">
@@ -75,9 +75,7 @@
             <div class="col-md-3">
                <select id="term" name="term" class="mdb-select md-form">
                 <option value="" disabled selected>Select a term</option>
-                <option value="First">First</option>
-                <option value="Second">Second</option>
-                <option value="Third">Third</option>
+                <option value="{{term}}">{{term}}</option>
               </select>
             </div>
           <div hidden id="loader" class="progress md-progress primary-color-dark">

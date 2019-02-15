@@ -264,7 +264,7 @@
         <option value="" disabled selected>Select Parent</option>
         <option value="">---</option>
         {% for parent in parents %}
-        <option value="{{ parent.get_full_name }}">{{ parent.get_full_name }}</option>
+        <option value="{{ parent.username }}">{{ parent.get_full_name }}</option>
         {% empty %}
         <option value="" disabled selected>No Parent available</option>
         {% endfor %}
