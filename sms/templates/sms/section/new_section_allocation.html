@@ -20,6 +20,9 @@
       </div>
    </div>
    <!-- Heading -->
+             <div class="alert alert-info">
+  <strong>Note!</strong> Create Section, Teacher then you can allocate</a>.
+</div>
    {% if messages %}
         {% for message in messages %}
           <div class="alert alert-success alert-dismissable">
@@ -52,7 +55,7 @@
       <div aria-labelledby="add_a_class">
         <div class="row">
           <div class="col-md-6">
-            <form method="post">{% csrf_token %}
+            <form method="post" enctype="multipart/form-data">{% csrf_token %}
               <select required name="section" class="mdb-select md-form">
                 <option value="" disabled selected>Select Section</option>
                   {% for section in sections %}

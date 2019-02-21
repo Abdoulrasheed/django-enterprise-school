@@ -16,6 +16,9 @@
          </h6>
       </div>
    </div>
+   <div class="alert alert-info">
+  <strong>Info!</strong> Create a class, parent (optional)  before you create student</a>.
+</div>
     {% if messages %}
         {% for message in messages %}
           <div class="alert alert-success alert-dismissable">
@@ -44,7 +47,7 @@
     {% endif %}
   {% endfor %}
   {% endif %}
-   
+
    <!-- Heading -->
   <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item">
@@ -66,37 +69,36 @@
   <div class="row">
     <div class="col-md-4">
       <span class="red-text">*</span>
-    <input name="stud_username" type="text" class="form-control mb-4" placeholder="Username">
+    <input required name="stud_username" tabindex="1" type="text" class="form-control mb-4" placeholder="Username">
     <span class="red-text">*</span>
-    <input name="stud_fname" type="text" class="form-control mb-4" placeholder="Firstname">
-    <select name="stud_religion" class="mdb-select md-form">
-      <option value="" disabled selected>Religion</option>
-      <option value="Islam">Islam</option>
-      <option value="Christianity">Christianity</option>
-      <option value="Other">Other</option>
-    </select>
-    <input name="stud_address" type="text" class="form-control mb-4" placeholder="Address">
-    <input name="stud_phone_number" type="number" class="form-control mb-4" placeholder="Phone number">
-    <span class="red-text">*</span>
-    <select name="stud_class" class="mdb-select md-form">
+    <input name="stud_fname" type="text" tabindex="4" class="form-control mb-4" placeholder="Firstname">
+    <select tabindex="7" required name="stud_class" class="mdb-select md-form">
       <option value="" disabled selected>Select Class</option>
       {% for class in classes %}
       <option value="{{ class.id }}">{{ class.name }}</option>
       {% endfor %}
     </select>
+    <input tabindex="12" name="stud_address" type="text" class="form-control mb-4" placeholder="Address">
+    <input tabindex="14" name="stud_phone_number" type="number" class="form-control mb-4" placeholder="Phone number">
+     <select tabindex="16" name="stud_religion" class="mdb-select md-form">
+      <option value="" disabled selected>Religion</option>
+      <option value="Islam">Islam</option>
+      <option value="Christianity">Christianity</option>
+      <option value="Other">Other</option>
+    </select>
     </div>
   <div class="col-md-4">
     <span class="red-text">*</span>
-    <input name="stud_password" type="password" class="form-control mb-4" placeholder="Password">
+    <input required name="stud_password" tabindex="2" type="password" class="form-control mb-4" placeholder="Password">
     <span class="red-text">*</span>
-    <input name="stud_sname" type="text" class="form-control mb-4" placeholder="Surname">
-    <select name="stud_gender" class="mdb-select md-form">
+    <input name="stud_sname" type="text" tabindex="5" class="form-control mb-4" placeholder="Surname">
+    <select tabindex="8" name="stud_gender" class="mdb-select md-form">
       <option value="" disabled selected>Select Gender</option>
       <option value="1">Male</option>
       <option value="2">Female</option>
       <option value="3">Other</option>
     </select>
-    <select name="stud_state" class="mdb-select md-form" id="states">
+    <select tabindex="10" name="stud_state" class="mdb-select md-form" id="states">
       <option value="" selected disabled>Select State</option>
               <option class="0" value="">---</option>
               <option class="1" value="Abuja FCT">Abuja FCT</option>
@@ -138,25 +140,15 @@
               <option value="Zamfara">Zamfara</option>
      <option value="Outside Nigeria">Outside Nigeria</option>
     </select>
-    <input name="stud_email" type="email" class="form-control mb-4" placeholder="Email">
-    <input name="stud_year_of_admission" maxlength="4" type="number" class="form-control mb-4" placeholder="Year of admission">
+    <input tabindex="13" name="stud_email" type="email" class="form-control mb-4" placeholder="Email">
+    <input tabindex="15" name="stud_year_of_admission" maxlength="4" type="number" class="form-control mb-4" placeholder="Year of admission">
     </div>
     <div class="col-md-4">
     <span class="red-text">*</span>
-    <input name="stud_roll_number" type="number" class="form-control mb-4" placeholder="Roll number">
+    <input required name="stud_roll_number" tabindex="3" type="number" class="form-control mb-4" placeholder="Roll number">
     <span style="color: transparent;">*</span>
-    <input name="stud_oname" type="text" class="form-control mb-4" placeholder="Othername">
-    <select name="stud_lga" class="mdb-select md-form" id="locals">
-      <option value="" disabled selected>Local Gov.</option>
-      <option class="0" value="">---</option>
-      <option class="1" value="Yola Noth">Yola North</option>
-      <option class="1" value="Yola South">Yola South</option>
-      <option class="1" value="Girei">Gerei</option>
-      <option class="2" value="Girei">Damaturu</option>
-      <option class="2" value="Girei">Yobe</option>
-      <option class="3" value="Girei">Potaskum</option>
-    </select>
-    <select name="stud_blood_group" class="mdb-select md-form">
+    <input name="stud_oname" type="text" class="form-control mb-4" tabindex="6" placeholder="Othername">
+    <select tabindex="9" name="stud_blood_group" class="mdb-select md-form">
       <option value="" disabled selected>Blood group</option>
       <option class="0" value="">---</option>
       <option value="A+">A+</option>
@@ -167,7 +159,7 @@
       <option value="0-">O-</option>
       <option value="0+">O+</option>
     </select>
-    <input name="stud_dob" style="margin-bottom: 23px" type="text" class="form-control datepicker" placeholder="Date of birth">
+    <input tabindex="11" name="stud_dob" style="margin-bottom: 23px" type="text" class="form-control datepicker" placeholder="Date of birth">
     </div>
   </div>
 </div>
@@ -191,17 +183,17 @@
     <div class="row">
       <div class="col-md-6">
       <span class="red-text">*</span>
-      <input name="parent_username" type="text" class="form-control mb-4" placeholder="Username">
-      <input name="parent_fname" type="text" class="form-control mb-4" placeholder="Firstname">
-      <input name="parent_oname" type="text" class="form-control mb-4" placeholder="Othername">
-      <input name="parent_phone_number" type="number" class="form-control mb-4" placeholder="Phone number">
-      <input name="parent_email" type="email" class="form-control mb-4" placeholder="Email">
+      <input tabindex="17" name="parent_username" type="text" class="form-control mb-4" placeholder="Username">
+      <input  name="parent_fname" type="text" class="form-control mb-4" placeholder="Firstname">
+      <input  name="parent_oname" type="text" class="form-control mb-4" placeholder="Othername">
+      <input tabindex="20" name="parent_phone_number" type="number" class="form-control mb-4" placeholder="Phone number">
+      <inpu tabindex="21"t name="parent_email" type="email" class="form-control mb-4" placeholder="Email">
       </div>
       <div class="col-md-6">
       <span class="red-text">*</span>
-      <input name="parent_password" type="password" class="form-control mb-4" placeholder="Password">
-      <input name="parent_sname" type="text" class="form-control mb-4" placeholder="Surname">
-      <select name="parent_state" class="mdb-select md-form">
+      <input tabindex="18" name="parent_password" type="password" class="form-control mb-4" placeholder="Password">
+      <input tabindex="19" name="parent_sname" type="text" class="form-control mb-4" placeholder="Surname">
+      <select tabindex="21" name="parent_state" class="mdb-select md-form">
          <option value="" selected disabled>Select State</option>
               <option class="0" value="">---</option>
               <option value="Abuja FCT">Abuja FCT</option>
@@ -243,17 +235,7 @@
               <option value="Zamfara">Zamfara</option>
      <option value="Outside Nigeria">Outside Nigeria</option>
       </select>
-      <select name="parent_lga" class="mdb-select md-form" id="parent_locals">
-        <option value="" disabled selected>Local Gov.</option>
-        <option class="0" value="">---</option>
-        <option class="1" value="Yola Noth">Yola North</option>
-        <option class="1" value="Yola South">Yola South</option>
-        <option class="1" value="Girei">Gerei</option>
-        <option class="2" value="Girei">Damaturu</option>
-        <option class="2" value="Girei">Yobe</option>
-        <option class="3" value="Girei">Potaskum</option>
-      </select>
-      <input name="parent_address" type="text" class="form-control mb-4" placeholder="Address">
+      <input tabindex="22" name="parent_address" type="text" class="form-control mb-4" placeholder="Full Address">
       </div>
   </div>
 </div>
@@ -305,20 +287,7 @@
 </div>
   </div>
 </div>
-<input type="submit" name="submit" style="margin-bottom: 27px;" class="btn btn-primary">
+<input type="submit" value="Save" name="submit" style="margin-bottom: 27px;" class="btn btn-primary">
 </form>
 </div>
-{% block script %}
-  <script type="text/javascript">
-    $(document).ready(function(){
-      var $states = $( '#states' ),
-          $locals = $( '#locals' ),
-          $options = $locals.find( 'option' );
-          
-      $states.on( 'change', function() {
-        $locals.html( $options.filter( '[class="' + this.class + '"]' ) );
-      } ).trigger( 'change' );
-    });
-  </script>
-{% endblock script %}
 {% endblock %}

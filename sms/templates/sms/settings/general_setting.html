@@ -72,7 +72,7 @@
         current logo: <img src="{{ s.school_logo.url }}" width="65" class="rounded-circle">
         <br>
         <span>Third term ends</span>
-        <input value="{{ s.tt_ends }}" name="tt_ends" type="date" class="form-control mb-4">
+        <input value="{{ s.tt_ends|date:"Y-m-d" }}" name="tt_ends" type="date" class="form-control mb-4">
       </div>
       <div class="col-md-6">
         <span>First term begins</span>

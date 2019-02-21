@@ -1,6 +1,4 @@
-{% load static %}
-{% load i18n %}
-{% load tags %}
+{% load static tags i18n humanize %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
     <head>
@@ -11,71 +9,79 @@
             font-weight: 400;
             font-size: 14px;
         }
-        .outer{
-            display: table;
-            margin: 0 auto;
-        }
-        .inner {
-            display: table;
-            float: left;
-        }
-        .logo {
-            display: table;
-            float: left;
+.outer{
+  display: table;
+  margin: 0 auto;
+  width: 80%;
+}
 
-        }
-        .item_l{
-            width:170px;
-            display:inline-block;
-            margin-bottom: 5px;
-        }
-        .item_r{
-            width:70px;
-            display:inline-block;
-            margin-bottom: 5px;
-        }
-            
-        table {
-            border-collapse: collapse;
-            width: 100%;
+#inner {
+        display: table;
+        float: left;
+        text-align: center;
+        margin-left: -60px;
+    }
+.logo {
+    display: table;
+    float: left;
 
-        }
+}
 
-        td, th {
-            border: 1px solid grey;
-            text-align: left;
-            padding: 14px;
-            /*height*/
-        }
-        th{
-            color: grey;
-            border-bottom: 2px solid grey;
-        }
+.item_l{
+    width:170px;
+    display:inline-block;
+    margin-bottom: 5px;
 
-      
-     
-        </style>
+}
+
+.item_r{
+    width:70px;
+    display:inline-block;
+    margin-bottom: 5px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 70%;
+    margin: 0 auto;
+}
+
+td, th {
+    border: 1px solid grey;
+    text-align: left;
+    padding: 14px;
+    /*height*/
+}
+
+
+th{
+    color: grey;
+    border-bottom: 2px solid grey;
+}
+
+</style>
     </head>
     <body>
         {% for index, result in results.items %}
-        <div class="outer" style="width:100%">
+        <div class="outer">
              <div class="logo">
                  <img src="{% static 'img/logo.png' %}" alt="" width="100px" height="100px"  />
           </div>
-          <div class="inner" style="margin-left:100px">
-            <h3>{{setting.school_name}}</h3>
-            <p>{{setting.school_address}}</p>
-            <p>{{setting.school_slogan}}</p>
+          <div>
+            <h3 style="margin-left: 200px">{{setting.school_name}}</h3>
+            <p style="margin-left: 250px">{{setting.school_address}}</p>
+            <p style="margin-left: 270px">{{setting.school_slogan}}</p>
           </div>
         </div>
 <hr/>
         <div class='wrapper'>
         <div>
-            <div style='width:100%;'>
-            <div style='width:35%;display:inline-block;vertical-align: top;'>
+            <div style='display:inline-block; margin-right: 100px; margin-left: 40px'>
                 <div>
             <div class="item_l">Name:</div>
-            <div class="item_r">{{result.0.user}}</div>
+            <div class="item_r">
+                {{result.0.user.get_full_name|title}}
+            </div>
                 </div>
                 <div>
             <div class="item_l">CLASS:</div>
@@ -102,7 +108,7 @@
             <div style='width:35%;display:inline-block;vertical-align: top;'>
                 <div>
             <div class="item_l">POSITION IN CLASS:</div>
-            <div class="item_r">{{index}}</div>
+            <div class="item_r">{% get_rank result.0.student_rank %}</div>
                 </div>
                 <div>
             <div class="item_l">TOTAL SCORE:</div>
@@ -118,21 +124,20 @@
                 </div>
             </div>
 
-            <div style='width:20%;display:inline-block;vertical-align: top;margin-left:30px'>
-             
-               
+            <div style='position: absolute; top: 135px; left: 640px '>
+
+
                 <img src="{{ result.0.user.get_picture }}" width="100" height="100">
-                  
-            </div>
-           
 
             </div>
-    
+
+
+
     </div>
-    <p><b>Terminal Report</b></p>
+    <p style="margin-left: 35px;"><b>Terminal Report</b></p>
         <table>
           <tr>
-            <th>Subjects</th>
+            <th colspan="3">Subjects</th>
             <th>CA1</th>
             <th>CA2</th>
             <th>EXAM</th>
@@ -144,12 +149,12 @@
           </tr>
           {% for item in result.1 %}
               <tr>
-                <td>{% get_subject item.subject_id %}</td>
+                <td colspan="3">{% get_subject item.subject_id %}</td>
                 <td>{{item.sca}}</td>
                 <td>{{item.fca}}</td>
                 <td>{{item.exam}}</td>
                 <td>{{item.total|default_if_none:''}}</td>
-                <td>{{item.rank|default_if_none:''}}</td>
+                <td>{% get_rank item.rank %}</td>
                 <td>{{item.grade|default_if_none:''}}</td>
                 <td>{{item.remark|default_if_none:''}}</td>
               </tr>
@@ -157,37 +162,50 @@
           <tr>
             <td colspan="5"></td>
             <td colspan="4"></td>
-        </tr>        
+        </tr>
         <tr>
-            <td colspan="2">Prometed TO</td>
+            <td colspan="3">Prometed TO</td>
             <td colspan="7"></td>
         </tr>
         <tr>
-            <td colspan="2">Attendance</td>
+            <td colspan="3">Attendance</td>
             <td colspan="7"></td>
         </tr>
         <tr>
-            <td colspan="2">From Teacher Remarks</td>
+            <td colspan="3">Form Teacher Remarks</td>
             <td colspan="7"></td>
         </tr>
         <tr>
-            <td colspan="2">House Teacher Remarks</td>
+            <td colspan="3">House Teacher Remarks</td>
             <td colspan="7"></td>
         </tr>
         <tr>
-            <td colspan="2">Principal Remarks</td>
+            <td colspan="3">Principal Remarks</td>
             <td colspan="7"></td>
         </tr>
             <tr>
-            <td colspan="2">Interpretation of Grades</td>
-            <td colspan="7">A = 70 - 80, B = 60 - 70, C = 50 - 60, C - 40 - 50, D = 30 - 40, F = 0 - 29</td>
+            <td colspan="3">Interpretation of Grades</td>
+            <td colspan="7">
+            {% for scale in gradeScale %}
+                {{ scale.grade }} = {{ scale.mark_from }} - {{ scale.mark_upto }} |
+            {% endfor %}
+            </td>
         </tr>
-            
+
 
         </table>
+        {% if term == "First" %}
+         <p style="margin-left: 35px;"><b>Second Term Begins: {{ setting.st_begins }}
+         </b></p>
+        {% elif term == "Second" %}
+        <p style="margin-left: 35px;"><b>Third Term Begins: {{ setting.tt_begins }}
+        </b></p>
+        {% else %}
+        <p style="margin-left: 35px;"><b>First Term Begins: {{ setting.ft_begins }}
+        </b></p>
+        {% endif %}
     </div>
-     
-    <p style="page-break-after: always"/> 
+    <p style="page-break-after: always"/>
     {% endfor %}
 
     </body>

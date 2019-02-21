@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block title %} Notice Board {% endblock title %}
+
+{% block main %}
+    {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% if form %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+<div class="list-group" style="margin-bottom: 180px;">
+  <h4>Notice Board</h4>
+  <div>
+      {% if request.user.is_superuser %}
+  <a href="#" data-toggle="modal" data-target="#exampleModal" class="float-right btn btn-primary">POST NEW NOTICE</a>
+  {% endif %}
+</div>
+{% for notice in notices %}
+  <span href="#!" class="list-group-item list-group-item-action flex-column align-items-start">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-2 h5"><a href="#">{{ notice.post_title|title }}</a></h5>
+      <small style="margin: 10px 10px 20px 10px">
+        {% if request.user.is_superuser and notice.posted_by == request.user %}
+            <a  data-toggle="tooltip" data-placement="top" href="{% url 'delete_notice' id=notice.id %}" title="Warning !, there's no confirmation of either to delete or not; this deletes a notice instantly">
+              <i class="fa fa-times float-right"></i>
+            </a>
+            <br>
+        {% endif %}
+        <a hre="#" title="{{ notice.posted_on }}">Published: {{ notice.posted_on|naturaltime }}</a><br>
+        <a href="#">To all: {{ notice.posted_to }}s</a>
+      </small>
+    </div>
+    <hr />
+    <p class="mb-2">
+      {{ notice.post_body }}
+    </p>
+    <small>
+        published by:
+        <a href="{% url 'profile' user=notice.posted_by %}">
+          {{ notice.posted_by|title }}
+        </a></small>
+  </span>
+  {% empty %}
+  {% if request.user.is_superuser %}
+  <span>No Notice available, <a href="#"  data-toggle="tooltip" data-placement="top" title="Click on the 'POST NEW NOTICE' button">wants to create some ?</a></span>
+  {% else %}
+    <a href="#">No Notice available for you</a>
+  {% endif %}
+  {% endfor %}
+</div>
+
+
+<!-- Notice Board -->
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'create_notice' %}">{% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Post a Notice</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <select name="posted_to" class="browser-default custom-select">
+            <option selected>Select recipient</option>
+            <option value="Admin">Admin</option>
+            <option value="Teacher">Teacher</option>
+            <option value="Parent">Parent</option>
+            <option value="Student">Student</option>
+          </select>
+          <div class="form-group">
+            <label for="post_title" class="col-form-label">Notice Subject:</label>
+            <input name="post_title" type="text" class="form-control" id="post_title">
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Message:</label>
+            <textarea name="post_body" class="form-control" id="message-text"></textarea>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <input type="submit" class="btn btn-primary" value="Publish now">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

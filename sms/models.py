@@ -9,7 +9,7 @@ class User(AbstractUser):
     is_teacher = models.BooleanField(default=False)
     is_parent = models.BooleanField(default=False)
     phone = models.CharField(max_length=60, blank=True, null=True)
-    address = models.CharField(max_length=60, blank=True, null=True)
+    address = models.CharField(max_length=200, blank=True, null=True)
     picture = models.ImageField(upload_to="pictures/", blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     other_name = models.CharField(max_length=100, blank=True, null=True)
@@ -18,7 +18,7 @@ class User(AbstractUser):
     religion = models.CharField(choices=RELIGION, max_length=12, blank=True, null=True)
     state = models.CharField(choices=STATE, max_length=100, blank=True, null=True)
     lga = models.CharField(choices=LGA, max_length=100, blank=True, null=True)
-    
+
 
 
     username_validator = ASCIIUsernameValidator()
@@ -80,12 +80,15 @@ class Class(models.Model):
 	class Meta:
 		verbose_name_plural = 'classes'
 
+def get_current_session():
+    return Session.objects.get(current_session=True).id
 
 class Student(models.Model):
-	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	in_class = models.ForeignKey(Class, on_delete=models.CASCADE)
+	session = models.ForeignKey(Session, default=get_current_session, on_delete=models.CASCADE)
 	year_of_admission = models.CharField(max_length=100, blank=True, null=True)
-	roll_number = models.CharField(max_length=50, unique=True)
+	roll_number = models.CharField(max_length=50)
 
 	def __str__(self):
 		return self.user.get_full_name()
@@ -120,7 +123,7 @@ class Grade(models.Model):
 	fca = models.CharField(max_length=10)
 	sca = models.CharField(max_length=10)
 	exam = models.CharField(max_length=10)
-	total = models.CharField(max_length=3, blank=True, null=True)
+	total = models.FloatField(blank=True, null=True)
 	grade = models.CharField(choices=GRADE, max_length=1, blank=True, null=True)
 	remark = models.CharField(max_length=50, blank=True, null=True)
 
@@ -133,12 +136,17 @@ class Grade(models.Model):
 				total += 0
 			else:
 				total += float(i.total)
-		rnk, created = Ranking.objects.update_or_create(session=cs, term=term, student=self.student, cumulative=total)
-		if not created:
-			rnk.cumulative=total
-			rnk.save()
-		a = list(Ranking.objects.filter(term=term, student__in_class=self.student.in_class))
-		print(a)
+		try:
+			r = Ranking.objects.get(session=cs, term=term, student=self.student)
+			r.cumulative=total
+			r.save()
+		except Ranking.DoesNotExist:
+			a = Ranking.objects.create(
+				session=cs,
+				term=term,
+				student=self.student,
+				cumulative=total,
+				)
 
 
 class Attendance(models.Model):
@@ -191,7 +199,7 @@ class Expense(models.Model):
 class Setting(models.Model):
 	school_name = models.CharField(max_length=100)
 	school_logo = models.ImageField(upload_to="pictures/", blank=True, null=True)
-	school_address = models.CharField(max_length=150, blank=True, null=True)
+	school_address = models.CharField(max_length=300, blank=True, null=True)
 	school_slogan = models.CharField(max_length=200, blank=True, null=True)
 	ft_begins = models.DateField(blank=True, null=True)
 	ft_ends = models.DateField(blank=True, null=True)
@@ -234,3 +242,10 @@ class Ranking(models.Model):
 	session = models.ForeignKey(Session, on_delete=models.CASCADE)
 	cumulative = models.FloatField()
 	rank = models.CharField(max_length=5, blank=True, null=True)
+
+class NoticeBoard(models.Model):
+    post_title = models.CharField(max_length=100, blank=True, null=True)
+    post_body = models.TextField(blank=True, null=True)
+    posted_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    posted_to = models.CharField(max_length=100, blank=True, null=True)
+    posted_on = models.DateTimeField(auto_now_add=True)

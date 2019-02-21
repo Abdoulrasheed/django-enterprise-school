@@ -43,9 +43,9 @@
             </div>
             <div class="col-lg-3 col-md-12">
             </div>
-            <div class="col-lg-3 col-md-12">  
+            <div class="col-lg-3 col-md-12">
             </div>
-            <form method="post">{% csrf_token %}
+            <form>
                <div class="dropdown">
                   <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown"
                      aria-haspopup="true" aria-expanded="false">
@@ -120,13 +120,13 @@
                     <td>
                       {% for subject in i.subjects.all %}
                             {% if forloop.counter|divisibleby:2 %}
-                            
+
                             <span class="btn subject_name btn-sm btn-blue-grey">
                               {% if forloop.counter >= 2 %},
                               {% endif %}
                               {{ subject.name|capfirst }}
                             </span>
-                            
+
                             {% else %}
                             <span class="btn subject_name btn-sm btn-indigo">
                               {{ subject.name|capfirst }}
@@ -145,8 +145,11 @@
                       {{ i.clss }}
                     </td>
                     <td>
-                      <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
-                      <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                      <a data-toggle="tooltip"
+                        data-placement="top"
+                        title="Click on Allocate Subject to update" class="teal-text">
+                        <i class="fa fa-pen"></i>
+                      </a>
                       <a object-id="{% url 'delete_all_allocated_subjects' id=i.pk %}" href="#" title="delete" class="red-text deallocate_all" data-toggle="modal" data-target="#modalConfirmDelete"><i class="fa fa-times"></i></a>
                     </td>
                   </tr>
@@ -202,14 +205,14 @@
             <div class="modal-content text-center">
               <!--Header-->
               <div class="modal-header d-flex justify-content-center">
-                <p class="heading">This will remove all subjects allocated to 
+                <p class="heading">This will remove all subjects allocated to
                   <b id="allocatedto"></b></p>
               </div>
 
               <!--Body-->
               <div class="modal-body">
                 <small>All of the following subjects will be deleted</small>
-                
+
                 <i class="fas fa-times fa-4x animated rotateIn"></i>
                 <ul class="list-group" id="lsub"></ul>
                 <small>Are sure to continue ?</small>

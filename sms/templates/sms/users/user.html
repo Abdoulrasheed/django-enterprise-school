@@ -98,25 +98,24 @@
                   <tr>
                     <td>{{ user.get_full_name }}</td>
                     <td><img src="{{ user.get_picture }}" width="50"></td>
-                    <td>{{ user.email }}</td>
+                    <td>{% if user.email %}{{ user.email }}{% else %} <small style="color: red">No email</small> {% endif %}</td>
                     <td>
                       {% if not user.id == request.user.id %}
-                      <div class="switch">
-                        <label>
+                      <div title="CAUTION: if deativated, this user can longer have access to this site" class="switch">
+                        <label class="custom-checkbox">
                           Off
-                          <input type="checkbox"{% if user.is_active %} checked {% endif  %}>
+                          <input deativate-url="{% url 'toggle_user_status' id=user.id %}" id="user_status" name="user_status" type="checkbox"
+                          {% if user.is_active %} checked {% endif %}/>
                           <span class="lever"></span> On
                         </label>
                       </div>
                       {% endif %}
                     </td>
                     <td>
-                      {% if not user.id == request.user.id %}
-                      <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
-                      <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
-                      <a href="{% url 'delete_user' id=user.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i>
+                      <a href="{% url 'profile' user=user %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
+                      <a href="{% url 'edit_user' id=user.pk %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                      <a href="{% if not user.id == request.user.id %}{% url 'delete_user' id=user.pk %}{% else %} # {% endif %}" title="delete" class="red-text"><i class="fa fa-times"></i>
                       </a>
-                      {% endif %}
                     </td>
                   </tr>
                   {% empty %}
@@ -161,8 +160,21 @@
       <!--Section: Basic examples-->
 
     </div>
+{% block script %}
+      <script type="text/javascript">
+        $(document).ready(function(){
+          $(".custom-checkbox").change(function(){
+            var row = $(this).closest("tr > td");
+            var url = $(row).find("#user_status").attr('deativate-url');
 
+            $.ajax({
+              url: url,
+                success: function (data) {
+                 alert(data);
+                }
+              });
+            });
+        });
+      </script>
+   {% endblock script %}
   {% endblock main %}
-  {% block script %}
-  <script src="{% static 'js/sms/sms_script.js' %}"></script>
-  {% endblock script %}

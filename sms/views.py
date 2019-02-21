@@ -11,19 +11,20 @@ from django.db.models import Avg, Count, Min, Sum, CharField, Value, Q
 from django.http import HttpResponse, JsonResponse
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render, render_to_response
 
 from django.template import Context
 from django.template.loader import get_template
 from .decorators import teacher_required, student_required, parent_required
 from .models import *
 from .constants import *
+from django.db import IntegrityError
 
 from .remark import getRemark, getGrade
-from .forms import (AddStudentForm, 
-					AddParentForm, 
-					AddTeacherForm, 
-					AddClassForm, 
+from .forms import (AddStudentForm,
+					AddParentForm,
+					AddTeacherForm,
+					AddClassForm,
 					AddSubjectForm,
 					AddSectionForm,
 					SubjectAllocationForm,
@@ -36,6 +37,17 @@ from .forms import (AddStudentForm,
 					SessionForm,
 					SmsForm,
 					SettingForm,
+					ChangePasswordForm,
+					NoticeForm,
+					EditStudentForm,
+					EditUserForm,
+					EditClassForm,
+					EditSubjectForm,
+					EditSectionForm,
+					EditSectionAllocationForm,
+					EditExpenseForm,
+					EditSessionForm,
+					SetParentForm,
 					)
 
 
@@ -48,16 +60,25 @@ def get_item_index(items, key, item):
 	except Exception as e:
 		return 0
 
+import logging
+DB_LOGGER = logging.getLogger(__name__)
 def get_subject_report_data(grades, subjects, student, student_grades):
 	result = []
 	for subject in subjects:
 		sub_grades = grades.filter(subject=subject)
 		sub_student_grades = student_grades.filter(subject=subject)
 		if sub_student_grades.exists():
-			sub_rank = get_item_index(sub_grades, 'pk', sub_student_grades.first().pk)
+			#DB_LOGGER.error('%r===%r='%(sub_grades.values_list('total',flat=True), student_grades.filter(subject=subject).first().total))
+
+			# print ('#'*10,sub_grades.values_list('total',flat=True), student_grades.filter(subject=subject).first().total)
+			sub_rank = get_item_index(sub_grades, 'total', student_grades.filter(subject=subject).first().total)
+			#DB_LOGGER.error('%r===%r='%(student, sub_rank))
+
+			# sub_rank = get_item_index(sub_grades, 'total', sub_student_grades.first().pk)
 			sub_student_grades = sub_student_grades.annotate(rank=Value(sub_rank, output_field=CharField()))
 			result+=sub_student_grades.values()
 	return result
+
 
 
 
@@ -73,7 +94,7 @@ def report_student(request):
 		return redirect('create_report_student')
 	clss = get_object_or_404(Class, pk=class_id)
 	current_session = Session.objects.get(current_session=True)
-	students = Student.objects.filter(in_class=clss)
+	students = Student.objects.filter(in_class=clss, session=current_session)
 	if not students.exists():
 		messages.success(request, 'No students exists for class %s in term %r '%(clss, term))
 		return redirect('create_report_student')
@@ -92,36 +113,37 @@ def report_student(request):
 
 	grades_ordered= grades\
 	.values('student')\
-	.annotate(total_mark=Sum('total')) \
+	.annotate(total_mark=Sum('total'))\
 	.order_by('-total_mark')
+	total_marks = [i.get('total_mark') for i in grades_ordered]
 	records = {}
 	highest = grades_ordered.first()['total_mark']
 	lowest = grades_ordered.last()['total_mark']
 	count = 0
 	for student in students:
-		print(student,'-11-------------',student.pk,student)
-		studen_rank = get_item_index(grades_ordered, 'student', student.pk)
-		if studen_rank:
-			count += 1
-			print(student,'--22------------',studen_rank)
-			student_grades = grades.filter(student=student)
-			data = get_subject_report_data(grades, subjects, student, student_grades)
-			# raise Warning(grades_ordered.get(student=student.pk)['total_mark'])
-			# student = student.annotate(total_mark=Value(grades_ordered.get(student=student.pk)['total_mark'], output_field=CharField()))
+		try:
 			total_mark = (grades_ordered.get(student=student.pk)['total_mark'])
 			setattr(student, 'total_mark', total_mark)
-			print(student.total_mark,'=====================')
-			records[studen_rank] = (student,data)
+			student_rank = total_marks.index(total_mark)+1
+			setattr(student, 'student_rank', student_rank)
+			count += 1
+			student_grades = grades.filter(student=student)
+			data = get_subject_report_data(grades, subjects, student, student_grades)
+			records[student.id] = (student,data)
+
+		except Exception as e:
+			DB_LOGGER.error('=====================%r'%(e))
 	if not count:
 		messages.success(request, 'No reports exists for class %s in term %r '%(clss, term))
 		return redirect('create_report_student')
 
 	response = HttpResponse(content_type='application/pdf')
 	response['Content-Disposition'] = 'attachment; filename="report.pdf"'
-	setting = Setting.objects.first()
-	context = {'results':records,'term':term,'setting':setting, 'highest':highest, 'lowest':lowest, 'number_of_student': grades_ordered.count()}
 	# return render(request, template, context)
-	
+	setting = Setting.objects.first()
+	scale = GradeScale.objects.all().order_by('grade')
+	context = {'results':records,'term':term,'setting':setting, 'highest':highest, 'lowest':lowest, 'number_of_student': grades_ordered.count(), 'gradeScale': scale}
+
 	from weasyprint import HTML, CSS
 	template = get_template(template)
 	html = template.render(context)
@@ -135,7 +157,7 @@ def report_student(request):
 	pdf_file = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(
 			stylesheets=[CSS(string=css_string)],presentational_hints=True)
 
-	
+
 	response = HttpResponse(pdf_file, content_type='application/pdf')
 	response['Content-Disposition'] = 'filename="home_page.pdf"'
 	return response
@@ -167,7 +189,7 @@ def home(request):
 		student = Student.objects.get(user__pk=request.user.pk)
 		current_session = Session.objects.get(current_session=True)
 		p = Payment.objects.filter(student=student, session=current_session)
-		no_students = Student.objects.filter(in_class__pk=student.in_class.pk).count()
+		no_students = Student.objects.filter(in_class__pk=student.in_class.pk, session=current_session).count()
 		subjects = Subject.objects.filter(class__pk=student.pk)
 		no_subjects = subjects.count()
 		ncontext = {}
@@ -177,7 +199,7 @@ def home(request):
 		"no_subjects": no_subjects,
 		"no_classes": no_classes,
 		"no_teachers": no_teachers,
-		"subjects": subjects, 
+		"subjects": subjects,
 		"student": student,
 		"p":p,
 		}
@@ -277,15 +299,16 @@ def delete_user(request, id):
 @login_required
 @teacher_required
 def students_list_view(request, id):
-	students = Student.objects.filter(in_class__pk=id)
-	selected_class = Class.objects.get(pk=id)
-	classes = Class.objects.all()
-	context = {
-		"selected_class": selected_class,
-		"students": students,
-		"classes": classes,
-	}
-	return render(request, 'sms/student/students_list.html', context)
+    current_session =Session.objects.get(current_session=True)
+    students = Student.objects.filter(in_class__pk=id, session=current_session)
+    selected_class = Class.objects.get(pk=id)
+    classes = Class.objects.all()
+    context = {
+        "selected_class": selected_class,
+        "students": students,
+        "classes": classes,
+        }
+    return render(request, 'sms/student/students_list.html', context)
 
 @login_required
 @teacher_required
@@ -295,23 +318,26 @@ def section_view(request):
 	return render(request, 'sms/section/section.html', context)
 
 @login_required
+def assign_teacher_list(request):
+	return render(request, 'sms/teacher/assign_list.html', {})
+
+
+@login_required
 @teacher_required
 def assign_teacher_view(request):
-	context = {}
-	if request.method == "POST":
-		if not request.POST['term'] in ['First', 'Second', 'Third']:
-			messages.error(request, ' ERROR: please select a term !')
-			return redirect('assign_teacher_list')
-		else:
-			term = request.POST['term']
-			current_session = Session.objects.get(current_session=True)
-			assigned_teachers = SubjectAssign.objects.filter(term=term, session=current_session)
-			subjects = Subject.objects.all()
-			context = {
-			"term": term,
-			"subjects": subjects,
-			"assigned_teachers": assigned_teachers,
-			}
+	if not request.GET.get('term') in ['First', 'Second', 'Third']:
+		messages.error(request, ' ERROR: please select a term !')
+		return redirect('assign_teacher_list')
+	else:
+		term = request.GET.get('term')
+		current_session = Session.objects.get(current_session=True)
+		assigned_teachers = SubjectAssign.objects.filter(term=term, session=current_session)
+		subjects = Subject.objects.all()
+		context = {
+		"term": term,
+		"subjects": subjects,
+		"assigned_teachers": assigned_teachers,
+		}
 	return render(request, 'sms/teacher/assign_teacher.html', context)
 
 
@@ -335,25 +361,58 @@ def add_assign_teacher(request):
 			teacher = User.objects.get(is_teacher=True, pk=teacher)
 			current_session = Session.objects.get(current_session=True)
 
-			record, created = SubjectAssign.objects.update_or_create(clss=class_id, term=term, teacher=teacher, session=current_session)
-			if not created:
+			try:
 				record = SubjectAssign.objects.get(clss=class_id, session=current_session, term=term, teacher=teacher)
+				ids = ()
+				record.subjects.clear()
+				for i in range(0, len(subjects)):
+					ids += (subjects[i].name,)
+					record.subjects.add(subjects[i])
+					record.save()
+				Notification(user=teacher, title="Subject Allocation !", body="Admin just updated the subjects allocated to you ! ", message_type=SUCCESS).save()
+				if teacher.phone:
+					if len(str(teacher.phone)) == 0:
+						pass
+					else:
+						if str(teacher.phone)[0] == '0':
+							if len(teacher.phone) != 10:
+								phone = str(teacher.phone)[1:]
+								phone = '+234'+phone
+								try:
+									message = client.messages.create(
+								    	to=phone,
+								    	from_=MSG_FROM,
+								    	body="Hello %s, \nthe school administrator just updated the list of subjects allocated to you. !\nLogin now for detals" %str(teacher.get_full_name()))
+									print(message.sid)
+								except:
+									print("theres an error while sending sms")
+				messages.success(request, 'Subjects were successfully updated')
+				return HttpResponseRedirect(reverse_lazy('assign_teacher_list'))
+			except SubjectAssign.DoesNotExist:
+				record = SubjectAssign.objects.create(clss=class_id, session=current_session, term=term, teacher=teacher)
 				ids = ()
 				for i in range(0, len(subjects)):
 					ids += (subjects[i].name,)
 					record.subjects.add(subjects[i])
 					record.save()
 				Notification(user=teacher, title="Subject Allocation !", body="Admin just updated the subjects allocated to you ! ", message_type=SUCCESS).save()
-				messages.success(request, 'Subjects were successfully allocated updated')
-			else:
-				record = SubjectAssign(clss=class_id, session=current_session, term=term, teacher=teacher)
-				record.save()
-				ids = ()
-				for i in range(0, len(subjects)):
-					ids += (subjects[i].name,)
-					record.subjects.add(subjects[i])
-					Notification(user=teacher, title="Subject Allocation !", body="You've been assigned to teach "+str(subjects[i]), message_type=SUCCESS).save()
-				messages.success(request, 'Subject was successfully allocated ')
+				if teacher.phone:
+					if len(str(teacher.phone)) == 0:
+						pass
+					else:
+						if str(teacher.phone)[0] == '0':
+							if len(teacher.phone) != 10:
+								phone = str(teacher.phone)[1:]
+								phone = '+234'+phone
+								try:
+									message = client.messages.create(
+								    	to=phone,
+								    	from_=MSG_FROM,
+								    	body="Hello %s, \nthe school administrator just assigned you as a teacher of some subject(s). !\nLogin now to find out more" %str(teacher.get_full_name()))
+									print(message.sid)
+								except:
+									print("theres an error while sending sms")
+				messages.success(request, 'Subjects were successfully allocated')
 				return HttpResponseRedirect(reverse_lazy('assign_teacher_list'))
 		else:
 			form = SubjectAllocationForm(request.POST)
@@ -373,18 +432,16 @@ def add_assign_teacher(request):
 		}
 	return render(request, 'sms/teacher/allocate_subject.html', context)
 
+
 @login_required
 @teacher_required
 def section_allocation(request):
-	if request.method == "POST":
-		print(request.POST)
-	else:
-		sections = SectionAssign.objects.all()
-		subjects = Subject.objects.all()
-		context = {
+	sections = SectionAssign.objects.all()
+	subjects = Subject.objects.all()
+	context = {
 		"subjects": subjects,
 		"sections": sections,
-}
+		}
 	return render(request, 'sms/section/section_allocation.html', context)
 
 
@@ -409,7 +466,7 @@ def add_section_allocation(request):
 				check = SectionAssign.objects.get(section=section)
 				section_name = check.section_head.get_full_name()
 				section_head = check.section.name
-				messages.info(request, "You've already allocated "+str(section_head)+" Section to "+ str(section_name) + " <a href='/section-allocation/update/"+str(check.pk)+"'/>Click here to edit this information</a>")
+				messages.info(request, "You've already allocated "+str(section_head)+" Section to "+ str(section_name) + " <a href='/section-allocation/edit/"+str(check.pk)+"'/>Click here to edit this information</a>")
 				return redirect('add_assign_section')
 			else:
 				section = Section.objects.get(pk=section)
@@ -457,7 +514,6 @@ def add_student(request):
 			stud_state = form.cleaned_data.get('stud_state')
 			stud_email = form.cleaned_data.get('stud_email')
 			stud_phone_number = form.cleaned_data.get('stud_phone_number')
-			stud_lga = form.cleaned_data.get('stud_lga')
 			stud_blood_group = form.cleaned_data.get('stud_blood_group')
 			stud_roll_number = form.cleaned_data.get('stud_roll_number')
 			stud_dob = form.cleaned_data.get('dob')
@@ -470,48 +526,22 @@ def add_student(request):
 			parent_state = form.cleaned_data.get('parent_state')
 			parent_address = form.cleaned_data.get('parent_address')
 			parent_email = form.cleaned_data.get('parent_email')
-			parent_lga = form.cleaned_data.get('parent_lga')
 
 			stud_picture = form.cleaned_data['stud_picture']
 			parent_picture = form.cleaned_data['parent_picture']
 
 			existing_parent = form.cleaned_data.get('existing_parent')
+			selected_class = Class.objects.get(pk=stud_class)
 
-			if not '' in [parent_username, parent_password] and existing_parent not in ['', None]:
-				messages.error(request, 'You cannot select an existing parent and create a new one at same time !')
-				return redirect('add_student')
-			elif Student.objects.filter(user__username=stud_username).exists():
+			if User.objects.filter(username=stud_username).exists():
 				messages.error(request, 'A student with that username already exist !')
 				return redirect('add_student')
-				if User.objects.filter(username=parent_username).exists():
-					messages.error(request, 'A parent with that username already exist !')
-					return redirect('add_student')
-			elif Student.objects.filter(roll_number=stud_roll_number).exists():
+
+			if Student.objects.filter(roll_number=stud_roll_number).exists():
 				messages.error(request, 'A student with the entered roll number already exist !')
 				return redirect('add_student')
-			else:
-				if existing_parent in ['', None]:
-					if '' in [parent_username, parent_password] or None in [parent_username, parent_password]:
-						messages.error(request, 'You need to select a parent or create a new one')
-						return redirect('add_student')
-					else:
-						parent = User.objects.create(
-						username = parent_username,
-						password = make_password(parent_password),
-						first_name = parent_fname,
-						last_name = parent_sname,
-						other_name = parent_oname,
-						email = parent_email,
-						state = parent_state,
-						lga =stud_lga,
-						address = parent_address,
-						phone = parent_phone_number,
-						picture = parent_picture,
-						is_parent = True,
-						)
-				else:
-					parent = existing_parent
-				user = User.objects.create(
+
+			user = User.objects.create(
 				username = stud_username,
 				password = make_password(stud_password),
 				first_name = stud_fname,
@@ -521,35 +551,76 @@ def add_student(request):
 				email = stud_email,
 				religion = stud_religion,
 				state = stud_state,
-				lga =stud_lga,
 				dob = stud_dob,
 				address = stud_address,
 				phone = stud_phone_number,
 				picture = stud_picture,
 				is_student = True,
 				)
-				selected_class = Class.objects.get(pk=stud_class)
-				student = Student.objects.create(
+
+			student = Student.objects.create(
 				user=user,
 				in_class=selected_class,
 				year_of_admission=stud_year_of_admission,
 				roll_number = stud_roll_number,
 				)
-				stud = Student.objects.get(user__username=stud_username)
-				if existing_parent in ['', None]:
-					par = User.objects.get(username=parent_username, first_name=parent_fname, last_name=parent_sname)
-				else:
-					par = User.objects.get(username=parent)
-				Parent.objects.create(student=stud, parent=par)
-				messages.success(request, stud_fname + " " + stud_sname +' Was Successfully Recorded! ')
-				return HttpResponseRedirect(reverse_lazy('add_student'))
 
+			if not any([parent_username, parent_password, existing_parent]):
+				pass
+			elif parent_username and parent_password:
+				parent = User.objects.create(
+					username = parent_username,
+					password = make_password(parent_password),
+					first_name = parent_fname,
+					last_name = parent_sname,
+					other_name = parent_oname,
+					email = parent_email,
+					state = parent_state,
+					address = parent_address,
+					phone = parent_phone_number,
+					picture = parent_picture,
+					is_parent = True,
+					)
+
+				Parent.objects.create(student=student, parent=parent)
+				if parent_picture:
+					fs = FileSystemStorage()
+					fs.save(parent_picture.name, parent_picture)
+			else:
+				parent = User.objects.get(username=existing_parent)
+				Parent.objects.create(student=student, parent=parent)
+
+			if len(str(parent_phone_number)) == 0:
+				pass
+			else:
+				school = Setting.objects.first()
+				shool_name = school.school_name
+				if str(parent_phone_number)[0] == '0':
+					if len(parent_phone_number) != 10:
+						phone = str(parent_phone_number)[1:]
+						phone = '+234'+parent_phone_number
+						try:
+							message = client.messages.create(
+						    	to=phone,
+						    	from_=MSG_FROM,
+						    	body="Hello {0}, \nWelcome to {1}. \
+						    	\nYour login details are: \
+						    	\nusername: {2}\
+						    	\npassword: {3}\
+						    	\nlink: {4}".format(parent_fname, shool_name, parent_username, parent_password, request.META['HTTP_HOST']
+						    	))
+							print(message.sid)
+						except:
+							pass
+			if stud_picture:
+				fs = FileSystemStorage()
+				fs.save(stud_picture.name, stud_picture)
+			messages.success(request, stud_fname + " " + stud_sname +' Was Successfully Recorded! ')
+			return HttpResponseRedirect(reverse_lazy('add_student'))
 		else:
-			form = AddStudentForm(request.POST)
-			message = form
+			form = AddStudentForm(request.POST, request.FILES)
 			context =  {
 				"form": form,
-				"message": message,
 				"parents": parents,
 				"classes": classes,
 				}
@@ -558,6 +629,8 @@ def add_student(request):
 	else:
 		context = {"classes": classes, "parents": parents,}
 		return render(request, 'sms/student/add_student.html', context)
+
+
 
 @login_required
 @teacher_required
@@ -576,7 +649,7 @@ def add_parent(request):
 			email = form.cleaned_data.get('email')
 			address = form.cleaned_data.get('address')
 			picture = form.cleaned_data['picture']
-
+			full_name = firstname+" "+surname
 			if User.objects.filter(username=username).exists():
 				messages.success(request, "A user with username "+ username + " had already exists !")
 				return HttpResponseRedirect(reverse_lazy('add_parent'))
@@ -593,7 +666,29 @@ def add_parent(request):
 				picture=picture,
 				is_parent=True,
 				)
+			if picture:
+				fs = FileSystemStorage()
+				fs.save(picture.name, picture)
 			messages.success(request, firstname + " " + surname +' Was Successfully Recorded! ')
+			if phone:
+					if len(str(phone)) == 0:
+						pass
+					else:
+						if str(phone)[0] == '0':
+							if len(phone) != 10:
+								phone = str(phone)[1:]
+								phone = '+234'+phone
+								message = client.messages.create(
+							    	to=phone,
+							    	from_=MSG_FROM,
+							    	body="Hello {0}, \nYou can now access any of your child's school \
+							    	record right from your mobile or pc device!\nLogin \
+							    	using the link and the credentials below and we recommend you change your password immediately.\
+							    	\nusername: {1}\
+							    	\npassword: {2}\
+							    	\nlink: {3}".format(full_name, username, password, request.META['HTTP_HOST']
+							    	))
+								print(message.sid)
 			return HttpResponseRedirect(reverse_lazy('add_parent'))
 		else:
 			form = AddParentForm(request.POST, request.FILES)
@@ -637,7 +732,29 @@ def add_teacher(request):
 				picture=picture,
 				is_teacher=True,
 				)
+			if picture:
+				fs = FileSystemStorage()
+				fs.save(picture.name, picture)
 			messages.success(request, firstname + " " + surname +' Was successfully added! ')
+			if len(str(phone)) == 0:
+				pass
+			else:
+				school = Setting.objects.first()
+				school_name = school.school_name
+				if str(phone)[0] == '0':
+					if len(phone) != 10:
+						phone = str(phone)[1:]
+						phone = '+234'+phone
+						message = client.messages.create(
+							to=phone,
+						  	from_=MSG_FROM,
+						  	body="Hello {0}, \nWe are proud to have you as teacher. \
+						  	\nYour login details are: \
+						  	\nusername: {1}\
+						  	\npassword: {2}\
+						  	\nlink: {3}\
+						  	\n{4}".format(firstname, username, password, request.META['HTTP_HOST'], school_name))
+						print(message.sid)
 			return HttpResponseRedirect(reverse_lazy('add_teacher'))
 		else:
 			form = AddParentForm(request.POST, request.FILES)
@@ -660,9 +777,15 @@ def add_class(request):
 			section_id = form.cleaned_data.get('section')
 			selected_subjects = form.cleaned_data.get('subjects')
 			if Class.objects.filter(name=name).exists():
-				class_id = str(Class.objects.get(name=name).pk)
-				messages.error(request, name + ' Already exists! <a href="/class/update/'+class_id+'/">click here to update its subjects</a>')
-				return HttpResponseRedirect(reverse_lazy('add_class'))
+			    ids = ()
+			    section = Section.objects.get(pk=section_id)
+			    clss = Class.objects.get(name=name)
+			    clss.subjects.clear()
+			    for i in range(0, len(selected_subjects)):
+			        ids += (selected_subjects[i].name,)
+			        clss.subjects.add(selected_subjects[i])
+			    messages.success(request, clss.name +' Was successfully updated')
+			    return HttpResponseRedirect(reverse_lazy('class_list'))
 			else:
 				ids = ()
 				section = Section.objects.get(pk=section_id)
@@ -861,7 +984,7 @@ def teachers_view(request):
 
 @login_required
 def profile(request, user):
-	user = User.objects.get(username=user)
+	user = get_object_or_404(User, username=user)
 	context = {"user": user}
 	if request.method == "POST":
 		date = request.POST['dob']
@@ -951,7 +1074,7 @@ def attendance_list(request):
 		if form.is_valid():
 			term = form.cleaned_data.get('selected_term')
 			selected_class = form.cleaned_data.get('selected_class')
-			students = Student.objects.filter(in_class=selected_class)
+			students = Student.objects.filter(in_class=selected_class, session=session)
 			ids = ()
 			for i in students:
 				ids += (i.user.pk,)
@@ -989,7 +1112,7 @@ def add_attendance(request):
 			class_id = data['class']
 			selected_class = Class.objects.get(pk=class_id)
 			date = datetime.strptime(date, '%d %B, %Y')
-			students = Student.objects.filter(in_class__pk=class_id)
+			students = Student.objects.filter(in_class__pk=class_id, session=current_session)
 			context = {
 				"students": students,
 				"classes": in_class,
@@ -1008,40 +1131,62 @@ def add_attendance(request):
 	return render(request, 'sms/student/add_attendance.html', context)
 
 
-# TODO -------------FIX
 @login_required
 @teacher_required
 def save_attendance(request):
-	if request.method == "POST":
-		data = request.POST.copy()
-		data.pop('csrfmiddlewaretoken')
-		data.pop('submit')
-		term = data['selected_term']
-		date = data['selected_date']
-		data.pop('selected_term')
-		data.pop('selected_date')
-		print(data.lists)
-		# form = AttendanceSaveForm(request.POST)
-		# if form.is_valid():
-		# 	session = Session.objects.get(current_session=True)
-		# 	term = form.cleaned_data.get('selected_term')
-		# 	date = form.cleaned_data.get('selected_date')
-		# 	attendance = form.cleaned_data.get('status')
-		# 	is_late = form.cleaned_data.get('is_late')
-		# 	duration = form.cleaned_data.get('duration')
-		# 	student_ids = request.POST['student_ids']
-		# 	print('session: '+ str(session))
-		# 	print('term: '+ str(term))
-		# 	print('date: '+ str(date))
-		# 	print('attendance: '+ str(attendance))
-		# 	print('is_late: '+ str(is_late))
-		# 	print('duration: '+ str(duration))
-		# 	print('student_ids: '+ str(request.POST['student_ids']))
+	if request.method == 'POST':
+		session = Session.objects.get(current_session=True)
+		term = request.POST.get('selected_term')
+		date = request.POST.get('selected_date')
+
+		stud_id = list(request.POST.getlist('student_id'))
+		status = list(request.POST.getlist('status'))
+		is_late = list(request.POST.getlist('is_late'))
+		duration = list(request.POST.getlist('duration'))
+
+		if len(is_late) < len(stud_id):
+			for i in range(0, len(stud_id)):
+				is_late.append(False)
+
+		if len(status) < len(stud_id):
+			for i in range(0, len(stud_id)):
+				status.append(False)
+
+		for i in range(0, len(stud_id)):
+			student = Student.objects.get(pk=stud_id[i])
+			d = duration[i]
+			print(i)
+			if status[i] == 'on':
+				s = True
+			else:
+				s = False
+
+			if is_late[i] == 'on':
+				is_l = True
+			else:
+				is_l = False
+
+			try:
+				a = Attendance.objects.get(student=student, term=term, session=session, date=date)
+				a.is_late = is_l
+				a.is_present = s
+				a.is_late_for = d
+				a.save()
+			except Attendance.DoesNotExist:
+				Attendance(
+					student=student,
+					term=term,
+					session=session,
+					is_present=s,
+					is_late=is_l,
+					date=date,
+					is_late_for=d
+					).save()
+		messages.success(request, "Successfully saved")
+		return redirect('add_attendance')
+	else:
 		messages.error(request, "There's an error while creating an attendance record")
-		return HttpResponseRedirect(reverse_lazy('add_attendance'))
-		# else:
-		# messages.error(request, "There's an error while creating an attendance record")
-		# return HttpResponseRedirect(reverse_lazy('add_attendance'))
+		return redirect('add_attendance')
 
 
 @login_required
@@ -1053,11 +1198,7 @@ def toggle_session(request, id):
 	current_session.save()
 	selected_session.current_session = True
 	selected_session.save()
-	return HttpResponse(
-		"<script type='text/javascript'>\
-			history.go(-1); \
-			location.reload(true);\
-		</script>")
+	return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required
@@ -1144,6 +1285,7 @@ def score_entry(request):
 				a.compute_position(term)
 				a.save()
 		messages.success(request, "Score Successfully Recorded !")
+		return redirect('/score-entry/')
 
 	selected_class = request.GET.get('class')
 	selected_term = request.GET.get('term')
@@ -1152,7 +1294,7 @@ def score_entry(request):
 		if not None in [selected_class, selected_term, selected_subject]:
 			selected_class = Class.objects.get(pk=selected_class)
 			current_session = session
-			students = Student.objects.filter(in_class__name=selected_class)
+			students = Student.objects.filter(in_class__name=selected_class, session=session)
 			print('#######################################')
 			student_data = []
 			for student in students:
@@ -1177,61 +1319,92 @@ def score_entry(request):
 				})
 			return render(request, 'sms/mark/load_score_table.html', context)
 	elif request.user.is_teacher:
-		if not None in [selected_term, selected_subject]:
-			selected_class_name = request.GET.get('scid')
-			selected_class_name = selected_class_name[-7:-1]
-			selected_class = Class.objects.get(name=selected_class_name)
-			current_session = Session.objects.filter(current_session=True)
-			students = Student.objects.filter(in_class__name=selected_class)
-			gr = Grade.objects.filter(student__in_class__pk=selected_class.pk)
-			gr = zip(students, gr)
-			context.update({
+	    if not None in [selected_term, selected_subject]:
+	        selected_class_id = request.GET.get('scid')
+	        selected_class = Class.objects.get(id=selected_class_id)
+	        selected_class_name = selected_class.name
+	        current_session = Session.objects.get(current_session=True)
+	        students = Student.objects.filter(in_class__name=selected_class, session=current_session)
+	        subject = request.GET.get('subject')
+	        subject = Subject.objects.get(pk=subject)
+	        student_data = []
+	        for student in students:
+	            term = request.GET.get('term')
+	            grade_obj = Grade.objects.filter(
+	            session=current_session,
+	            term=term,
+	            student=student,
+	            subject=subject).first() or Grade.objects.none()
+
+	            student_data += [(student, grade_obj)]
+	        context.update({
 				"classes": classes,
 				"selected_subject": selected_subject,
-				"selected_class": selected_class,
+				"selected_class_name": selected_class_name,
 				"selected_term": selected_term,
 				"students": students,
-				"gr":gr,
+				"student_data":student_data
 				})
-			return render(request, 'sms/mark/load_score_table.html', context)
+	    return render(request, 'sms/mark/load_score_table.html', context)
 	return render(request, 'sms/mark/get_score_list.html', context)
 
 
+
+
 @login_required
-@teacher_required
 def view_score(request):
-	classes = Class.objects.all().order_by('name')
-	context = {
-		"classes": classes
+	if request.user.is_parent:
+		session = Session.objects.get(current_session=True)
+		ids = ()
+		students = Parent.objects.filter(parent__pk=request.user.pk).values('parent', 'student').annotate(Count('student'))
+		for student in students:
+			stud_id = student['student']
+			ids += (stud_id,)
+			grades = Grade.objects.filter(student=stud_id, session=session)
+		list_students = Student.objects.filter(id__in=ids)
+		context = {
+			"grades": grades,
+			"students": list_students,
 		}
-	return render(request, 'sms/mark/view_scores.html', context)
+		return render(request, 'sms/mark/parent_view_scores.html', context)
+	else:
+		classes = Class.objects.all().order_by('name')
+		context = {
+			"classes": classes
+			}
+		return render(request, 'sms/mark/view_scores.html', context)
 
 
 @login_required
-@teacher_required
 def load_score_table(request):
 	if request.is_ajax:
-		class_id = request.GET.get('class')
-		subject_id = request.GET.get('subject_id')
-		term = request.GET.get('term')
+		if request.user.is_parent:
+			session = Session.objects.get(current_session=True)
+			stud_id = request.GET.get('stud_id')
+			grades = Grade.objects.filter(student__pk=stud_id, session=session)
+			context = {"grades": grades}
+			return render(request, 'sms/mark/load_view_score.html', context)
+		else:
+			class_id = request.GET.get('class')
+			subject_id = request.GET.get('subject_id')
+			term = request.GET.get('term')
 
-		clss = Class.objects.get(pk=class_id).pk
-		subject = Subject.objects.get(pk=subject_id)
-		current_session = Session.objects.get(current_session=True)
+			clss = Class.objects.get(pk=class_id).pk
+			subject = Subject.objects.get(pk=subject_id)
+			current_session = Session.objects.get(current_session=True)
 
-		grades = Grade.objects.filter(
-			student__in_class__pk=clss,
-			session=current_session,
-			term=term,
-			subject=subject
-			)
-		print(grades)
-		return render(request, 'sms/mark/load_view_score.html', {'grades': grades})
+			grades = Grade.objects.filter(
+				student__in_class__pk=clss,
+				session=current_session,
+				term=term,
+				subject=subject
+				)
+			return render(request, 'sms/mark/load_view_score.html', {'grades': grades})
 
 @login_required
 def get_student_position(request):
 	current_session = Session.objects.get(current_session=True)
-	students = Student.objects.filter(in_class__pk=1)
+	students = Student.objects.filter(in_class__pk=1, session=current_session)
 	overall_total = []
 	all_ids = []
 	for student in students:
@@ -1304,19 +1477,14 @@ def add_payment(request):
 			term = form.cleaned_data.get('term')
 			paid_amount = form.cleaned_data.get('paid_amount')
 			teller_number = form.cleaned_data.get('tnumber')
+
+			paid_amount = float(paid_amount)
 			damount = student.in_class.amount_to_pay
+
 			if damount == None or damount == '':
 				messages.success(request, ' You have to create a payment setting for the student\'s class, Account > Set Payment')
 				classes = Class.objects.all().order_by('name')
 				return render(request, 'sms/payments/add_payment.html', {"students": students, "classes": classes})
-			paid_amount = float(paid_amount)
-			due_amount = damount - paid_amount
-			if due_amount == 0:
-				payment_status = PAID
-			elif paid_amount == 0:
-				payment_status = NOT_PAID
-			else:
-				payment_status = PARTIALLY_PAID
 
 			if payment_method == 'Bank' and teller_number in [None, '']:
 				messages.success(request, ' Please provide the bank teller number')
@@ -1327,11 +1495,31 @@ def add_payment(request):
 			for i in p:
 				prevAmount += i.paid_amount
 			e = prevAmount + paid_amount
+			print(e)
 			if e > damount:
 				classes = Class.objects.all().order_by('name')
-				messages.success(request,' Please check the due amount of this student for ' + term + " term, " + str(session))
+				messages.success(request,'Invalid amount !')
 				return render(request, 'sms/payments/add_payment.html', {"students": students, "classes":classes})
-			pay, updated = Payment.objects.update_or_create(
+
+			due_amount = damount - paid_amount
+			if e == damount:
+				payment_status = PAID
+			elif e == 0:
+				payment_status = NOT_PAID
+			else:
+				payment_status = PARTIALLY_PAID
+
+			try:
+				pay = Payment.objects.get(student=student, session=session, term=term)
+				pay.due_amount=float(damount - e)
+				pay.payment_status=payment_status
+				pay.paid_amount=float(e)
+				pay.payment_method =payment_method
+				pay.teller_number=teller_number
+				pay.save()
+				messages.success(request, str(student) +'\'s payment was successfully updated')
+			except Payment.DoesNotExist:
+				Payment.objects.create(
 				student=student,
 				due_amount=float(due_amount),
 				payment_status=payment_status,
@@ -1339,11 +1527,9 @@ def add_payment(request):
 				payment_method =payment_method,
 				teller_number=teller_number,
 				session=session,
-				term=term)
-			if not updated:
-				pay.save()
-			messages.success(request, str(student) +'\'s payment was successfully added')
-			return HttpResponseRedirect(reverse_lazy('view_payments'))
+				term=term).save()
+				messages.success(request, str(student) +'\'s payment was successfully added')
+			return redirect('view_payments')
 		else:
 			form = PaymentForm(request.POST)
 			return render(request, 'sms/payments/add_payment.html', {"form": form, "students": students})
@@ -1374,15 +1560,21 @@ def payment(request):
 @teacher_required
 def set_payment(request):
 	if request.method == "POST":
-		class_id = request.POST['class']
-		amount_to_pay = request.POST['amount_to_pay']
-		print(class_id)
-		print(amount_to_pay)
-		clss = Class.objects.get(id=class_id)
-		clss.amount_to_pay = amount_to_pay=amount_to_pay
-		clss.save()
-		messages.success(request, ' Payment setting was successfully updated ')
-		return HttpResponseRedirect(reverse_lazy('set_payment'))
+	    try:
+	        class_id = request.POST['class'] or None
+	        amount_to_pay = request.POST.get('amount_to_pay')
+	    except:
+	        messages.success(request, ' Please Select a class')
+	        return redirect('set_payment')
+	    if all([class_id, amount_to_pay]):
+	        clss = Class.objects.get(id=class_id)
+	        clss.amount_to_pay = amount_to_pay=amount_to_pay
+	        clss.save()
+	        messages.success(request, ' Payment setting was successfully updated ')
+	        return HttpResponseRedirect(reverse_lazy('set_payment'))
+	    else:
+		    messages.info(request, ' All fields are required ')
+		    return HttpResponseRedirect(reverse_lazy('set_payment'))
 	classes = Class.objects.all()
 	context = {"classes": classes}
 	return render(request, 'sms/settings/payment_setting.html', context)
@@ -1414,9 +1606,10 @@ def load_payment_table(request):
 @login_required
 @teacher_required
 def load_students_of_class(request):
-	class_id = request.GET.get('class')
-	students = Student.objects.filter(in_class__pk=class_id).order_by('-id')
-	return render(request, 'sms/payments/ajax_load_students.html', {"students": students})
+    current_session = Session.objects.get(current_session=True)
+    class_id = request.GET.get('class')
+    students = Student.objects.filter(in_class__pk=class_id, session=current_session).order_by('-id')
+    return render(request, 'sms/payments/ajax_load_students.html', {"students": students})
 
 @login_required
 @teacher_required
@@ -1517,6 +1710,9 @@ def send_sms(request):
 		context = {"sms":sms}
 		return render(request, 'sms/mail_and_sms/sms.html', context)
 
+
+@login_required
+@teacher_required
 def general_setting(request):
 	context = {}
 	if request.method == "POST":
@@ -1564,6 +1760,9 @@ def general_setting(request):
 		return render(request, 'sms/settings/general_setting.html', {"s":s})
 
 
+
+@login_required
+@teacher_required
 def reset_users_password_view(request):
 	if request.is_ajax:
 		if request.method == 'POST':
@@ -1575,6 +1774,8 @@ def reset_users_password_view(request):
 	return render(request, 'sms/users_password/users_password.html', {})
 
 
+@login_required
+@teacher_required
 def reset_users_password(request):
 	user_type = request.GET.get('user_type')
 	if user_type == 'admin':
@@ -1587,3 +1788,446 @@ def reset_users_password(request):
 		users = User.objects.filter(is_teacher=True)
 	context = {'users': users}
 	return render(request, 'sms/users_password/load_users.html', context)
+
+
+
+
+@login_required
+@teacher_required
+def grade_scale(request):
+	scales = GradeScale.objects.all().order_by('-grade')
+	return render(request, 'sms/mark/grade_scale.html', {'gradeScales': scales})
+
+
+@login_required
+@teacher_required
+def set_grade_scale(request):
+	if request.method == "POST":
+		grade = request.POST.get('grade') or None
+		remark = request.POST.get('remark') or None
+		mark_from = request.POST.get('mark_from') or None
+		mark_upto = request.POST.get('mark_upto') or None
+
+		if not None in [grade, remark, mark_from, mark_upto]:
+		    try:
+		        gr = GradeScale.objects.get(grade=grade)
+		        gr.grade = grade
+		        gr.mark_from = mark_from
+		        gr.mark_upto = mark_upto
+		        gr.remark = remark
+		        gr.save()
+		        messages.success(request, ' Grade Scale setting was successfully updated ')
+		        return HttpResponseRedirect(reverse_lazy('set_grade_scale'))
+
+		    except GradeScale.DoesNotExist:
+		        try:
+		            gr = GradeScale.objects.create(
+		                grade = grade,
+		                mark_from = mark_from,
+		                mark_upto = mark_upto,
+		                remark = remark)
+		            messages.success(request, ' Grade Scale setting was successfully recorded ')
+		            return HttpResponseRedirect(reverse_lazy('set_grade_scale'))
+		        except IntegrityError:
+		            messages.success(request, ' The selected mark range had already been applied to another grade !')
+		            return HttpResponseRedirect(reverse_lazy('set_grade_scale'))
+		    except IntegrityError:
+		        messages.success(request, ' The selected mark range had already been applied to another grade !')
+		        return HttpResponseRedirect(reverse_lazy('set_grade_scale'))
+		else:
+		    messages.success(request, ' All the fields are required !')
+		    return HttpResponseRedirect(reverse_lazy('set_grade_scale'))
+	else:
+		scales = GradeScale.objects.all()
+		return render(request, 'sms/mark/grade_scale.html', {'gradeScales': scales})
+
+
+@login_required
+@teacher_required
+def promotion(request):
+	classes = Class.objects.all()
+	sessions = Session.objects.all()
+	return render(request, 'sms/promotion/promote.html', {'sessions': sessions, 'classes': classes})
+
+
+@login_required
+@teacher_required
+def to_class_list(request):
+	if request.is_ajax:
+		from_class = request.GET.get('from_class')
+		classes = Class.objects.exclude(id=from_class)
+		return render(request, 'sms/promotion/to_class_list.html', {'classes': classes})
+
+
+
+@login_required
+@teacher_required
+def load_promotion_list(request):
+	if request.is_ajax:
+		from_class_id = request.GET.get('from_class_id')
+		to_class_id = request.GET.get('to_class_id')
+		print(from_class_id)
+
+
+		current_session = Session.objects.get(current_session=True)
+		to_session = request.GET.get('to_session')
+		print(to_session)
+		ranking = Ranking.objects.filter(student__in_class__pk=from_class_id, session=current_session)
+		context = {
+			'ranking': ranking,
+ 			'to_session': to_session,
+          	'from_class_id': from_class_id,
+          	'to_class_id': to_class_id,
+		}
+		return render(request, 'sms/promotion/load_promotion_list.html', context)
+
+
+@login_required
+@teacher_required
+def promote(request, stud_id,  to_class_id, to_session_id):
+	print("stud_id: "+str(stud_id))
+	print("to_class_id: "+str(to_class_id))
+	print("to_session_id: "+str(to_session_id))
+	session = get_object_or_404(Session, id=to_session_id)
+	clss = get_object_or_404(Class, id=to_class_id)
+	try:
+		student = get_object_or_404(Student, id=stud_id)
+		s = Student.objects.get(user__pk=student.user.pk, session=session.id)
+		s.clss = clss
+		s.session = session
+		s.save()
+	except Student.DoesNotExist:
+		student = get_object_or_404(Student, id=stud_id)
+		s = Student.objects.create(user=student.user, in_class=clss, session=session)
+		s.save()
+	messages.success(request, ' Successfully Promoted!')
+	return redirect('promotion_list')
+
+@login_required
+def change_password(request):
+    from django.contrib.auth import update_session_auth_hash
+    if request.method == "POST":
+        form = ChangePasswordForm(request.POST)
+        if form.is_valid():
+            old_pass = form.cleaned_data.get('old_password')
+            new_pass = form.cleaned_data.get('new_password')
+            confirm_password = form.cleaned_data.get('confirm_password')
+            user = request.user
+            old_p = user.password
+            new_p = make_password(new_pass)
+            if user.check_password(old_pass):
+                if new_pass == confirm_password:
+                    user.password = new_p
+                    user.save()
+                    update_session_auth_hash(request, user)
+                    messages.success(request, 'Your password was successfully updated!')
+                    return redirect('change_password')
+                else:
+                    messages.success(request, 'New password and confirm password do not match !')
+                    return redirect('change_password')
+            else:
+                messages.success(request, 'Old password is incorrect, you may contact the principal if this parsist !')
+                return redirect('change_password')
+        else:
+            form = ChangePasswordForm(request.POST)
+            return render(request, 'sms/users/change_password.html', {'form': form})
+    else:
+        return render(request, 'sms/users/change_password.html', {})
+
+@login_required
+def notice_board(request):
+	if request.user.is_parent:
+		notices = NoticeBoard.objects.filter(posted_to="Parent").order_by('-posted_on')
+	elif request.user.is_teacher:
+		notices = NoticeBoard.objects.filter(posted_to="Teacher").order_by('-posted_on')
+	elif request.user.is_student:
+		notices = NoticeBoard.objects.filter(posted_to="Student").order_by('-posted_on')
+	else:
+		notices = NoticeBoard.objects.all().order_by('-posted_on')
+	return render(request, 'sms/notice/notice_board.html', {'notices': notices})
+
+
+@login_required
+@teacher_required
+def create_notice(request):
+	if request.method == "POST":
+		print(request.POST)
+		form = NoticeForm(request.POST)
+		if form.is_valid():
+			post_title = form.cleaned_data.get('post_title')
+			post_body = form.cleaned_data.get('post_body')
+			posted_by = request.user
+			posted_to = form.cleaned_data.get('posted_to')
+			NoticeBoard.objects.create(
+				post_title=post_title,
+				post_body=post_body,
+				posted_by=posted_by,
+				posted_to=posted_to,
+				)
+			print("created")
+			messages.success(request, 'Successfully posted to all ' + posted_to + "s")
+			return redirect('notice_board')
+		else:
+			print("form is not valid")
+			form = NoticeForm(request.POST)
+			return redirect('notice_board')
+	else:
+		print("request is not post")
+		return redirect('notice_board')
+
+
+@login_required
+@teacher_required
+def delete_notice(request, id):
+	notice  = get_object_or_404(NoticeBoard, id=id)
+	notice.delete()
+	messages.success(request, 'Successfully deleted')
+	return redirect('notice_board')
+
+
+def handler404(request, exception, template_name="404.html"):
+    response = render_to_response("404.html")
+    response.status_code = 404
+    return response
+
+@login_required
+@teacher_required
+def update_student(request, id):
+	student = get_object_or_404(Student, id=id)
+	user = get_object_or_404(User, id=student.user.id)
+	if request.method == "POST":
+		userForm = EditUserForm(request.POST, instance=user)
+		studentForm = EditStudentForm(request.POST, instance=student)
+		if all([userForm.is_valid(), studentForm.is_valid()]):
+			user = userForm.save(commit=False)
+			student = studentForm.save(commit=False)
+			user.first_name = userForm.cleaned_data.get('first_name')
+			user.last_name = userForm.cleaned_data.get('last_name')
+			user.other_name = userForm.cleaned_data.get('other_name')
+			user.religion = userForm.cleaned_data.get('religion')
+			user.address = userForm.cleaned_data.get('address')
+			user.gender = userForm.cleaned_data.get('gender')
+			user.phone = userForm.cleaned_data.get('phone')
+			User.email = userForm.cleaned_data.get('email')
+			user.dob = userForm.cleaned_data.get('dob')
+			user.state = userForm.cleaned_data.get('state')
+
+			student.in_class = studentForm.cleaned_data.get('in_class')
+			student.roll_number = studentForm.cleaned_data.get('roll_number')
+			student.year_of_admission = studentForm.cleaned_data.get('year_of_admission')
+			user.save()
+			student.save()
+			messages.success(request, 'Successfully updated {0}\'s information'.format(user.username))
+			return redirect('edit_student', id=student.id)
+		else:
+			userForm = EditUserForm(request.POST, request.FILES)
+			studentForm = EditStudentForm(request.POST)
+			context = {
+				'userForm':userForm,
+				'studentForm': studentForm,
+			}
+			return render(request, 'sms/student/edit_student.html', context)
+	else:
+		userForm = EditUserForm(instance=user)
+		studentForm = EditStudentForm(instance=student)
+		context = {
+				'userForm':userForm,
+				'studentForm': studentForm,
+		}
+	return render(request, 'sms/student/edit_student.html', context)
+
+
+@login_required
+@teacher_required
+def update_user(request, id):
+	user = get_object_or_404(User, id=id)
+	if user.is_student:
+		user_type = "Student"
+	elif user.is_teacher:
+		user_type = "Teacher"
+	elif user.is_parent:
+		user_type = "Parent"
+	else:
+		user_type = "Administrator"
+	if request.method == "POST":
+		form = EditUserForm(request.POST, instance=user)
+		if form.is_valid():
+			user = form.save(commit=False)
+			user.first_name = form.cleaned_data.get('first_name')
+			user.last_name = form.cleaned_data.get('last_name')
+			user.other_name = form.cleaned_data.get('other_name')
+			user.religion = form.cleaned_data.get('religion')
+			user.address = form.cleaned_data.get('address')
+			user.gender = form.cleaned_data.get('gender')
+			user.phone = form.cleaned_data.get('phone')
+			User.email = form.cleaned_data.get('email')
+			user.dob = form.cleaned_data.get('dob')
+			user.state = form.cleaned_data.get('state')
+			user.save()
+			messages.success(request, 'Successfully updated {0}\'s information '.format(user.username))
+			return redirect('edit_user', id=user.id)
+		else:
+			form = EditUserForm(request.POST)
+			context = {'form': form, 'user_type': user_type}
+			return render(request, 'sms/users/edit_user.html', context)
+	else:
+		form = EditUserForm(instance=user)
+		context = {'form': form, 'user_type': user_type}
+		return render(request, 'sms/users/edit_user.html', context)
+
+def update_class(request, id):
+	clss = get_object_or_404(Class, id=id)
+	if request.method == "POST":
+		form = EditClassForm(request.POST, instance=clss)
+		if form.is_valid():
+			print("FORM VALID")
+			form.save(commit=False)
+			clss.name = form.cleaned_data.get('name')
+			clss.section = form.cleaned_data.get('section')
+			clss.amount_to_pay = form.cleaned_data.get('amount_to_pay')
+			clss.save()
+			messages.success(request, 'Class successfully updated')
+			return redirect('class_list')
+		else:
+			print("FORM ERROR")
+			form = EditClassForm(request.POST)
+			return render(request, 'sms/class/edit_class.html', {'form': form})
+	else:
+		print("GET")
+		form = EditClassForm(instance=clss)
+		return render(request, 'sms/class/edit_class.html', {'form': form})
+
+def update_subject(request, id):
+	subject = get_object_or_404(Subject, id=id)
+	if request.method == "POST":
+		form = EditSubjectForm(request.POST, instance=subject)
+		if form.is_valid():
+			form.save(commit=False)
+			subject.name = form.cleaned_data.get('name')
+			subject.save()
+			messages.success(request, 'Subject Successfully updated')
+			return redirect('subjects_list')
+		else:
+			form = EditSubjectForm(request.POST, instance=subject)
+			return render(request, 'sms/subject/edit_subject.html', {'form': form})
+	else:
+		form = EditSubjectForm(instance=subject)
+		return render(request, 'sms/subject/edit_subject.html', {'form': form})
+
+def update_section(request, id):
+	section = get_object_or_404(Section, id=id)
+	if request.method == "POST":
+		form = EditSectionForm(request.POST, instance=section)
+		if form.is_valid():
+			form.save(commit=False)
+			section.name = form.cleaned_data.get('name')
+			section.note = form.cleaned_data.get('note')
+			section.save()
+			messages.success(request, 'Section successfully updated')
+			return redirect('sections_list')
+		else:
+			form = EditSectionForm(request.POST, instance=section)
+			return render(request, 'sms/section/edit_section.html', {'form': form})
+	else:
+		form = EditSectionForm(instance=section)
+		return render(request, 'sms/section/edit_section.html', {'form': form})
+
+def update_section_allocation(request, id):
+	section_allocation = get_object_or_404(SectionAssign, id=id)
+	if request.method == "POST":
+		form = EditSectionAllocationForm(request.POST, request.FILES, instance=section_allocation)
+		if form.is_valid():
+			form.save(commit=False)
+			signature = form.cleaned_data.get('signature')
+			section_allocation.section = form.cleaned_data.get('section')
+			section_allocation.section_head = form.cleaned_data.get('section_head')
+			section_allocation.signature = signature
+			section_allocation.placeholder = form.cleaned_data.get('placeholder')
+			fs = FileSystemStorage()
+			fs.save(signature.name, signature)
+			section_allocation.save()
+			messages.success(request, 'Section allocation successfully updated ')
+			return redirect('section_allocation')
+		else:
+			form = EditSectionAllocationForm(request.POST, request.FILES, instance=section_allocation)
+			return render(request, 'sms/section/edit_section_allocation.html', {'form': form})
+	else:
+		form = EditSectionAllocationForm(instance=section_allocation)
+		return render(request, 'sms/section/edit_section_allocation.html', {'form': form})
+
+def update_session(request, id):
+	session = get_object_or_404(Session, id=id)
+	if request.method == "POST":
+		form = EditSessionForm(request.POST, instance=session)
+		if form.is_valid():
+			form.save(commit=False)
+			session.name = form.cleaned_data.get('name')
+			session.note = form.cleaned_data.get('note')
+			session.save()
+			return redirect('session_list')
+		else:
+			form = EditSessionForm(request.POST, instance=session)
+			return render(request, 'sms/academic_year/edit_session.html', {'form': form})
+	else:
+		form = EditSessionForm(instance=session)
+		return render(request, 'sms/academic_year/edit_session.html', {'form': form})
+
+
+def toggle_user_status(request, id):
+	user = get_object_or_404(User, id=id)
+	if request.user.id == user.id:
+		return HttpResponse('You cannot deactivate your self')
+	elif user.is_active:
+		user.is_active = False
+		user.save()
+		return HttpResponse('deactivated')
+	else:
+		user.is_active = True
+		user.save()
+		return HttpResponse('activated')
+
+def update_expense(request, id):
+	expense = get_object_or_404(Expense, id=id)
+	if request.method == "POST":
+		form = EditExpenseForm(request.POST, instance=expense)
+		if form.is_valid():
+			form.save(commit=False)
+			expense.item = form.cleaned_data.get('item')
+			expense.session = form.cleaned_data.get('session')
+			expense.term = form.cleaned_data.get('term')
+			expense.description = form.cleaned_data.get('description')
+			expense.amount = form.cleaned_data.get('amount')
+			expense.save()
+			messages.success(request, 'Expense successfully updated')
+			return redirect('view_expenses')
+		else:
+			form = EditExpenseForm(request.POST, instance=expense)
+			return render(request, 'sms/expenses/edit_expense.html', {'form': form})
+	else:
+		form = EditExpenseForm(instance=expense)
+		return render(request, 'sms/expenses/edit_expense.html', {'form': form})
+
+
+def set_parent(request):
+	if request.method == "POST":
+		form = SetParentForm(request.POST)
+		if form.is_valid():
+			student = form.cleaned_data.get('student_id')
+			parent = form.cleaned_data.get('parent_id')
+			parent = get_object_or_404(User, id=parent.id)
+			student = get_object_or_404(Student, id=student.id)
+			Parent.objects.create(student=student, parent=parent).save()
+			messages.success(request, "You've successfully set a parent for the selected student")
+			return redirect('set_parent')
+		else:
+			form = SetParentForm(request.POST)
+			return render(request, 'sms/parent/set_parent.html', {'form': form})
+	else:
+		already_set = Parent.objects.all()
+		stud_ids = ()
+		for i in already_set:
+			stud_ids += (i.student.id,)
+		current_session = Session.objects.get(current_session=True)
+		students = Student.objects.filter(session=current_session).exclude(id__in=stud_ids)
+		parents = User.objects.filter(is_parent=True)
+		return render(request, 'sms/parent/set_parent.html', {'students': students, 'parents': parents})

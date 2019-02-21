@@ -2,7 +2,7 @@
 {% load humanize %}
 <!DOCTYPE html>
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  
+
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="{% static 'css/mdb/bootstrap.min.css' %}">
   <!-- Material Design Bootstrap -->
   <link rel="stylesheet" href="{% static 'css/mdb/mdb.min.css' %}">
+  <link href="https://fonts.googleapis.com/css?family=Coiny|Open+Sans|Open+Sans+Condensed:300|Roboto" rel="stylesheet">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 
   <!-- Your custom styles (optional) -->
@@ -108,13 +109,15 @@
                   </li>
                    {% endif %}
                    {% if request.user.is_parent  or request.user.is_student %}
-                   <li><a href="{% url 'score_list' %}" class="waves-effect">View Results</a>
+                   <li><a href="{% url 'view_score_list' %}" class="waves-effect">View Results</a>
                   </li>
                    {% endif %}
-                  <li><a href="#" class="waves-effect">Exam Timetable</a>
+                   {% if request.user.is_superuser %}
+                  <li><a href="{% url 'grade_scale' %}" class="waves-effect">Grade Scale</a>
                   </li>
+                  {% endif %}
                   {% if request.user.is_superuser %}
-                  <li><a href="#" class="waves-effect">Promotion</a>
+                  <li><a href="{% url 'promotion_list' %}" class="waves-effect">Promotion</a>
                   </li>
                   {% endif %}
                 </ul>
@@ -133,12 +136,12 @@
                 </ul>
               </div>
             </li>
+            <li><a href="{% url 'notice_board' %}" class="collapsible-header waves-effect"><i class="fas fa-bullhorn"></i>
+                Notice</a></li>
             <li><a class="collapsible-header waves-effect arrow-r"><i class="far fa-check-square"></i> Report<i class="fas fa-angle-down rotate-icon"></i></a>
               <div class="collapsible-body">
                 <ul>
-                  <li><a href="{% url 'create_report_student' %}"  class="waves-effect">Class Report</a>
-                  </li>
-                  <li><a href="#" class="waves-effect">Report Card Sheet</a>
+                  <li><a href="{% url 'create_report_student' %}" class="waves-effect">Report Card Sheet</a>
                   </li>
                 </ul>
               </div>
@@ -153,6 +156,8 @@
                   <li><a href="{% url 'reset_users_password_view' %}" class="waves-effect">Reset Password</a>
                   </li>
                   <li><a href="{% url 'general_setting' %}" class="waves-effect">General Settings</a>
+                  </li>
+                   <li><a href="{% url 'set_parent' %}" class="waves-effect">Set Parent</a>
                   </li>
                 </ul>
               </div>
@@ -186,7 +191,7 @@
           </a>
           <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
             {% for session in all_sessions %}
-            <a class="dropdown-item waves-effect waves-light" href="{% url 'toggle_session' id=session.pk %}">
+            <a class="dropdown-item waves-effect waves-light" href="{% if not request.user.is_superuser or session.current_session %}#{% else %}{% url 'toggle_session' id=session.pk %}{% endif %}">
               <i class="fas fa-money mr-2" aria-hidden="true"></i>
               <span>{{ session.name }} {% if session.current_session %} - <span class="blue-text">current</span> {% endif %}</span>
               <span class="float-right"><i class="far  fa-clock" aria-hidden="true">
@@ -213,7 +218,7 @@
                     {{ notification.body|truncatechars:42 }}
                   </span>
               <small class="float-left">
-                <i class="far  fa-clock" aria-hidden="true"></i> 
+                <i class="far  fa-clock" aria-hidden="true"></i>
                 {{ notification.time }}
               </small>
               <br><br>
@@ -227,11 +232,11 @@
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle waves-effect" href="#" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-user"></i> <span class="clearfix d-none d-sm-inline-block">Profile</span></a>
-          
+
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
             <a class="dropdown-item waves-effect waves-light" href="{% url 'logout' %}">Log Out</a>
             <a class="dropdown-item waves-effect waves-light" href="{% url 'profile' user=request.user %}">My account</a>
-             <a class="dropdown-item waves-effect waves-light" href="">Change Password</a>
+             <a class="dropdown-item waves-effect waves-light" href="{% url 'change_password' %}">Change Password</a>
           </div>
         </li>
 

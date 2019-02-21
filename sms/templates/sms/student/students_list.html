@@ -85,17 +85,18 @@
                      <td class="pt-3-half" contenteditable="false">{{ student.user.email }}</td>
                       {% if request.user.is_superuser %}
                      <td class="pt-3-half">
-                     <div class="switch">
-                        <label>
+                     <div  title="if deativated, this student can no longer have access to this site" class="switch">
+                        <label class="custom-checkbox">
                           Off
-                          <input type="checkbox" checked>
+                          <input deativate-url="{% url 'toggle_user_status' id=student.user.id %}" id="user_status" name="user_status" type="checkbox"
+                          {% if student.user.is_active %} checked {% endif %}/>
                           <span class="lever"></span> On
                         </label>
                       </div>
                     </td>
                      <td class="pt-3-half" contenteditable="false">
                         <a href="{% url 'profile' user=student.user %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
-                        <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                        <a href="{% url 'edit_student' id=student.id %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
                         <a href="{% url 'delete_user' id=student.user.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
                      </td>
                      {% endif %}
@@ -111,4 +112,21 @@
       </div>
    </div>
    </div>
+   {% block script %}
+      <script type="text/javascript">
+        $(document).ready(function(){
+          $(".custom-checkbox").change(function(){
+            var row = $(this).closest("tr > td");
+            var url = $(row).find("#user_status").attr('deativate-url');
+
+            $.ajax({
+              url: url,
+                success: function (data) {
+                 alert(data);
+                }
+              });
+            });
+        });
+      </script>
+   {% endblock script %}
 {% endblock main %}

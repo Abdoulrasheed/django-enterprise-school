@@ -15,6 +15,15 @@
             </h6>
          </div>
       </div>
+        <!-- Heading -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message|safe }}
+          </div>
+        {% endfor %}
+      {% endif %}
                  <div class="row">
             <div class="col-md-5">
               <a href="" class="btn btn-info" data-toggle="modal" data-target="#modalSubscription">Setup New Payment</a>
@@ -43,7 +52,7 @@
                   <td>{{ class.name|upper }}</td>
                   <td>{{ class.amount_to_pay }}</td>
                   <td>
-                    
+
                         <a data-toggle="tooltip" title="Click on Setup new payment and select the class to update it" class="teal-text"><i class="fa fa-pen"></i></a>
                   </td>
                 </tr>
@@ -85,9 +94,8 @@
                   <input name="amount_to_pay" type="number" id="form28" class="form-control form-control-sm">
                   <label for="form28">Enter Amount <small>to be paid by the students the class selected class above</small></label>
                 </div>
-
                 <div class="text-center mt-1-half">
-                  <input type="submit" name="submit" class="btn btn-info mb-1 fas fa-check ml-1">
+                  <input type="submit" value="Save" name="submit" class="btn btn-info mb-1 fas fa-check ml-1">
                 </div>
               </div>
             </div>

@@ -105,6 +105,7 @@
                     <th class="th-lg"><a>Class Name <i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Section<i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">No. of Subjects<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a href="">School fee amount (N)<i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Action<i class="fas fa-sort ml-1"></i></a></th>
                   </tr>
                 </thead>
@@ -117,9 +118,9 @@
                     <td>{{ class.name }}</td>
                     <td>{{ class.section }}</td>
                     <td>{{ class.subjects.all|length }}</td>
+                    <td><span style="text-decoration: line-through; color: indigo">N</span> {{ class.amount_to_pay|default_if_none:'0' }}</td>
                     <td>
-                      <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
-                      <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                      <a href="{% url 'edit_class' id=class.id %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
                       <a href="{% url 'delete_class' id=class.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
                     </td>
                   </tr>

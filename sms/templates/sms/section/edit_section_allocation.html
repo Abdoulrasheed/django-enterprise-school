@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Add section {% endblock title %}
+
+{% block main %}
+<!--Main layout-->
+  <div style="margin-bottom: 259px;" class="container-fluid">
+       <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="/">Home Page</a>
+            <span>/</span>
+            <a href="{% url 'section_allocation' %}">Section Allocation</a>
+            <span>/</span>
+            <span>Update Section Allocation</span>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
+   {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message|safe }}
+          </div>
+        {% endfor %}
+      {% endif %}
+   {% if form.errors %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+   {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+    <div>
+      <div aria-labelledby="add_a_class">
+        <div class="row">
+          <div class="col-md-6">
+            <form method="post" enctype="multipart/form-data">{% csrf_token %}
+              {{ form.section }}
+              {{ form.section_head }}
+              {{ form.placeholder }}
+              <label>Section head's signature</label>
+              <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+                  </div>
+                  <div class="custom-file">
+                    {{ form.signature }}
+                  <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                </div>
+            </div>
+              <input type="submit" name="submit" value="Save" class="btn btn-primary">
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+{% endblock %}

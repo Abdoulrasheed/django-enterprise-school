@@ -89,7 +89,7 @@
           <!--Card image-->
           <div class="view view-cascade gradient-card-header mdb-color darken-3 narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center">
 
- 
+
 
             <a href="" class="white-text mx-3">Allocated Sections</a>
 
@@ -106,6 +106,9 @@
                 <thead>
                   <tr>
                     <th class="th-lg"><a>Teacher<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a>Picture<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a>Signature<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a>Designation<i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Section<i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Action<i class="fas fa-sort ml-1"></i></a></th>
                   </tr>
@@ -116,11 +119,13 @@
                 <tbody>
                   {% for section in sections %}
                   <tr>
-                    <td>{{ section.section_head.get_full_name|capfirst }}</td>
+                    <td><a href="{% url 'profile' user=section.section_head %}">{{ section.section_head.get_full_name|capfirst }}</a></td>
+                    <td><img src="{{ section.section_head.get_picture }}" class="rounded-circle" width="55"></td>
+                    <td><img src="{% if section.signature %}{{ section.signature.url|default_if_none:'--' }}{% else %} Not uploaded {% endif %}" width="55"></td>
                     <td>{{ section.section.name|capfirst }}</td>
+                    <td>{{ section.placeholder|capfirst }}</td>
                     <td>
-                      <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
-                      <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                      <a href="{% url 'edit_section_allocation' id=section.pk %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
                       <a href="{% url 'del_section_allocation' id=section.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
                     </td>
                   </tr>

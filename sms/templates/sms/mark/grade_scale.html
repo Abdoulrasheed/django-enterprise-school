@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Grade Scale Setting {% endblock title %}
+{% block main %}
+<div style="margin-bottom: 180px" class="container-fluid">
+      <section>
+              <div class="card mb-4 wow fadeIn">
+         <!--Card content-->
+         <div class="card-body d-sm-flex justify-content-between">
+            <h6 class="mb-2 mb-sm-0 pt-1">
+               <a href="/">Home Page</a>
+               <span>/</span>
+               <span>Grade Scale</span>
+            </h6>
+         </div>
+      </div>
+                  {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+                 <div class="row">
+            <div class="col-md-5">
+              <a href="" class="btn btn-info" data-toggle="modal" data-target="#modalSubscription">Setup New Grade Scale</a>
+            </div></div>
+        <div class="my-5"></div>
+
+        <div class="card">
+          <div class="card-body">
+
+            <!--Table-->
+            <table class="table">
+
+              <!--Table head-->
+              <thead class="mdb-color darken-3">
+                <tr class="text-white">
+                  <th>#</th>
+                  <th>Grade</th>
+                  <th>Mark From</th>
+                  <th>Mark Upto</th>
+                  <th>Remark</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for scale in gradeScales %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td>{{ scale.grade|upper }}</td>
+                  <td>{{ scale.mark_from }}</td>
+                  <td>{{ scale.mark_upto }}</td>
+                  <td>{{ scale.remark }}</td>
+                  <td>
+
+                        <a data-toggle="tooltip" title="Click on Setup new payment and select the class to update it" class="teal-text"><i class="fa fa-pen"></i></a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+    <!--Modal: setup new payment Form-->
+    <form method="post" action="{% url 'set_grade_scale' %}">{% csrf_token %}
+        <div class="modal fade" id="modalSubscription" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog cascading-modal" role="document">
+            <!--Content-->
+            <div class="modal-content">
+
+              <!--Header-->
+              <div class="modal-header mdb-color darken-3 white-text">
+                <h4 class=""> Grade Setup</h4>
+                <button type="button" class="close waves-effect waves-light" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <!--Body-->
+              <div class="modal-body mb-0">
+
+                <select tabindex="6" name="grade" class="mdb-select md-form">
+                  <option value="" disabled selected>Select Grade</option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                  <option value="E">E</option>
+                  <option value="F">F</option>
+                </select>
+
+                <div class="md-form form-sm">
+                  <input name="mark_from" type="number" id="form28" class="form-control form-control-sm">
+                  <label for="form28">Mark From</label>
+                </div>
+
+                <div class="md-form form-sm">
+                  <input name="mark_upto" type="number" id="form28" class="form-control form-control-sm">
+                  <label for="form28">Mark Upto</label>
+                </div>
+
+                <div class="md-form form-sm">
+                  <input name="remark" type="text" id="form28" class="form-control form-control-sm">
+                  <label for="form28">Remark</label>
+                </div>
+
+                <div class="text-center mt-1-half">
+                  <input type="submit" value="Save" name="submit" class="btn btn-info mb-1 fas fa-check ml-1">
+                </div>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+    </form>
+        <!--Modal: Subscription From-->
+{% endblock main %}

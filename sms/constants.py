@@ -7,6 +7,8 @@ TERM = (
 	(THIRD, "Third"),
 )
 
+MSG_FROM = "Spiritlife"
+
 CASH = "Cash"
 CHEAQUE = "Cheaque"
 
@@ -20,7 +22,7 @@ NOT_PAID = "Not Paid"
 PARTIALLY_PAID = "Partially Paid"
 
 PAYMENT_STATUS = (
-	(PAID, "Paid"),
+	(PAID, "Fully Paid"),
 	(NOT_PAID, "Not Paid"),
 	(PARTIALLY_PAID, "Partially Paid"),
 )
@@ -42,9 +44,46 @@ RELIGION = (
 	)
 
 STATE = (
-	("Adamawa", "Adamawa"),
-	("Abia", "Abia")
-	)
+  ("", "Choose"),
+  ("Abia", "Abia"),
+  ("Adamawa", "Adamawa"),
+  ("Anambra", "Anambra"),
+  ("Akwa Ibom", "Akwa Ibom"),
+  ("Bauchi", "Bauchi"),
+  ("Bayelsa", "Bayelsa"),
+  ("Benue", "Benue"),
+  ("Borno", "Borno"),
+  ("Cross River", "Cross River"),
+  ("Delta", "Delta"),
+  ("Ebonyi", "Ebonyi"),
+  ("Enugu", "Enugu"),
+  ("Edo", "Edo"),
+  ("Ekiti", "Ekiti"),
+  ("FCT - Abuja", "FCT - Abuja"),
+  ("Gombe", "Gombe"),
+  ("Imo", "Imo"),
+  ("Jigawa", "Jigawa"),
+  ("Kaduna", "Kaduna"),
+  ("Kano", "Kano"),
+  ("Katsina", "Katsina"),
+  ("Kebbi", "Kebbi"),
+  ("Kogi", "Kogi"),
+  ("Kwara", "Kwara"),
+  ("Lagos", "Lagos"),
+  ("Nasarawa", "Nasarawa"),
+  ("Niger", "Niger"),
+  ("Ogun", "Ogun"),
+  ("Ondo", "Ondo"),
+  ("Osun", "Osun"),
+  ("Oyo", "Oyo"),
+  ("Plateau", "Plateau"),
+  ("Rivers", "Rivers"),
+  ("Sokoto", "Sokoto"),
+  ("Taraba", "Taraba"),
+  ("Yobe", "Yobe"),
+  ("Zamfara", "Zamfara"),
+)
+
 LGA = (
 	("Yola North", "Yola North"),
 	("Yola South", "Yola South"),

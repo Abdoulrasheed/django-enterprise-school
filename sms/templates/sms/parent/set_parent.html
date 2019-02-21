@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main %}
+<!--Main layout-->
+<div class="container-fluid" style="margin-bottom: 240px; overflow-x: hidden; overflow-y: hidden;">
+          {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% if form %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+	<!--Section: Button icon-->
+	<section>
+
+		<!--Grid row-->
+		<div class="row">
+
+			<!--Grid column-->
+			<div class="mx-auto" style="width: 80%;">
+			<div class="col-xl-12 col-md-6 mb-6">
+
+				<!--Card-->
+				<form method="post">{% csrf_token %}
+					<div class="card">
+						<div style="margin: auto; width: 80%;" >
+							<select name="student_id" class="mdb-select md-form colorful-select dropdown-default">
+								<option disabled selected="" value="1">Select student</option>
+								{% for student in students %}
+								<option data-icon="{{ student.user.get_picture }}" class="rounded-circle" value="{{ student.id }}">{{ student.user.get_full_name }} ({{student.in_class}})</option>
+								{% empty %}
+								<option disabled selected value="#">No student available</option>
+								{% endfor %}
+							</select>
+						</div>
+						<br>
+						<hr />
+						<div style="margin: auto; width: 80%;" >
+							<select name="parent_id" class="mdb-select md-form colorful-select dropdown-primary">
+								<option disabled selected value="1">Select parent</option>
+								{% for parent in parents %}
+								<option data-icon="{{ parent.get_picture }}" class="rounded-circle" value="{{ parent.id }}">{{ parent.get_full_name }}</option>
+								{% empty %}
+								<option disabled selected value="#">No parent available</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					<input class="mx-auto btn btn-primary" type="submit" name="submit" value="Save"/>
+				</form>
+			</div>
+		</div>
+		</div>
+	</section>
+</div>
+{% endblock %}

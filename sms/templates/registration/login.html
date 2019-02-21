@@ -3,7 +3,7 @@
 <html class="white-bg-login" lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        
+
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <title>Sign in | {{ school_name }}</title>
@@ -25,22 +25,32 @@
             <center><img width="50" height="50" src="{{ school_logo }}"></center>        <center><h4>{{ school_name }}</h4></center>
         </div>
 
-        
+
     <div class="form-box" id="login-box">
         <div class="header">Sign IN</div>
         <form method="post" method="{% url 'login' %}">{% csrf_token %}
 
             <!-- style="margin-top:40px;" -->
-
             <div class="body white-bg">
+            	{% for error in form.non_field_errors %}
+				        <div class="alert alert-danger">
+				            <strong>{{ error|escape }}</strong>
+				        </div>
+				    {% endfor %}
                 {% for field in form %}
                 <div class="form-group">
                     <input id="{{ field.id_for_label }}" class="form-control" placeholder="{{ field.label }}" name="{{ field.html_name }}" {% if field.html_name == "username" %}
-                     autofocus="" type="text" {% else %} type="password" {% endif %} 
+                     autofocus="" type="text" {% else %} type="password" {% endif %}
                       value="">
                 </div>
-                {{ field.errors }}
-                {% endfor %}
+                {% if form.errors %}
+				        {% for error in field.errors %}
+				            <div class="alert alert-danger">
+				                <strong>{{ error|escape }}</strong>
+				            </div>
+				        {% endfor %}
+					{% endif %}
+             	{% endfor %}
 
                 <div class="checkbox">
                     <label>
@@ -54,7 +64,7 @@
                     </span>
                 </div>
 
-                            
+
                 <input type="submit" class="btn btn-lg btn-success btn-block" value="SIGN IN">
             </div>
         </form>

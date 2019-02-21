@@ -148,7 +148,7 @@
 
                     <div class="md-form form-sm mb-0">
                       <input disabled tabindex="6" value="{{ user.dob }}" name="dob" type="date" id="form7" class="form-control form-control-sm">
-                      
+
                     </div>
 
                   </div>
@@ -307,7 +307,7 @@
                   <div class="col-lg-4 col-md-12">
 
                     <div class="md-form form-sm mb-0">
-                      <input disabled tabindex="6" value="{{ user.dob }}" name="dob" type="text" id="form7" class="form-control form-control-sm datepicker">
+                      <input disabled tabindex="6" value="{{ user.dob|date:"Y-m-d" }}" name="dob" type="text" id="form7" class="form-control form-control-sm datepicker">
                       <label for="form7" class="">Date of birth</label>
                     </div>
 
@@ -368,13 +368,13 @@
                 </h3>
                 <h6 class="font-weight-bold cyan-text mb-4">
                 {% if user.is_teacher %}
-                  Teacher 
+                  Teacher
                 {% elif user.is_parent %}
-                  Parent 
-                {% elif user.is_student %} 
-                  Student 
-                {% else %} 
-                  System Administrator 
+                  Parent
+                {% elif user.is_student %}
+                  Student
+                {% else %}
+                  System Administrator
                 {% endif %}</h6>
 
                 <p class="mt-4 text-left text-muted">Last login: {{ user.last_login|naturaltime }}</p>
@@ -418,7 +418,7 @@ function undisableTxt() {
       x[i].disabled = false
     }
   }
-  
+
 function toggle_score_edit() {
   y = document.getElementsByClassName("form-control");
     check = y[0].disabled

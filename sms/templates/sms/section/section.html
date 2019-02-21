@@ -118,9 +118,8 @@
                     <td>{{ section.name }}</td>
                     <td>{{ section.note }}</td>
                     <td></td>
-                    <td>
-                      <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
-                      <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                   <td>
+                      <a href="{% url 'edit_section' id=section.pk %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
                       <a href="{% url 'delete_section' id=section.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
                     </td>
                   </tr>

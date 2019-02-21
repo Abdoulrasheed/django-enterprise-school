@@ -88,8 +88,8 @@
                     <th class="th-lg"><a>Full Name <i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Photo<i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Email<i class="fas fa-sort ml-1"></i></a></th>
-                    {% if request.user.is_superuser %}
                     <th class="th-lg"><a href="">Status<i class="fas fa-sort ml-1"></i></a></th>
+                    {% if request.user.is_superuser %}
                     <th class="th-lg"><a href="">Action<i class="fas fa-sort ml-1"></i></a></th>
                     {% endif %}
                   </tr>
@@ -104,13 +104,30 @@
                     <td><img src="{{ teacher.get_picture }}" class="rounded-circle" width="50"></td>
                     <td>{{ teacher.email }}</td>
                     <td>
-                      <span class="switch"><label><input type="checkbox" checked>
-                      <span class="lever"></span>
-                      </label></span></td>
+                        {% if request.user.is_superuser %}
+                     <div title="if deativated, this teacher can no longer have access to this site" class="switch">
+                        <label class="custom-checkbox">
+                          Off
+                          <input deativate-url="{% url 'toggle_user_status' id=teacher.id %}" id="user_status" name="user_status" type="checkbox"
+                          {% if teacher.is_active %} checked {% endif %}/>
+                          <span class="lever"></span> On
+                        </label>
+                      </div>
+                      {% else %}
+                       <div title="if deativated, this teacher can no longer have access to this site" class="switch">
+                        <label class="custom-checkbox">
+                          Off
+                          <input disabled name="user_status" type="checkbox"
+                          {% if teacher.is_active %} checked {% endif %}/>
+                          <span class="lever"></span> On
+                        </label>
+                      </div>
+                      {% endif %}
                     <td>
+
                       {% if request.user.is_superuser %}
                       <a href="{% url 'profile' user=teacher %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
-                      <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                      <a href="{% url 'edit_user' id=teacher.id %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
                       <a href="{% url 'delete_user' id=teacher.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
                       {% endif %}
                     </td>
@@ -157,8 +174,22 @@
       <!--Section: Basic examples-->
 
     </div>
+   {% block script %}
+   <script src="{% static 'js/sms/sms_script.js' %}"></script>
+      <script type="text/javascript">
+        $(document).ready(function(){
+          $(".custom-checkbox").change(function(){
+            var row = $(this).closest("tr > td");
+            var url = $(row).find("#user_status").attr('deativate-url');
 
+            $.ajax({
+              url: url,
+                success: function (data) {
+                 alert(data);
+                }
+              });
+            });
+        });
+      </script>
+   {% endblock script %}
   {% endblock main %}
-  {% block script %}
-  <script src="{% static 'js/sms/sms_script.js' %}"></script>
-  {% endblock script %}

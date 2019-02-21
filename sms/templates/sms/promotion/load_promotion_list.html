@@ -1,0 +1,10 @@
+{% for each in ranking %}
+<tr class="_row">
+  <input class="student_id" type="text" name="student_id" hidden value="{{ each.student.id }}">
+  <td><a href="{% url 'profile' user=each.student.user %}">{{ each.student }}</td>
+  <td><img src="{{ each.student.user.get_picture }}" class="rounded-circle" width="50"></td>
+  <td><a href="{% url 'promote' stud_id=each.student.id to_class_id=to_class_id to_session_id=to_session %}" class="btn">Promote</a></td>
+</tr>
+{% empty %}
+<td>No data available <small style="font-style: italic;">Remember to add grades first</small></td>
+{% endfor %}

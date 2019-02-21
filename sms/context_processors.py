@@ -34,15 +34,17 @@ def school_setting_processor(request):
 	all_sessions = Session.objects.all()
 	default_logo = 'logo.png'
 	default_name = "Cosmotech"
-	if Setting.objects.filter(id=1).exists():
-		logo = Setting.objects.get(id=1)
-		school_logo = logo.school_logo.url
-		school_name = logo.school_name
-	else:
+
+	try:
+	    logo = Setting.objects.get(id=1)
+	    school_logo = logo.school_logo.url
+	    school_name = logo.school_name
+
+	except:
 		Setting.objects.create(
-			id=1, school_name=default_name, 
-			school_logo=default_logo, 
-			school_address="Yola", 
+			id=1, school_name=default_name,
+			school_logo=default_logo,
+			school_address="Yola",
 			school_slogan="Great movement",
 			ft_begins=y.today(),
 			ft_ends=y.today(),
@@ -56,12 +58,12 @@ def school_setting_processor(request):
 		school_name = logo.school_name
 
 	return {
-			"school_name": school_name, 
+			"school_name": school_name,
 			"school_logo": school_logo,
-			"current_session": current_session, 
+			"current_session": current_session,
 			"all_sessions": all_sessions,
 			"user_type": user_type,
 			"notifications": notifications,
 			}
 
-	
+

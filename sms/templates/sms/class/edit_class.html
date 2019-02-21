@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Edit class {% endblock title %}
+
+{% block main %}
+<!--Main layout-->
+<main>
+  <div style="margin-bottom: 259px;" class="container-fluid">
+                 <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="/">Home Page</a>
+            <span>/</span>
+            <a href="{% url 'class_list' %}">Class</a>
+            <span>/</span>
+            <a>Edit Class</a>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% if form.errors %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+    <div>
+      <div aria-labelledby="add_a_class">
+        <div class="row">
+          <div class="col-md-6">
+            <form method="POST">{% csrf_token %}
+              <small class="indigo-text">Class Name *</small>
+              {{ form.name }}
+              <small class="indigo-text">Section *</small>
+              {{ form.section }}
+              <small class="indigo-text">School fee amount *</small>
+              <small style="font-size: 10px;" class="float-right">{{ form.amount_to_pay.help_text }}</small>
+              {{ form.amount_to_pay }}
+              <input type="submit" name="submit" value="save" class="btn btn-primary">
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</main>
+{% endblock %}

@@ -21,11 +21,14 @@
       </div>
    </div>
    <!-- Heading -->
-  {% if messages %}
-     {% for message in messages %}
-        <div class="alert alert-info alert-dismissable">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{ message|safe }}
+      <div class="alert alert-info">
+  <strong>Info!</strong> Create section and subjects first then create a class</a>.
+</div>
+          {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
           </div>
         {% endfor %}
       {% endif %}
@@ -55,10 +58,10 @@
           <div class="col-md-6">
             <form method="post">{% csrf_token %}
 
-              <input type="text" name="name" class="form-control mb-4" placeholder="Class name">
-          
-              
-              <select name="section" class="mdb-select md-form">
+              <input required type="text" name="name" class="form-control mb-4" placeholder="Class name">
+
+
+              <select required name="section" class="mdb-select md-form">
                 <option value="" disabled selected>Select section</option>
                   {% for section in sections %}
                 <option value="{{ section.id }}">{{ section.name }}</option>
@@ -66,9 +69,9 @@
                 <option value="" disabled="">No section available</option>
                   {% endfor %}
               </select>
-              
 
-              <select name="subjects" class="mdb-select md-form colorful-select dropdown-primary" multiple searchable="Search here..">
+
+              <select required name="subjects" class="mdb-select md-form colorful-select dropdown-primary" multiple searchable="Search here..">
                   <option value="" disabled selected>Choose subjects</option>
                    {% for subject in subjects %}
                   <option value="{{ subject.id }}">{{ subject.name }}</option>
@@ -76,7 +79,7 @@
                 <option value="" disabled="">No subject available</option>
                   {% endfor %}
               </select>
-              
+
 
               <input type="submit" name="submit" value="save" class="btn btn-primary">
             </form>

@@ -98,8 +98,7 @@
                     <td>{{ expense.amount }}</td>
                     <td>{{ expense.description }}</td>
                     <td>
-                      <a title="view" class="blue-text"><i class="fa fa-user"></i></a>
-                      <a title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                      <a href="{% url 'edit_expense' id=expense.pk %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
                       <a href="{% url 'delete_expense' id=expense.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
                     </td>
                   </tr>
