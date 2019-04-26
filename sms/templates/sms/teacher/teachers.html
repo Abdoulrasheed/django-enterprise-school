@@ -11,7 +11,7 @@
       <!--Card content-->
       <div class="card-body d-sm-flex justify-content-between">
          <h6 class="mb-2 mb-sm-0 pt-1">
-            <a href="/">Home Page</a>
+            <a href="{% url 'home_page' %}">Home Page</a>
             <span>/</span>
             <a>Teachers</a>
          </h6>
@@ -98,9 +98,9 @@
 
                 <!--Table body-->
                 <tbody>
-                	{% for teacher in teachers %}
+                                	{% for teacher in teachers %}
                   <tr>
-                    <td><a href="{% url 'profile' user=teacher %}">{{ teacher.get_full_name }}</a></td>
+                    <td><a href="{% url 'profile' user_id=teacher.id %}">{{ teacher.get_full_name }}</a></td>
                     <td><img src="{{ teacher.get_picture }}" class="rounded-circle" width="50"></td>
                     <td>{{ teacher.email }}</td>
                     <td>
@@ -126,7 +126,7 @@
                     <td>
 
                       {% if request.user.is_superuser %}
-                      <a href="{% url 'profile' user=teacher %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
+                      <a href="{% url 'profile' user_id=teacher.id %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
                       <a href="{% url 'edit_user' id=teacher.id %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
                       <a href="{% url 'delete_user' id=teacher.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
                       {% endif %}

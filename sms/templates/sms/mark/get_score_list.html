@@ -8,7 +8,7 @@
       <!--Card content-->
       <div class="card-body d-sm-flex justify-content-between">
          <h6 class="mb-2 mb-sm-0 pt-1">
-            <a href="/">Home Page</a>
+            <a href="{% url 'home_page' %}">Home Page</a>
             {% if request.user.is_superuser %}
             <span>/</span>
             <a href="{% url 'score_list' %}">Score</a>

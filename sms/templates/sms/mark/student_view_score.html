@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} {{ term }} Term Scores {% endblock title %}
+{% block main %}
+<!--Main layout-->
+    <div class="container-fluid">
+    <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="/">Home Page</a>
+            <span>/</span>
+            <a>View Score</a>
+         </h6>
+      </div>
+   </div>
+
+      <!--Section: Basic examples-->
+      <section>
+        <!--Top Table UI-->
+        <div class="card p-2 mb-5">
+          <div hidden id="loader" class="progress md-progress primary-color-dark">
+              <div class="indeterminate">
+              </div>
+          </div>
+          <!--Grid row-->
+        <!--Top Table UI-->
+        <div class="card card-cascade narrower z-depth-1">
+
+          <!--Card image-->
+          <div class="view view-cascade gradient-card-header mdb-color darken-3 narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center">
+
+
+            <a href="" class="white-text mx-3">{{ term }} Term Scores</a>
+
+
+
+          </div>
+          <!--/Card image-->
+
+          <div class="px-4">
+
+            <div class="table-responsive">
+              <!--Table-->
+              <table class="table table-hover mb-0">
+
+                <!--Table head-->
+                <thead>
+                  <tr>
+                    <th class="th-lg"><a href="">Subject<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a href="">CA 1<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a href="">CA 2<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a href="">Exam<i class="fas fa-sort ml-1"></i></a></th>
+                     <th class="th-lg"><a href="">Total<i class="fas fa-sort ml-1"></i></a></th>
+                      <th class="th-lg"><a href="">Grade<i class="fas fa-sort ml-1"></i></a></th>
+                      <th class="th-lg"><a href="">Remark<i class="fas fa-sort ml-1"></i></a></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for grade in scores %}
+                  <tr>
+                    <td>{{ grade.subject }}</td>
+                    <td>{{ grade.fca|default_if_none:'Absent' }}</td>
+                    <td>{{ grade.sca|default_if_none:'Absent' }}</td>
+                    <td>{{ grade.exam|default_if_none:'Absent' }}</td>
+                    <td>{{ grade.total|default_if_none:'---' }}</td>
+                    <td>{{ grade.grade|default_if_none:'---' }}</td>
+                    <td>{{ grade.remark|default_if_none:'---' }}</td>
+                  </tr>
+                  {% empty %}
+                  <td>No score is added this term</td>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <hr class="my-0">
+            <div class="d-flex justify-content-between">
+              <nav class="my-4">
+              </nav>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </div>
+{% endblock main %}

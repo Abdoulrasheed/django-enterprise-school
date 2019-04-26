@@ -60,7 +60,7 @@
     </p>
     <small>
         published by:
-        <a href="{% url 'profile' user=notice.posted_by %}">
+        <a href="{% url 'profile' user_id=notice.posted_by.id %}">
           {{ notice.posted_by|title }}
         </a></small>
   </span>

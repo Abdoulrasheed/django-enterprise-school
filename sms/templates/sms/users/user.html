@@ -11,7 +11,7 @@
       <!--Card content-->
       <div class="card-body d-sm-flex justify-content-between">
          <h6 class="mb-2 mb-sm-0 pt-1">
-            <a href="/">Home Page</a>
+            <a href="{% url 'home_page' %}">Home Page</a>
             <span>/</span>
             <a>Parents</a>
          </h6>
@@ -112,7 +112,7 @@
                       {% endif %}
                     </td>
                     <td>
-                      <a href="{% url 'profile' user=user %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
+                      <a href="{% url 'profile' user_id=user.id %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
                       <a href="{% url 'edit_user' id=user.pk %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
                       <a href="{% if not user.id == request.user.id %}{% url 'delete_user' id=user.pk %}{% else %} # {% endif %}" title="delete" class="red-text"><i class="fa fa-times"></i>
                       </a>

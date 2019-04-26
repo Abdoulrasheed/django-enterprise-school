@@ -8,7 +8,7 @@
       <!--Card content-->
       <div class="card-body d-sm-flex justify-content-between">
          <h6 class="mb-2 mb-sm-0 pt-1">
-            <a href="/">Home Page</a>
+            <a href="{% url 'home_page' %}">Home Page</a>
             <span>/</span>
             <a href="{% url 'score_list' %}">Score</a>
             <span>/</span>
@@ -74,7 +74,8 @@
             <a href="" class="white-text mx-3">View Score</a>
 
 
-
+<a href="#" hidden url="{% url 'ajax_load_subjects' %}" id="sbjurl"></a>
+<a href="#" hidden url="{% url 'ajax_load_load_score_table' %}" id="clssurl"></a>
           </div>
           <!--/Card image-->
 
@@ -118,9 +119,10 @@
   $(document).ready(function(){
       $("#class").change(function(){
       var class_id = $(this).val()
+      var url = $('#sbjurl').attr('url');
 
       $.ajax({                       // initialize an AJAX request
-        url: '/ajax/load-subjects/',                    // set the url of the request (= localhost:8000/hr/ajax/load-subjects/)
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-subjects/)
         data: {
           'class': class_id,
         },
@@ -142,8 +144,10 @@
       var term = $(this).val();
       var subject_id = $("#subject_box").val();
       var class_id = $("#class").val()
+      var url2 = $('#clssurl').attr('url');
+
       $.ajax({
-        url: '/ajax/score-list/',
+        url: url2,
         data: {
           'subject_id': subject_id,
           'term': term,

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static humanize %}
 
-{% block title %} parents {% endblock title %}
+{% block title %} Profile {% endblock title %}
 
 {% block main %}
     <div class="container-fluid">
@@ -47,7 +47,7 @@
 
               <!--Card Data-->
               <div class="admin-up d-flex justify-content-start">
-                <i class="fas fa-users info-color py-4"> {{ user.username|title }}</i>
+                <i class="fas fa-users info-color py-4"> {{ user.username|upper }}</i>
                 <div class="data">
                   <h5 class="font-weight-bold dark-grey-text">Edit Profile - <span class="text-muted">
                     {% if '' in user.email or '' in user.phone or '' in user.dob or '' in user.address or '' in user.religion or '' in user.dob %}Complete your
@@ -355,8 +355,11 @@
             <div class="card profile-card">
 
               <!--Avatar-->
-              <div class="avatar z-depth-1-half mb-4">
+              <div class="view overlay avatar z-depth-1-half mb-4">
                 <img src="{{ user.get_picture }}"  class="rounded-circle" alt="{{ user.get_picture }}'s picture">
+                <a class="mask" data-toggle="modal" data-target="#uploadModal" href="#">
+                <div style="margin-top: 20px;" class="mask white-text">Change Picture</div>
+              </a>
               </div>
 
               <div class="card-body pt-0 mt-0">
@@ -403,24 +406,62 @@
     </div>
   <!--Main layout-->
 
+  <!-- Upload Picture Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog cascading-modal modal-avatar modal-sm" role="document">
+    <!--Content-->
+    <div class="modal-content">
+
+      <!--Header-->
+      <div class="modal-header">
+        <img src="{{ user.get_picture }}" alt="avatar" class="rounded-circle img-responsive">
+      </div>
+      <!--Body-->
+      <form method="POST" action="{% url 'upload_profile_picture' %}" enctype="multipart/form-data">{% csrf_token %}
+      <div class="modal-body text-center mb-1">
+        <a href="" id="target"></a>
+        <h5 class="mt-1 mb-2">Upload Picture</h5>
+
+        <div class="md-form">
+          <input name="picture" type="file" class="form-control validate ml-0">
+        </div>
+        <h6 hidden id="loader_text" class="mt-1 mb-2">Please wait...</h6>
+        <div hidden id="loader" class="progress md-progress primary-color-dark">
+              <div class="indeterminate">
+              </div>
+        </div>
+
+        <div class="text-center mt-4">
+          <button id="btn_upload" class="btn btn-cyan mt-1">Upload</button>
+        </div>
+      </div>
+    </form>
+
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+<!-- End of Modal Upload --> 
+
 {% block script %}
 <script type="text/javascript">
 function disableTxt() {
-    x = document.getElementsByClassName("form-control");
+    x = document.getElementsByClassName("form-control-sm");
     for (i = 0; i < x.length; i++){
       x[i].disabled = true
     }
 }
 
 function undisableTxt() {
-    x = document.getElementsByClassName("form-control");
+    x = document.getElementsByClassName("form-control-sm");
     for (i = 0; i < x.length; i++){
       x[i].disabled = false
     }
   }
 
 function toggle_score_edit() {
-  y = document.getElementsByClassName("form-control");
+  y = document.getElementsByClassName("form-control-sm");
     check = y[0].disabled
     if (check===false){
         document.getElementById("edit_access").innerHTML = "Enable Editing"
@@ -431,10 +472,17 @@ function toggle_score_edit() {
     }
 }
 
-x = document.getElementsByClassName("form-control");
+x = document.getElementsByClassName("form-control-sm");
 for (i = 0; i < x.length; i++){
   x[i].disabled = true
 }
+
+$(document).ready(function(){
+  $("#btn_upload").click(function(){
+    $("#loader_text").removeAttr("hidden");
+    $("#loader").removeAttr("hidden");
+  });
+});
 </script>
 {% endblock script %}
 {% endblock main %}

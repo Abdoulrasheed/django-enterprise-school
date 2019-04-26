@@ -1,0 +1,171 @@
+{% load static tags i18n humanize %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <title></title>
+        <style type="text/css">
+
+        body {
+            font-weight: 400;
+            font-size: 12px;
+            font-family: Chandas, Arial;
+        }
+.outer{
+  display: table;
+  margin: 0 auto;
+  width: 90%;
+}
+
+li{
+	display: inline;
+	list-style: none;
+	margin-right: 100px;
+}
+
+#inner {
+        display: table;
+        float: left;
+        text-align: center;
+        margin-left: -60px;
+    }
+.logo {
+    display: table;
+    float: left;
+    margin-top: 30px;
+    margin-left: 12px;
+
+}
+
+.item_l{
+    width:170px;
+    display:inline-block;
+    margin-bottom: 5px;
+
+}
+
+.item_r{
+    width:70px;
+    display:inline-block;
+    margin-bottom: 5px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 70%;
+    margin: 0 auto;
+}
+
+td, th {
+    border: 1px solid black;
+    text-align: left;
+    padding: 14px;
+    /*height*/
+}
+
+
+th{
+    color: black;
+    border-bottom: 2px solid black;
+}
+
+</style>
+    </head>
+    <body>
+        <div class="outer">
+             <div class="logo">
+                 <img src="{{ setting.school_logo.url }}" alt="" width="100px"  />
+          </div>
+          <div>
+          	<center>
+            <p style="margin-bottom: -15px; font-size: 14px !important;">{{ setting.school_name|upper }}</p>
+            <p style="font-size: 11px;margin-bottom: -15px;">MOTTO: {{ setting.school_slogan|upper }}</p>
+            <p style="font-size: 13px;">{{ setting.school_address|upper }}</p>
+            <p style="font-size: 12px;margin-top: -10px;">BROADSHEED REPORT</p>
+            <hr style="color: black" />
+         </center>
+          </div>
+        </div>
+        <div class='wrapper'>
+        	<ul>
+        		<li style="margin-left: 20px;">Class: {{ class }} </li>
+     			  <li style="margin-left: 330px;">Term: {{ term }}</li>
+     			  <li style="margin-left: 70px;">Session: {{ session }} </li><br>
+            <hr style="color: black; width: 980px; margin-left: 20px;" />
+        	</ul>
+        <table>
+          <tr style="height: 10px; font-size: 9px;">
+            <th width="20" style="font-weight: normal; text-align: center; padding: 2px !important;">S/NO</th>
+            <th width="40" style="font-weight: normal; text-align: center;">ADM. NO</th>
+            <th width="100" style="font-weight: normal; text-align: center;">NAME</th>
+            {% for subject in subjects %}
+            <th width="33" style="font-weight: normal; text-align: center;">{{ subject }}</th>
+            {% endfor %}
+            <th width="10" style="font-weight: normal; text-align: center;">Total</th>
+            <th width="10" style="font-weight: normal; text-align: center;">AVE</th>
+            <th width="30" style="font-weight: normal; text-align: center;">No. of sub.</th>
+            <th width="10" style="font-weight: normal; text-align: center;">Pos</th>
+          </tr>
+          {% for item in results %}
+          <tr style="height: 8px; font-size: 10px">
+            <td style="text-align: center;">{{ forloop.counter }}</td>
+            <td style="text-align: center;">{% get_student_roll_no item.0.student_id %}</td>
+            <td style="text-align: center;">{% get_student_full_name item.0.student_id %}</td>
+            {% for i in item %}
+            <td style="text-align: center;">
+              {%  get_subject_total_score i.subject_id i.student_id as score %}
+                {% if score < 50 %}
+                  <span style="color: red">{{ score }}</span>
+                  {% else %}
+                  <span>{{ score }}</span>
+                {% endif %}
+            </td>
+
+            {% endfor %}
+            <td style="text-align: center;">
+              {% get_overall_total item.0.student_id term session.pk %}</td>
+            <td style="text-align: center;">
+              {% calculate_avg item.0.student_id term session subjects.count %}</td>
+            <td style="text-align: center;">{{ item|length }}</td>
+            <td style="text-align: center;">
+              {% get_student_rank class session term item.0.student_id as position_in_class %}
+              {% get_rank position_in_class %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6">
+              No student found.
+            </td>
+          </tr>
+           {% endfor %}
+           <tr style="height: 8px; font-size: 10px">
+            <td width="33" style="font-weight: normal; text-align: center;"></td>
+            <td width="33" style="font-weight: normal; text-align: center;"></td>
+            <td width="33" style="font-weight: normal; text-align: center;">Subject Avg</td>
+            {% for subject in subjects %}
+              <td width="33" style="font-weight: normal; text-align: center;">
+                {% get_subject_avg subject.pk session class.pk results|length term %}
+              </td>
+            {% endfor %}
+            </tr>
+            <tr style="height: 8px; font-size: 10px">
+            <td width="33" style="font-weight: normal; text-align: center;"></td>
+            <td width="33" style="font-weight: normal; text-align: center;"></td>
+            <td width="33" style="font-weight: normal; text-align: center;">Subject Grade</td>
+              {% for subject in subjects %}
+                {% get_subject_avg subject.pk session class.pk results|length term as total %}
+                <td width="33" style="font-weight: normal; text-align: center;">{% get_grade total %}</td>
+              {% endfor %}
+            </tr>
+        </table>
+    </div>
+    <br>
+    <br>
+    <fieldset style="width: 200px; margin-left: 15px; font-size: 10px;">
+      <legend>Summary:</legend>
+        Number of Students: <b>{{ results|length }}</b><br>
+        Class Average: <b>{% get_class_avg class.pk session.pk term results|length %}</b>
+      </fieldset> 
+    <p style="page-break-after: always"/>
+    </body>
+</html>

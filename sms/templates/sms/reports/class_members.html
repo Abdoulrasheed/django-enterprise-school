@@ -1,0 +1,132 @@
+{% load static tags i18n humanize %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <title></title>
+        <style type="text/css">
+
+        body {
+            font-weight: 400;
+            font-size: 12px;
+            font-family: Chandas, Arial;
+        }
+.outer{
+  display: table;
+  margin: 0 auto;
+  width: 90%;
+}
+
+li{
+	display: inline;
+	list-style: none;
+	margin-right: 100px;
+}
+
+#inner {
+        display: table;
+        float: left;
+        text-align: center;
+        margin-left: -60px;
+    }
+.logo {
+    display: table;
+    float: left;
+    margin-top: 30px;
+    margin-left: 12px;
+
+}
+
+.item_l{
+    width:170px;
+    display:inline-block;
+    margin-bottom: 5px;
+
+}
+
+.item_r{
+    width:70px;
+    display:inline-block;
+    margin-bottom: 5px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 70%;
+    margin: 0 auto;
+}
+
+td, th {
+    border: 1px solid black;
+    text-align: left;
+    padding: 14px;
+    /*height*/
+}
+
+
+th{
+    color: black;
+    border-bottom: 2px solid black;
+}
+
+</style>
+    </head>
+    <body>
+        <div class="outer">
+             <div class="logo">
+                 <img src="{{ setting.school_logo.url }}" alt="" width="100px"  />
+          </div>
+          <div>
+          	<center>
+            <p style="margin-bottom: -15px; font-size: 14px !important;">{{ setting.school_name|upper }}</p>
+            <p style="font-size: 11px;margin-bottom: -15px;">MOTTO: {{ setting.school_slogan|upper }}</p>
+            <p style="font-size: 13px;">{{ setting.school_address|upper }}</p>
+            <p style="font-size: 12px;margin-top: -10px;">CLASS MEMBERS</p>
+         </center>
+          </div>
+        </div>
+        <div class='wrapper'>
+        	<ul>
+        		<li style="margin-left: 17px;">Class: {{ class }} </li>
+     			<li style="margin-left: 0px;">Term: {{ term }}</li>
+     			<li style="margin-left: 90px;">Session: {{ session }} </li>
+        	</ul>
+        <table>
+          <tr style="height: 10px; font-size: 11px;">
+            <th width="20" style="font-weight: normal; text-align: center; padding: 2px !important;">S/NO</th>
+            <th width="110" style="font-weight: normal; text-align: center;">ADMISSION NO</th>
+            <th width="110" style="font-weight: normal; text-align: center;">LAST NAME</th>
+            <th width="110" style="font-weight: normal; text-align: center;">FIRST NAME</th>
+            <th width="110" style="font-weight: normal; text-align: center;">OTHER NAMES</th>
+            <th width="43" style="font-weight: normal; text-align: center;">PICTURE</th>
+          </tr>
+          {% for member in class_members %}
+          <tr style="height: 8px;">
+          	<td style="text-align: center;">{{ forloop.counter }}</td>
+          	<td style="text-align: center;">{{ member.roll_number }}</td>
+          	<td style="text-align: center;">{{ member.user.last_name }}</td>
+          	<td style="text-align: center;">{{ member.user.first_name }}</td>
+          	<td style="text-align: center;">{{ member.user.other_name|default_if_none:"" }}</td>
+          	<td style="padding: 1px;">
+          		<center style="border: 1px solid; margin: 2px;">
+          			<img src="{{ member.user.get_picture }}" width="35" style="padding: 3px 4px 3px 4px; margin-top: 5px" />
+          		</center>
+          	</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6">
+              No student found.
+            </td>
+          </tr>
+           {% endfor %}
+        </table>
+    </div>
+    <br>
+    <br>
+    <fieldset style="width: 200px; margin-left: 57px">
+      <legend>Summary:</legend>
+        Number of students: {{ class_members.count }}
+      </fieldset> 
+    <p style="page-break-after: always"/>
+    </body>
+</html>

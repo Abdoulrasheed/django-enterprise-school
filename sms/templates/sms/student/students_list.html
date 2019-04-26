@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static humanize %}
 {% block title %} Students {% endblock title %}
 {% block main %}
+<style type="text/css">
+  .btn_pdf {
+    display: inline;
+  }
+</style>
    <div class="container-fluid">
       <!-- Heading -->
       <div class="card mb-4 wow fadeIn">
@@ -34,10 +39,15 @@
          </h6>
          <div class="container">
             <div class="row">
-               <div class="col-md-5">
+               <div style="display: inline;" class="col-md-5">
                   {% if request.user.is_superuser %}
-                  <a href="{% url 'add_student' %}" class="btn btn-info">Add Student</a>
+                  <a href="{% url 'add_student' %}" class="btn btn_pdf btn-info">Add Student</a>
+                  <form target="_blank" class="btn_pdf" method="get" action="{% url 'class_members_report' %}">
+                    <input type="text" name="class" hidden value="{{ selected_class.pk }}">
+                    <button style="background-color: #fff" type="submit" class="btn btn_pdf black-text">PDF</button>
+                  </form>
                   {% endif %}
+
                </div>
                <div class="col-md-3"></div>
                <div class="col-md-4">
@@ -61,9 +71,14 @@
             </div>
          </div>
          <div class="card-body">
+          <div hidden id="loader" class="progress md-progress primary-color-dark">
+              <div class="indeterminate">
+              </div>
+          </div>
             <div id="table" class="table-editable">
                <table class="table table-bordered table-responsive-md table-striped text-center">
                   <tr class="mdb-color darken-3 white-text">
+                    <th class="text-center">#</th>
                      <th class="text-center">Fullname</th>
                      <th class="text-center">Picture</th>
                      <th class="text-center">Roll</th>
@@ -75,8 +90,11 @@
                   </tr>
                   {% for student in students %}
                   <tr>
-                     <td class="pt-3-half text-left" name="{{ student.user.first_name }}" contenteditable="false">
-                        <a href="{% url 'profile' user=student.user %}">{{ student.user.get_full_name }}</a>
+                    <td class="pt-3-half text-center" contenteditable="false">
+                        <a href="">{{ forloop.counter }}</a>
+                     </td>
+                     <td class="pt-3-half text-center" name="{{ student.user.first_name }}" contenteditable="false">
+                        <a href="{% url 'profile' user_id=student.user.id %}">{{ student.user.get_full_name }}</a>
                      </td>
                      <td class="pt-3-half" name="{{ student.user.first_name }}" contenteditable="false">
                         <img width="50px" src="{{ student.user.get_picture }}">
@@ -95,9 +113,9 @@
                       </div>
                     </td>
                      <td class="pt-3-half" contenteditable="false">
-                        <a href="{% url 'profile' user=student.user %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
+                        <a href="{% url 'profile' user_id=student.user.id %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
                         <a href="{% url 'edit_student' id=student.id %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
-                        <a href="{% url 'delete_user' id=student.user.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                        <a id="del_student" target_student="{% url 'delete_user' id=student.user.pk %}" href="#" title="delete" class="del_student red-text"><i class="fa fa-times"></i></a>
                      </td>
                      {% endif %}
                   </tr>
@@ -107,6 +125,16 @@
                   </tr>
                   {% endfor %}
                </table>
+               <table>
+                <tr>
+                  <td>
+                    <fieldset>
+                        <legend style="font-size: 15px">Summary:</legend>
+                        <font style="font-size: 13px">Number of students: {{ students.count }} ({{ students.count|apnumber|title }})</font>
+                      </fieldset>
+                  </td>
+                </tr>
+               </table>
             </div>
          </div>
       </div>
@@ -115,12 +143,33 @@
    {% block script %}
       <script type="text/javascript">
         $(document).ready(function(){
-          $(".custom-checkbox").change(function(){
-            var row = $(this).closest("tr > td");
-            var url = $(row).find("#user_status").attr('deativate-url');
-
+        $(".del_student").click(function(){
+          var row = $(this).closest("tr > td");
+          var del_student = $(row).find("#del_student").attr('target_student')
+          var c = confirm("Are you sure to delete ?", "Confrimation");
+          if (c == true){
             $.ajax({
-              url: url,
+              url: del_student,
+              beforeSend: function(){
+                $("#loader").removeAttr('hidden');
+              },
+              complete: function(){
+                $("#loader").attr('hidden', 'hidden');
+              },
+                  
+                  success: function (data) {
+                  alert("Successfully deleted")
+                }
+              });
+          }
+        });
+
+        $(".custom-checkbox").change(function(){
+        var row = $(this).closest("tr > td");
+        var url = $(row).find("#user_status").attr('deativate-url');
+
+        $.ajax({
+            url: url,
                 success: function (data) {
                  alert(data);
                 }

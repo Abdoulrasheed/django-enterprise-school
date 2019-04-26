@@ -1,0 +1,197 @@
+{% load static tags i18n humanize %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <title></title>
+        <style type="text/css">
+
+        body {
+            font-weight: 400;
+            font-size: 12px;
+            font-family: Chandas, Arial;
+        }
+.outer{
+  display: table;
+  margin: 0 auto;
+  width: 90%;
+}
+
+li{
+	display: inline;
+	list-style: none;
+	margin-right: 100px;
+}
+
+#inner {
+        display: table;
+        float: left;
+        text-align: center;
+        margin-left: -60px;
+    }
+.logo {
+    display: table;
+    float: left;
+    margin-top: 30px;
+    margin-left: 12px;
+
+}
+
+.item_l{
+    width:170px;
+    display:inline-block;
+    margin-bottom: 5px;
+
+}
+
+.item_r{
+    width:70px;
+    display:inline-block;
+    margin-bottom: 5px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 70%;
+    margin: 0 auto;
+}
+
+td, th {
+    border: 1px solid black;
+    text-align: left;
+    padding: 14px;
+    /*height*/
+}
+
+
+th{
+    color: black;
+    border-bottom: 2px solid black;
+}
+
+</style>
+    </head>
+    <body>
+      {% if classes %}
+        <div class="outer">
+             <div class="logo">
+                 <img src="{{ setting.school_logo.url }}" alt="" width="100px"  />
+          </div>
+          <div>
+          	<center>
+            <p style="margin-bottom: -15px; font-size: 14px !important;">{{ setting.school_name|upper }}</p>
+            <p style="font-size: 11px;margin-bottom: -15px;">MOTTO: {{ setting.school_slogan|upper }}</p>
+            <p style="font-size: 13px;">{{ setting.school_address|upper }}</p>
+            <p style="font-size: 12px;margin-top: -10px;">SUBJECT ALLOCATION</p>
+         </center>
+          </div>
+        </div>
+        <div class='wrapper'>
+        	<ul>
+     			<li style="margin-left: 10px;">Term: {{ term }}</li>
+     			<li style="margin-left: 330px;">Session: {{ session }} </li>
+        	</ul>
+          {% for class in classes %}
+          <center style="margin-top: 20px">Class: {{ class }} </center>
+        <table>
+          <tr style="height: 10px; font-size: 11px;">
+            <th width="20" style="font-weight: normal; text-align: center; padding: 2px !important;">S/NO</th>
+            <th width="150" style="font-weight: normal; text-align: center;">TEACHER'S FULL NAME</th>
+            <th width="110" style="font-weight: normal; text-align: center;">PHONE</th>
+            <th width="150" style="font-weight: normal; text-align: center;">SUBJECT(S)</th>
+            <th width="110" style="font-weight: normal; text-align: center;">No. of subject(s)</th>
+          </tr>
+          {% for t in assigned_teachers %}
+          {% if t.clss == class %}
+          <tr style="height: 8px;">
+          	<td style="text-align: center;">{{ forloop.counter }}</td>
+          	<td style="text-align: center;">{{ t.teacher.get_full_name }}</td>
+          	<td style="text-align: center;">{{ t.teacher.phone }}</td>
+          	<td style="text-align: left ;">
+              {% for subject in t.subjects.all %}
+                <font>- {{ subject }}</font><br>
+              {% endfor %}
+            </td>
+            <td style="text-align: center;">
+              {{ t.subjects.all.count }}
+            </td>
+          </tr>
+          {% endif %}
+          {% empty %}
+          <tr>
+            <td colspan="6">
+              No subject allocation was found.
+            </td>
+          </tr>
+           {% endfor %}
+        </table>
+        {% endfor %}
+    </div>
+    <fieldset style="width: 300px; margin-left: 50px; margin-top: 50px;">
+      <legend>Summary:</legend>
+        <span>Total number of Teachers: <b>{{ total_number_of_teachers }}</b></span><br>
+        <span>Number of Subjects Assigned: <b>{{ assign_teacher_len }}</b></span>
+    </fieldset>
+      {% else %}
+              <div class="outer">
+             <div class="logo">
+                 <img src="{{ setting.school_logo.url }}" alt="" width="100px"  />
+          </div>
+          <div>
+            <center>
+            <p style="margin-bottom: -15px; font-size: 14px !important;">{{ setting.school_name|upper }}</p>
+            <p style="font-size: 11px;margin-bottom: -15px;">MOTTO: {{ setting.school_slogan|upper }}</p>
+            <p style="font-size: 13px;">{{ setting.school_address|upper }}</p>
+            <p style="font-size: 12px;margin-top: -10px;">SUBJECT ALLOCATION</p>
+         </center>
+          </div>
+        </div>
+        <div class='wrapper'>
+          <ul>
+            <li style="margin-left: 17px;">Class: {{ class }} </li>
+          <li style="margin-left: 0px;">Term: {{ term }}</li>
+          <li style="margin-left: 90px;">Session: {{ session }} </li>
+          </ul>
+        <table>
+          <tr style="height: 10px; font-size: 11px;">
+            <th width="20" style="font-weight: normal; text-align: center; padding: 2px !important;">S/NO</th>
+            <th width="150" style="font-weight: normal; text-align: center;">TEACHER'S FULL NAME</th>
+            <th width="110" style="font-weight: normal; text-align: center;">PHONE</th>
+            <th width="150" style="font-weight: normal; text-align: center;">SUBJECT(S)</th>
+            <th width="110" style="font-weight: normal; text-align: center;">No. of subject(s)</th>
+          </tr>
+          {% for t in assigned_teachers %}
+          {% if t.clss == class %}
+          <tr style="height: 8px;">
+            <td style="text-align: center;">{{ forloop.counter }}</td>
+            <td style="text-align: center;">{{ t.teacher.get_full_name }}</td>
+            <td style="text-align: center;">{{ t.teacher.phone }}</td>
+            <td style="text-align: left ;">
+              {% for subject in t.subjects.all %}
+                <font>- {{ subject }}</font><br>
+              {% endfor %}
+            </td>
+            <td style="text-align: center;">
+              {{t.subjects.all.count}}
+            </td>
+          </tr>
+          {% endif %}
+          {% empty %}
+          <tr>
+            <td colspan="6">
+              No subject allocation was found.
+            </td>
+          </tr>
+           {% endfor %}
+        </table>
+    </div>
+    <br>
+    <br>
+    <fieldset style="width: 320px; margin-left: 50px;">
+      <legend>Summary:</legend>
+        <span>Total number of Teachers: <b>{{ total_number_of_teachers }}</b></span><br>
+        <span>Number of Subjects Assigned ({{class}}): <b>{{ assigned_teachers.count }}</b></span>
+    </fieldset> 
+      {% endif %}
+    <p style="page-break-after: always"/>
+    </body>
+</html>

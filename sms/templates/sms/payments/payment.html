@@ -4,6 +4,7 @@
 {% block title %} School Fee {% endblock title %}
 
 {% block main %}
+<a href="{% url 'ajax_load_payments' %}" id="view_payments_url" hidden></a>
     <div class="container-fluid">
              <!-- Heading -->
    <div class="card mb-4 wow fadeIn">
@@ -166,9 +167,10 @@
       $("#term").change(function(){
         class_id = $("#class").val();
         term = $(this).val();
+        view_payments_url = $('#view_payments_url').attr('href');
 
-        $.ajax({           
-        url: '/ajax/load-payment/',
+        $.ajax({
+        url: view_payments_url,
         data: {
           'term': term,
           'class': class_id

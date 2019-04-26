@@ -20,8 +20,8 @@ with open(BASE_DIR + '/key/secret_key.txt') as f:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['www.ba-yola.com']
-
+ALLOWED_HOSTS = ['*']
+SITE_ID = 1
 
 # Application definition
 
@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'sms',
     'frontend',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
 ]
 
 MIDDLEWARE = [

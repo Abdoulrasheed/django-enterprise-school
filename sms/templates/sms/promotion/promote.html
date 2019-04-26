@@ -8,7 +8,7 @@
       <!--Card content-->
       <div class="card-body d-sm-flex justify-content-between">
          <h6 class="mb-2 mb-sm-0 pt-1">
-            <a href="/">Home Page</a>
+            <a href="{% url 'home_page' %}">Home Page</a>
             <span>/</span>
             <a href="#">Promotion</a>
          </h6>
@@ -99,8 +99,12 @@
                 <!--Table head-->
                 <thead>
                   <tr>
-                    <th class="th-lg"><a>Student <i class="fas fa-sort ml-1"></i></a></th>
+                    <th style="width: 10px;" class=""><a>#</a></th>
+                    <th class="th-lg"><a>Full Name<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a>Overall Total Score <i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a>Position in class <i class="fas fa-sort ml-1"></i></a></th>
                     <th class="th-lg"><a href="">Picture<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a href="">Action<i class="fas fa-sort ml-1"></i></a></th>
 
                   </tr>
                 </thead>
@@ -171,7 +175,7 @@
         success: function (data) {
           $("#load_promotion_list").html(data);
         }
-      });
+      });   
   });
 });
 </script>

@@ -8,7 +8,7 @@
       <!--Card content-->
       <div class="card-body d-sm-flex justify-content-between">
          <h6 class="mb-2 mb-sm-0 pt-1">
-            <a href="/">Home Page</a>
+            <a href="{% url 'home_page' %}">Home Page</a>
             <span>/</span>
             <a href="{% url 'students_list' %}">Students</a>
             <span>/</span>
@@ -145,7 +145,7 @@
     </div>
     <div class="col-md-4">
     <span class="red-text">*</span>
-    <input required name="stud_roll_number" tabindex="3" type="number" class="form-control mb-4" placeholder="Roll number">
+    <input required name="stud_roll_number" tabindex="3" type="text" class="form-control mb-4" placeholder="Roll number">
     <span style="color: transparent;">*</span>
     <input name="stud_oname" type="text" class="form-control mb-4" tabindex="6" placeholder="Othername">
     <select tabindex="9" name="stud_blood_group" class="mdb-select md-form">

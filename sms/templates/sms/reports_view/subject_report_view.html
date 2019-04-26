@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Subject Report {% endblock title %}
+{% block main %}
+   <!-- Heading -->
+      
+   <div class="container-fluid">
+   <!-- Heading -->
+    {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="/">Home Page</a>
+            <span>/</span>
+            <span>Subject Report</span>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
+    <div hidden id="loader" class="progress md-progress primary-color-dark">
+              <div class="indeterminate">
+              </div>
+          </div>
+   <!-- Editable table -->
+   <div class="card">
+      <a href="#" hidden url="{% url 'ajax_load_subjects' %}" id="sbjurl"></a>
+      <h6 class="mdb-color darken-3 card-header text-center white-text text-uppercase py-2">Subject Report</h6>
+      <div class="container">
+         <form method="get" target="_blank" action="{% url 'subject_report' %}">
+         <div class="row">
+            <div class="col-md-4">
+               <select id="class" name="class" class="mdb-select colorful-select dropdown-primary mx-2 md-form mt-3 md-dropdown">
+              <option value="" disabled selected>Select Class</option>
+              {% for class in classes %}
+                <option value="{{ class.pk }}">{{ class }}</option>
+              {% endfor %}
+              
+            </select>
+            </div>
+            <div class="col-md-4">
+            <select id="subject_box" name="subject" class="mdb-select colorful-select dropdown-primary mx-2 md-form mt-3 md-dropdown">
+                <option value="" disabled selected>Select a Subject</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+               <select name="term" class="mdb-select colorful-select dropdown-primary mx-2 md-form mt-3 md-dropdown">
+              <option value="" disabled selected>Select Term</option>
+                <option value="First">First</option>
+                <option value="Second">Second</option>
+                <option value="Third">Third</option>
+            </select>
+            </div>
+            <div class="col-md-5">
+              <input type="submit" name="submit" class="btn btn-info" value="Generate Report">
+            </div>
+         </div>
+          </form>
+      </div>
+      <div style="margin-bottom: 240px" class="card-body">
+         <div id="table" class="table-editable">
+            <!-- <table class="table table-bordered table-responsive-md table-striped text-center">
+               <tr>
+                  <th class="text-center">Fullname</th>
+                  <th class="text-center">Picture</th>
+                  <th class="text-center">Roll</th>
+                  <th class="text-center">Email</th>
+                  <th class="text-center">Status</th>
+                  <th class="text-center">Action</th>
+               </tr>
+            </table> -->
+         </div>
+      </div>
+   </div>
+</div>
+{% block script %}
+<script type="text/javascript">
+  $(document).ready(function(){
+      $("#class").change(function(){
+      var class_id = $(this).val()
+      var url = $('#sbjurl').attr('url');
+
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-subjects/)
+        data: {
+          'class': class_id,
+        },
+
+        beforeSend: function(){
+            $("#loader").removeAttr('hidden');
+           },
+        complete: function(){
+            $("#loader").attr('hidden', 'hidden');
+           },
+
+        success: function (data) {
+          $("#subject_box").html(data);
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}
+{% endblock main %}

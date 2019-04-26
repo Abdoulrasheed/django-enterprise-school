@@ -104,7 +104,7 @@
                 <tbody>
                 	{% for parent in parents %}
                   <tr>
-                    <td><a href="{% url 'profile' user=parent %}">{{ parent.get_full_name }}</td>
+                    <td><a href="{% url 'profile' user_id=parent.id %}">{{ parent.get_full_name }}</td>
                     <td><img src="{{ parent.get_picture }}" width="50"></td>
                     <td>{{ parent.email }}</td>
                     <td>
@@ -119,7 +119,7 @@
                       </div>
                     </td>
                     <td>
-                      <a href="{% url 'profile' user=parent %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
+                      <a href="{% url 'profile' user_id=parent.id %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
                       <a href="{% url 'edit_user' id=parent.id %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
                       <a href="{% url 'delete_user' id=parent.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
                     </td>

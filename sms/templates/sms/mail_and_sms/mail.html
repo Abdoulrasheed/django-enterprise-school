@@ -9,7 +9,7 @@
          <!--Card content-->
          <div class="card-body d-sm-flex justify-content-between">
             <h6 class="mb-2 mb-sm-0 pt-1">
-               <a href="/">Home Page</a>
+               <a href="{% url 'home_page' %}">Home Page</a>
                <span>/</span>
                <span>Mail</span>
             </h6>
@@ -120,12 +120,12 @@
                 <option value="Teacher">Teacher</option>
                 <option value="Student">Student</option>
                 <option value="Parent">Parent</option>
-              </select>  
+              </select>
 
                 <div class="form-group shadow-textarea">
                   <label for="exampleFormControlTextarea6">Message Body</label>
                   <textarea name="body" class="form-control z-depth-1" id="exampleFormControlTextarea6" rows="3" placeholder="Write your message here...">
-                    
+
                   </textarea>
                 </div>
 

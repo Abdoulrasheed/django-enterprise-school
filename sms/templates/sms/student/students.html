@@ -8,7 +8,7 @@
       <!--Card content-->
       <div class="card-body d-sm-flex justify-content-between">
          <h6 class="mb-2 mb-sm-0 pt-1">
-            <a href="/">Home Page</a>
+            <a href="{% url 'home_page' %}">Home Page</a>
             <span>/</span>
             <span>Students</span>
          </h6>
@@ -20,13 +20,13 @@
       <h6 class="mdb-color darken-3 card-header text-center white-text text-uppercase py-2">Students</h6>
       <div class="container">
          <div class="row">
- 
+
                <div class="col-md-5">
                   {% if request.user.is_superuser %}
                   <a href="{% url 'add_student' %}" class="btn btn-info">Add Student</a>
                {% endif %}
                </div>
-               
+
             <div class="col-md-3"><small></small></div>
             <div class="col-md-4">
                <div class="dropdown">

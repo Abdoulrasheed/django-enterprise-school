@@ -1,6 +1,6 @@
 {% for grade in grades %}
 <tr>
-  <td><a href="{% url 'profile' user=grade.student.user %}">{{ grade.student }}</td>
+  <td><a href="{% url 'profile' user_id=grade.student.user.id %}">{{ grade.student }}</td>
   <td><img src="{{ grade.student.user.get_picture }}" class="rounded-circle" width="50"></td>
   <td>{{ grade.student.roll_number }}</td>
    <td>{{ grade.subject }}</td>

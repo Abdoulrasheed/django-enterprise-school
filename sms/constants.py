@@ -7,7 +7,7 @@ TERM = (
 	(THIRD, "Third"),
 )
 
-MSG_FROM = "Spiritlife"
+MSG_FROM = "BaYola"
 
 CASH = "Cash"
 CHEAQUE = "Cheaque"

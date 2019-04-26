@@ -48,7 +48,7 @@ from .forms import (AddStudentForm,
 					EditExpenseForm,
 					EditSessionForm,
 					SetParentForm,
-					)
+					ProfilePictureForm,)
 
 
 from .send_message import ACCOUNT_SID, AUTH_TOKEN, client
@@ -142,7 +142,8 @@ def report_student(request):
 	# return render(request, template, context)
 	setting = Setting.objects.first()
 	scale = GradeScale.objects.all().order_by('grade')
-	context = {'results':records,'term':term,'setting':setting, 'highest':highest, 'lowest':lowest, 'number_of_student': grades_ordered.count(), 'gradeScale': scale}
+	se_tion = Session.objects.get(current_session=True)
+	context = {'results':records,'term':term,'setting':setting, 'highest':highest, 'lowest':lowest, 'number_of_student': grades_ordered.count(), 'gradeScale': scale, 'se_tion': se_tion}
 
 	from weasyprint import HTML, CSS
 	template = get_template(template)
@@ -274,11 +275,12 @@ def delete_user(request, id):
 	if user:
 		user_name = user.get_full_name()
 		if user.is_student:
-			student = Student.objects.get(user__pk=user.pk)
-			class_id = student.in_class.pk
-			user.delete()
-			messages.success(request, user_name + ' Successfully deleted !')
-			return redirect('students_list_view', id=class_id)
+		    current_session = Session.objects.get(current_session=True)
+		    student = Student.objects.get(user__pk=user.pk, session=current_session)
+		    class_id = student.in_class.pk
+		    student.delete()
+		    messages.success(request, user_name + ' Successfully deleted !')
+		    return redirect('students_list_view', id=class_id)
 		elif user.is_teacher:
 			user.delete()
 			messages.success(request, user_name + ' Successfully deleted !')
@@ -382,7 +384,7 @@ def add_assign_teacher(request):
 									message = client.messages.create(
 								    	to=phone,
 								    	from_=MSG_FROM,
-								    	body="Hello %s, \nthe school administrator just updated the list of subjects allocated to you. !\nLogin now for detals" %str(teacher.get_full_name()))
+								    	body="Hello %s, the school administrator just updated the list of subjects allocated to you. ! Login now for detals" %str(teacher.get_full_name()))
 									print(message.sid)
 								except:
 									print("theres an error while sending sms")
@@ -408,7 +410,7 @@ def add_assign_teacher(request):
 									message = client.messages.create(
 								    	to=phone,
 								    	from_=MSG_FROM,
-								    	body="Hello %s, \nthe school administrator just assigned you as a teacher of some subject(s). !\nLogin now to find out more" %str(teacher.get_full_name()))
+								    	body="Hello %s, the school administrator just assigned you as a teacher of some subject(s). ! Login now to find out more" %str(teacher.get_full_name()))
 									print(message.sid)
 								except:
 									print("theres an error while sending sms")
@@ -604,10 +606,10 @@ def add_student(request):
 						    	to=phone,
 						    	from_=MSG_FROM,
 						    	body="Hello {0}, \nWelcome to {1}. \
-						    	\nYour login details are: \
-						    	\nusername: {2}\
-						    	\npassword: {3}\
-						    	\nlink: {4}".format(parent_fname, shool_name, parent_username, parent_password, request.META['HTTP_HOST']
+						    	Your login details are: \
+						    	 username: {2}\
+						    	 password: {3}\
+						    	 link: {4}".format(parent_fname, shool_name, parent_username, parent_password, request.META['HTTP_HOST']
 						    	))
 							print(message.sid)
 						except:
@@ -983,8 +985,8 @@ def teachers_view(request):
 
 
 @login_required
-def profile(request, user):
-	user = get_object_or_404(User, username=user)
+def profile(request, user_id):
+	user = get_object_or_404(User, id=user_id)
 	context = {"user": user}
 	if request.method == "POST":
 		date = request.POST['dob']
@@ -1011,9 +1013,9 @@ def profile(request, user):
 			user.religion = religion
 			user.save()
 			messages.success(request, "Your profile was successfully edited !")
-			return redirect("profile", user=user)
+			return redirect("profile", user_id=user.id)
 		else:
-			user = User.objects.get(username=user)
+			user = get_object_or_404(User, id=user_id)
 			form = UpdateProfileForm(request.POST)
 			context = {
 				"user": user,
@@ -1079,7 +1081,6 @@ def attendance_list(request):
 			for i in students:
 				ids += (i.user.pk,)
 			q = Attendance.objects.filter(date=date, student__user__pk__in=ids, term=term, session=session)
-			print("query: " + str(q))
 			context = {
 				"students": students,
 				"classes": all_class,
@@ -1155,7 +1156,6 @@ def save_attendance(request):
 		for i in range(0, len(stud_id)):
 			student = Student.objects.get(pk=stud_id[i])
 			d = duration[i]
-			print(i)
 			if status[i] == 'on':
 				s = True
 			else:
@@ -1285,7 +1285,7 @@ def score_entry(request):
 				a.compute_position(term)
 				a.save()
 		messages.success(request, "Score Successfully Recorded !")
-		return redirect('/score-entry/')
+		return redirect('/app/score-entry/')
 
 	selected_class = request.GET.get('class')
 	selected_term = request.GET.get('term')
@@ -1295,7 +1295,7 @@ def score_entry(request):
 			selected_class = Class.objects.get(pk=selected_class)
 			current_session = session
 			students = Student.objects.filter(in_class__name=selected_class, session=session)
-			print('#######################################')
+
 			student_data = []
 			for student in students:
 				term = request.GET.get('term')
@@ -1367,6 +1367,16 @@ def view_score(request):
 			"students": list_students,
 		}
 		return render(request, 'sms/mark/parent_view_scores.html', context)
+	elif request.user.is_student:
+		session = Session.objects.get(current_session=True)
+		student = Student.objects.get(user__pk=request.user.id, session=session)
+		#subjects = student.in_class.subjects.all()
+		scores = Grade.objects.filter(student=student.id, session=session, term=get_terms())
+		context = {
+			"scores": scores,
+			"term": get_terms(),
+		}
+		return render(request, 'sms/mark/student_view_score.html', context)
 	else:
 		classes = Class.objects.all().order_by('name')
 		context = {
@@ -1414,8 +1424,6 @@ def get_student_position(request):
 			total += float(i.total)
 		overall_total.append(total)
 		all_ids.append(student.id)
-	print(sorted(overall_total, reverse=True))
-	print(sorted(all_ids, reverse=True))
 	total_scores = sorted(overall_total, reverse=True)
 	#positions = ranking.Ranking(total_scores, start=1)
 	return HttpResponse(total_scores)
@@ -1495,7 +1503,7 @@ def add_payment(request):
 			for i in p:
 				prevAmount += i.paid_amount
 			e = prevAmount + paid_amount
-			print(e)
+
 			if e > damount:
 				classes = Class.objects.all().order_by('name')
 				messages.success(request,'Invalid amount !')
@@ -1599,7 +1607,6 @@ def load_payment_table(request):
 		student__in_class__pk=class_id,
 		term=term,
 		session=session)
-	print("payments"+str(payments))
 	return render(request, 'sms/payments/ajax_load_payment.html', {"payments": payments})
 
 
@@ -1689,8 +1696,8 @@ def send_sms(request):
 							phone = '+234'+phone
 							message = client.messages.create(
 						    	to=phone,
-						    	from_="+14026034086",
-						    	body=title+" \n "+body)
+						    	from_=MSG_FROM,
+						    	body=title+" "+body)
 							print(message.sid)
 
 			Sms(title=title, body=body, to_user=to_user).save()
@@ -1866,14 +1873,12 @@ def load_promotion_list(request):
 	if request.is_ajax:
 		from_class_id = request.GET.get('from_class_id')
 		to_class_id = request.GET.get('to_class_id')
-		print(from_class_id)
-
-
 		current_session = Session.objects.get(current_session=True)
 		to_session = request.GET.get('to_session')
-		print(to_session)
-		ranking = Ranking.objects.filter(student__in_class__pk=from_class_id, session=current_session)
+		ranking = Student.objects.filter(in_class__pk=from_class_id, session=current_session)
 		context = {
+			'term': get_terms(),
+			'current_session': current_session,
 			'ranking': ranking,
  			'to_session': to_session,
           	'from_class_id': from_class_id,
@@ -1885,9 +1890,6 @@ def load_promotion_list(request):
 @login_required
 @teacher_required
 def promote(request, stud_id,  to_class_id, to_session_id):
-	print("stud_id: "+str(stud_id))
-	print("to_class_id: "+str(to_class_id))
-	print("to_session_id: "+str(to_session_id))
 	session = get_object_or_404(Session, id=to_session_id)
 	clss = get_object_or_404(Class, id=to_class_id)
 	try:
@@ -1896,12 +1898,13 @@ def promote(request, stud_id,  to_class_id, to_session_id):
 		s.clss = clss
 		s.session = session
 		s.save()
+		return HttpResponse('Promoted')
 	except Student.DoesNotExist:
 		student = get_object_or_404(Student, id=stud_id)
 		s = Student.objects.create(user=student.user, in_class=clss, session=session)
 		s.save()
-	messages.success(request, ' Successfully Promoted!')
-	return redirect('promotion_list')
+		return HttpResponse('Promoted')
+	return HttpResponse('Error, click again')
 
 @login_required
 def change_password(request):
@@ -1951,7 +1954,6 @@ def notice_board(request):
 @teacher_required
 def create_notice(request):
 	if request.method == "POST":
-		print(request.POST)
 		form = NoticeForm(request.POST)
 		if form.is_valid():
 			post_title = form.cleaned_data.get('post_title')
@@ -1964,15 +1966,12 @@ def create_notice(request):
 				posted_by=posted_by,
 				posted_to=posted_to,
 				)
-			print("created")
 			messages.success(request, 'Successfully posted to all ' + posted_to + "s")
 			return redirect('notice_board')
 		else:
-			print("form is not valid")
 			form = NoticeForm(request.POST)
 			return redirect('notice_board')
 	else:
-		print("request is not post")
 		return redirect('notice_board')
 
 
@@ -2075,12 +2074,14 @@ def update_user(request, id):
 		context = {'form': form, 'user_type': user_type}
 		return render(request, 'sms/users/edit_user.html', context)
 
+
+@login_required
+@teacher_required
 def update_class(request, id):
 	clss = get_object_or_404(Class, id=id)
 	if request.method == "POST":
 		form = EditClassForm(request.POST, instance=clss)
 		if form.is_valid():
-			print("FORM VALID")
 			form.save(commit=False)
 			clss.name = form.cleaned_data.get('name')
 			clss.section = form.cleaned_data.get('section')
@@ -2089,14 +2090,15 @@ def update_class(request, id):
 			messages.success(request, 'Class successfully updated')
 			return redirect('class_list')
 		else:
-			print("FORM ERROR")
 			form = EditClassForm(request.POST)
 			return render(request, 'sms/class/edit_class.html', {'form': form})
 	else:
-		print("GET")
 		form = EditClassForm(instance=clss)
 		return render(request, 'sms/class/edit_class.html', {'form': form})
 
+
+@login_required
+@teacher_required
 def update_subject(request, id):
 	subject = get_object_or_404(Subject, id=id)
 	if request.method == "POST":
@@ -2114,6 +2116,9 @@ def update_subject(request, id):
 		form = EditSubjectForm(instance=subject)
 		return render(request, 'sms/subject/edit_subject.html', {'form': form})
 
+
+@login_required
+@teacher_required
 def update_section(request, id):
 	section = get_object_or_404(Section, id=id)
 	if request.method == "POST":
@@ -2132,6 +2137,9 @@ def update_section(request, id):
 		form = EditSectionForm(instance=section)
 		return render(request, 'sms/section/edit_section.html', {'form': form})
 
+
+@login_required
+@teacher_required
 def update_section_allocation(request, id):
 	section_allocation = get_object_or_404(SectionAssign, id=id)
 	if request.method == "POST":
@@ -2155,6 +2163,9 @@ def update_section_allocation(request, id):
 		form = EditSectionAllocationForm(instance=section_allocation)
 		return render(request, 'sms/section/edit_section_allocation.html', {'form': form})
 
+
+@login_required
+@teacher_required
 def update_session(request, id):
 	session = get_object_or_404(Session, id=id)
 	if request.method == "POST":
@@ -2173,6 +2184,9 @@ def update_session(request, id):
 		return render(request, 'sms/academic_year/edit_session.html', {'form': form})
 
 
+
+@login_required
+@teacher_required
 def toggle_user_status(request, id):
 	user = get_object_or_404(User, id=id)
 	if request.user.id == user.id:
@@ -2186,6 +2200,9 @@ def toggle_user_status(request, id):
 		user.save()
 		return HttpResponse('activated')
 
+
+@login_required
+@teacher_required
 def update_expense(request, id):
 	expense = get_object_or_404(Expense, id=id)
 	if request.method == "POST":
@@ -2208,6 +2225,8 @@ def update_expense(request, id):
 		return render(request, 'sms/expenses/edit_expense.html', {'form': form})
 
 
+@login_required
+@teacher_required
 def set_parent(request):
 	if request.method == "POST":
 		form = SetParentForm(request.POST)
@@ -2231,3 +2250,366 @@ def set_parent(request):
 		students = Student.objects.filter(session=current_session).exclude(id__in=stud_ids)
 		parents = User.objects.filter(is_parent=True)
 		return render(request, 'sms/parent/set_parent.html', {'students': students, 'parents': parents})
+
+@login_required
+def upload_picture(request):
+	if request.is_ajax:
+		update_msg = "Error: sorry there's problem while updating picture"
+		form = ProfilePictureForm(request.POST, request.FILES)
+		if form.is_valid():
+			picture = form.cleaned_data.get('picture')
+			user = get_object_or_404(User, id=request.user.id)
+			user.picture = picture
+			user.save()
+			fs = FileSystemStorage()
+			fs.save(picture.name, picture)
+			return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+		else:
+			form = ProfilePictureForm(request.POST, request.FILES)
+			messages.success(request, form.errors)
+			return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required
+@teacher_required
+def class_member_report_view(request):
+	classes = Class.objects.all()
+	session = Session.objects.all()
+	context = {
+		"session": session,
+		"classes": classes,
+	}
+	return render(request, 'sms/reports_view/class_members_report_view.html', context)
+
+
+@login_required
+@teacher_required
+def class_member_report(request):
+	from weasyprint import HTML, CSS
+	class_id = request.GET.get('class')
+	session = request.GET.get('session')
+	if not session:
+		session = Session.objects.get(current_session=True)
+	else:
+		session = Session.objects.get(pk=session)
+	class_members = Student.objects.filter(in_class__pk=class_id, session=session.pk)
+	setting = Setting.objects.first()
+	term = get_terms()
+	_class = get_object_or_404(Class, id=class_id) 
+	context = {
+		"session": session,
+		"term": term,
+		"class": _class,
+		"class_members": class_members,
+		"setting": setting
+			}
+	template = "sms/reports/class_members.html"
+	template = get_template(template)
+	html = template.render(context)
+
+	css_string = """@page {
+		size: a4 portrait;
+		margin: 1mm;
+		counter-increment: page;
+	}"""
+
+	pdf_file = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(
+			stylesheets=[CSS(string=css_string)],presentational_hints=True)
+
+
+	response = HttpResponse(pdf_file, content_type='application/pdf')
+	response['Content-Disposition'] = 'filename="class_members.pdf"'
+	return response
+	return HttpResponse(response.getvalue(), content_type='application/pdf')
+
+@login_required
+@teacher_required
+def subject_allocation_report_view(request):
+	session = Session.objects.all()
+	classes = Class.objects.all()
+	context = {
+		"classes": classes,
+		"session": session,
+	}
+	return render(request, 'sms/reports_view/subject_allocation_report_view.html', context)
+
+@login_required
+@teacher_required
+def subject_allocation_report(request):
+	from weasyprint import HTML, CSS
+	setting = Setting.objects.first()
+	if not request.GET.get('term') in ['First', 'Second', 'Third']:
+		messages.error(request, ' ERROR: please select a term !')
+		return redirect('subject_allocation_report_view')
+	elif not request.GET.get('session'):
+		messages.error(request, ' ERROR: please select a session !')
+		return redirect('subject_allocation_report_view')
+	elif not request.GET.get('class'):
+		messages.error(request, ' ERROR: please select a class !')
+		return redirect('subject_allocation_report_view')
+	else:
+		term = request.GET.get('term')
+		clss = request.GET.get('class')
+		session = request.GET.get('session')
+		session = get_object_or_404(Session, pk=session)
+		context = {}
+		default = []
+		if clss == "All":
+			clss = Class.objects.all().order_by('name')
+			for klass in clss:
+				assigned_teachers = SubjectAssign.objects.filter(term=term, session=session.pk, clss=klass)
+				default += assigned_teachers
+			assign_teacher_len = len(default)
+			context['assign_teacher_len'] = assign_teacher_len
+			context['classes'] = clss
+		else:
+			clss = get_object_or_404(Class, id=clss)
+			default = SubjectAssign.objects.filter(term=term, session=session.pk, clss=clss.id)
+			context['class'] = clss 
+		total_number_of_teachers = User.objects.filter(is_teacher=True).count()
+		context["setting"] = setting
+		context["term"] = term
+		context["session"] = session
+		context["assigned_teachers"] = default
+		context["session"] = session
+		context["total_number_of_teachers"] = total_number_of_teachers
+	template = "sms/reports/subject_allocation_report.html"
+	template = get_template(template)
+	html = template.render(context)
+
+	css_string = """@page {
+		size: a4 portrait;
+		margin: 1mm;
+		counter-increment: page;
+	}"""
+
+	pdf_file = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(
+			stylesheets=[CSS(string=css_string)],presentational_hints=True)
+
+
+	response = HttpResponse(pdf_file, content_type='application/pdf')
+	response['Content-Disposition'] = 'filename="subject_allocation.pdf"'
+	return response
+	return HttpResponse(response.getvalue(), content_type='application/pdf')
+
+
+@login_required
+@teacher_required
+def subject_report_view(request):
+	classes = Class.objects.all()
+	context = {
+		"classes": classes,
+	}
+	return render(request, 'sms/reports_view/subject_report_view.html', context)
+
+
+@login_required
+@teacher_required
+def subject_report(request):
+	from weasyprint import HTML, CSS
+	setting = Setting.objects.first()
+	if not request.GET.get('term') in ['First', 'Second', 'Third']:
+		messages.error(request, ' ERROR: please select a term !')
+		return redirect('subject_report_view')
+	elif not request.GET.get('subject'):
+		messages.error(request, ' ERROR: please select a subject !')
+		return redirect('subject_report_view')
+	elif not request.GET.get('class'):
+		messages.error(request, ' ERROR: please select a class !')
+		return redirect('subject_report_view')
+	else:
+		session = Session.objects.get(current_session=True)
+		term = request.GET.get('term')
+		class_id = request.GET.get('class')
+		subject = request.GET.get('subject')
+		subjects = Subject.objects.filter(pk=subject)
+		s = get_object_or_404(Subject, id=subject)
+		subject_teacher = SubjectAssign.objects.filter(clss=class_id, session=session, term=term);
+		for i in subject_teacher:
+			for sub in i.subjects.all():
+				if sub == s:
+					subject_teacher = i.teacher
+		clss = get_object_or_404(Class, pk=class_id)
+		current_session = Session.objects.get(current_session=True)
+		students = Student.objects.filter(in_class=clss, session=current_session)
+		if not students.exists():
+			messages.success(request, 'No students exists for class {} in term {} '.format(clss, term))
+			return redirect('subject_report_view')
+
+		grades = Grade.objects.filter(term=term, student__in_class=clss,session=current_session).order_by('-total')
+		class_avg = grades.filter(subject=subject)
+		class_avg = class_avg.aggregate(class_avg=Sum('total')).get('class_avg') / class_avg.count()
+		if not grades.exists():
+			messages.success(request, 'No grades exists for class {} in term {} '.format(clss, term))
+			return redirect('subject_report_view')
+
+		records = ()
+		count = 0
+		for student in students:
+			try:
+				count += 1
+				student_grades = grades.filter(student=student)
+				data = get_subject_report_data(grades, subjects, student, student_grades)
+				records += (data,)
+			except Exception as e:
+				DB_LOGGER.error('====================={}'.format(e))
+		if not count:
+			messages.success(request, '	Report for class {} in {} term does not exists'.format(clss, term))
+			return redirect('subject_report_view')
+		
+		context = {'results':records,'term':term,'setting':setting }
+		context['students'] = students
+		context['session'] = session
+		context['class'] = clss
+		context['subject'] = s
+		context['subject_teacher'] = subject_teacher
+		context['class_avg'] = class_avg
+		template = "sms/reports/subject_report.html"
+		template = get_template(template)
+		html = template.render(context)
+
+		css_string = """@page {
+			size: a4 portrait;
+			margin: 1mm;
+			counter-increment: page;
+		}"""
+
+		pdf_file = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(
+				stylesheets=[CSS(string=css_string)],presentational_hints=True)
+
+
+		response = HttpResponse(pdf_file, content_type='application/pdf')
+		response['Content-Disposition'] = 'filename="subject_allocation.pdf"'
+		return response
+		return HttpResponse(response.getvalue(), content_type='application/pdf')
+
+@login_required
+@teacher_required
+def broadsheet_report_view(request):
+	classes = Class.objects.all()
+	session = Session.objects.all()
+	context = {
+		"session": session,
+		"classes": classes,
+	}
+	return render(request, 'sms/reports_view/broadsheet_report_view.html', context)
+
+@login_required
+@teacher_required
+def broadsheet_report(request):
+	from weasyprint import HTML, CSS
+	setting = Setting.objects.first()
+	if not request.GET.get('term') in ['First', 'Second', 'Third']:
+		messages.error(request, ' ERROR: please select a term !')
+		return redirect('broadsheet_report_view')
+	elif not request.GET.get('session'):
+		messages.error(request, ' ERROR: please select a session !')
+		return redirect('broadsheet_report_view')
+	elif not request.GET.get('class'):
+		messages.error(request, ' ERROR: please select a class !')
+		return redirect('broadsheet_report_view')
+	else:
+		session = request.GET.get('session')
+		term = request.GET.get('term')
+		class_id = request.GET.get('class')
+		clss = get_object_or_404(Class, pk=class_id)
+		session = get_object_or_404(Session, pk=session)
+		subjects = get_object_or_404(Class, pk=class_id).subjects.all()
+		grades = Grade.objects.filter(term=term, student__in_class=clss.pk, session=session.pk).order_by('-total')
+		if not grades.exists():
+			messages.success(request, 'No grades exists for class {} in term {} '.format(clss, term))
+			return redirect('broadsheet_report_view')
+
+		grades_ordered= grades\
+		.values('student')\
+		.annotate(total_mark=Sum('total'))\
+		.order_by('-total_mark')
+		total_marks = [i.get('total_mark') for i in grades_ordered]
+		records = ()
+		highest = grades_ordered.first()['total_mark']
+		lowest = grades_ordered.last()['total_mark']
+		students = Student.objects.filter(in_class=clss, session=session)
+		count = 0
+		for student in students:
+			try:
+				total_mark = (grades_ordered.get(student=student.pk)['total_mark'])
+				setattr(student, 'total_mark', total_mark)
+				student_rank = total_marks.index(total_mark)+1
+				setattr(student, 'student_rank', student_rank)
+				count += 1
+				student_grades = grades.filter(student=student)
+				data = get_subject_report_data(grades, subjects, student, student_grades)
+				records += (data,)
+
+			except Exception as e:
+				DB_LOGGER.error('====================={}'.format(e))
+		if not count:
+			messages.success(request, 'No reports exists for class %s in term %r '%(clss, term))
+			return redirect('broadsheet_report_view')
+		additional_td = None
+		for item in records:
+			if len(item) < subjects.count():
+				additional_td = subjects.count() - len(item)
+		context = {
+			"results": records,
+			"term": term,
+			"class": clss,
+			"session": session,
+			"setting": setting,
+			"subjects": subjects,
+			"additional_td": additional_td,
+		}
+		template = "sms/reports/broadsheet_report.html"
+		template = get_template(template)
+		html = template.render(context)
+
+		css_string = """@page {
+			size: a4 landscape;
+			margin: 1mm;
+			counter-increment: page;
+		}"""
+
+		pdf_file = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(
+				stylesheets=[CSS(string=css_string)],presentational_hints=True)
+
+
+		response = HttpResponse(pdf_file, content_type='application/pdf')
+		response['Content-Disposition'] = 'filename="subject_allocation.pdf"'
+		return response
+		return HttpResponse(response.getvalue(), content_type='application/pdf')
+
+@login_required
+def flatpage_list(request):
+	from django.contrib.flatpages.models import FlatPage
+	pages = FlatPage.objects.all()
+	return render(request, 'frontend/pages/pages_list.html', {'pages': pages})
+
+@login_required
+def delete_page(request, page_id):
+	if request.is_ajax:
+		from django.contrib.flatpages.models import FlatPage
+		page = get_object_or_404(FlatPage, id=page_id)
+		page.delete()
+		messages.success(request, 'Successfully deleted {0} '.format(page.title))
+		return HttpResponse('Successfully deleted {0}'.format(page.title))
+
+@login_required
+def toggle_page_restriction(request, page_id):
+	if request.is_ajax:
+		from django.contrib.flatpages.models import FlatPage
+		page = get_object_or_404(FlatPage, id=page_id)
+		if page.registration_required == False:
+			page.registration_required = True
+			page.save()
+			return HttpResponse('Successfully restricted {0}'.format(page.title))
+		else:
+			page.registration_required = False
+			page.save()
+			return HttpResponse('Successfully removed page restriction on {0}'.format(page.title))
+
+@login_required
+def add_new_page(request):
+	if request.method == "POST":
+		pass
+	else:
+		return redirect('')

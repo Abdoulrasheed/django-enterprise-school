@@ -2,13 +2,14 @@
 {% load static %}
 {% block title %} Payment School Fee {% endblock title %}
 {% block main %}
+<a href="{% url 'ajax_load_students' %}" id="load_students_url" hidden></a>
   <div style="margin-bottom: 259px;" class="container-fluid">
        <!-- Heading -->
    <div class="card mb-4 wow fadeIn">
       <!--Card content-->
       <div class="card-body d-sm-flex justify-content-between">
          <h6 class="mb-2 mb-sm-0 pt-1">
-            <a href="/">Home Page</a>
+            <a href="{% url 'home_page' %}">Home Page</a>
             <span>/</span>
             <a href="{% url 'view_payments' %}">Add School Fee Payment</a>
             <span>/</span>
@@ -72,7 +73,7 @@
       <div class="col-md-3">
         <select id="load_students" name="student" class="mdb-select md-form">
           <option  value="" disabled selected>Select Student</option>
-          
+
         </select>
       </div>
       <div class="col-md-3">
@@ -123,10 +124,11 @@
     });
 
     $("#class").change(function(){
-      class_id = $(this).val();
+        class_id = $(this).val();
+        load_students_url = $('#load_students_url').attr('href');
 
-        $.ajax({           
-        url: '/ajax/load-students/',
+        $.ajax({
+        url: load_students_url,
         data: {
           'class': class_id
         },

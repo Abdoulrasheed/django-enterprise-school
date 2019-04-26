@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Class Members Report {% endblock title %}
+{% block main %}
+   <!-- Heading -->
+      
+   <div class="container-fluid">
+   <!-- Heading -->
+    {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="/">Home Page</a>
+            <span>/</span>
+            <span>Class Members Report</span>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
+   <!-- Editable table -->
+   <div class="card">
+      <h6 class="mdb-color darken-3 card-header text-center white-text text-uppercase py-2">Class Members Report</h6>
+      <div class="container">
+         <form method="get" target="_blank" action="{% url 'class_members_report' %}">
+         <div class="row">
+            <div class="col-md-4">
+               <select name="class" class="mdb-select colorful-select dropdown-primary mx-2 md-form mt-3 md-dropdown">
+              <option value="" disabled selected>Select Class</option>
+              {% for class in classes %}
+                <option value="{{class.pk}}">{{ class }}</option>
+              {% endfor %}
+              
+            </select>
+            </div>
+
+            <div class="col-md-3">
+            <select name="session" 
+            class="mdb-select colorful-select dropdown-primary mx-2 md-form mt-3 md-dropdown">
+              <option value="" disabled selected>Select session</option>
+              {% for session in session %}
+                <option value="{{session.pk}}">{{ session }}</option>
+              {% endfor %}
+            </select>
+            </div>
+            <div class="col-md-5">
+                     <input type="submit" name="submit" class="btn btn-info" value="Generate Report">
+               
+               </div>
+           
+         </div>
+          </form>
+      </div>
+      <div style="margin-bottom: 240px" class="card-body">
+         <div id="table" class="table-editable">
+            <!-- <table class="table table-bordered table-responsive-md table-striped text-center">
+               <tr>
+                  <th class="text-center">Fullname</th>
+                  <th class="text-center">Picture</th>
+                  <th class="text-center">Roll</th>
+                  <th class="text-center">Email</th>
+                  <th class="text-center">Status</th>
+                  <th class="text-center">Action</th>
+               </tr>
+            </table> -->
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock main %}

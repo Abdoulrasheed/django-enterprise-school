@@ -1,0 +1,144 @@
+{% load static tags i18n humanize %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <title></title>
+        <style type="text/css">
+
+        body {
+            font-weight: 400;
+            font-size: 12px;
+            font-family: Chandas, Arial;
+        }
+.outer{
+  display: table;
+  margin: 0 auto;
+  width: 90%;
+}
+
+li{
+	display: inline;
+	list-style: none;
+	margin-right: 100px;
+}
+
+#inner {
+        display: table;
+        float: left;
+        text-align: center;
+        margin-left: -60px;
+    }
+.logo {
+    display: table;
+    float: left;
+    margin-top: 30px;
+    margin-left: 12px;
+
+}
+
+.item_l{
+    width:170px;
+    display:inline-block;
+    margin-bottom: 5px;
+
+}
+
+.item_r{
+    width:70px;
+    display:inline-block;
+    margin-bottom: 5px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 70%;
+    margin: 0 auto;
+}
+
+td, th {
+    border: 1px solid black;
+    text-align: left;
+    padding: 14px;
+    /*height*/
+}
+
+
+th{
+    color: black;
+    border-bottom: 2px solid black;
+}
+
+</style>
+    </head>
+    <body>
+        <div class="outer">
+             <div class="logo">
+                 <img src="{{ setting.school_logo.url }}" alt="" width="100px"  />
+          </div>
+          <div>
+          	<center>
+            <p style="margin-bottom: -15px; font-size: 14px !important;">{{ setting.school_name|upper }}</p>
+            <p style="font-size: 11px;margin-bottom: -15px;">MOTTO: {{ setting.school_slogan|upper }}</p>
+            <p style="font-size: 13px;">{{ setting.school_address|upper }}</p>
+            <p style="font-size: 12px;margin-top: -10px;">SUBJECT REPORT SHEET</p>
+            <hr style="color: black" />
+         </center>
+          </div>
+        </div>
+        <div class='wrapper'>
+        	<ul>
+        		<li style="margin-left: 0px;">Class: {{ class }} </li>
+     			  <li style="margin-left: 0px;">Term: {{ term }}</li>
+     			  <li style="margin-left: 35px;">Session: {{ session }} </li><br>
+            <li style="margin-left: 0px;">Subject: {{ subject }} </li>
+            <li style="margin-left: 130px;">Subject Teacher: {{ subject_teacher.get_full_name }} </li>
+        	</ul>
+        <table>
+          <tr style="height: 10px; font-size: 9px;">
+            <th width="20" style="font-weight: normal; text-align: center; padding: 2px !important;">S/NO</th>
+            <th width="40" style="font-weight: normal; text-align: center;">ADMISSION NO</th>
+            <th width="40" style="font-weight: normal; text-align: center;">FIRST NAME</th>
+            <th width="40" style="font-weight: normal; text-align: center;">LAST NAME</th>
+            <th width="40" style="font-weight: normal; text-align: center;">OTHER NAMES</th>
+            <th width="25" style="font-weight: normal; text-align: center;">CA 1 (30)</th>
+            <th width="25" style="font-weight: normal; text-align: center;">CA 2 (30)</th>
+            <th width="25" style="font-weight: normal; text-align: center;">Exam (60)</th>
+            <th width="25" style="font-weight: normal; text-align: center;">Total (100)</th>
+            <th width="20" style="font-weight: normal; text-align: center;">Grade</th>
+            <th width="20" style="font-weight: normal; text-align: center;">Pos</th>
+            <th width="25" style="font-weight: normal; text-align: center;">Comment</th>
+          </tr>
+          {% for item in results %}
+          <tr style="height: 8px; font-size: 10px">
+          	<td style="text-align: center;">{{ forloop.counter }}</td>
+          	<td style="text-align: center;">{% get_student_roll_no item.0.student_id %}</td>
+          	<td style="text-align: center;">{% get_student_fname item.0.student_id %}</td>
+          	<td style="text-align: center;">{% get_student_lname item.0.student_id %}</td>
+          	<td style="text-align: center;">{% get_student_oname item.0.student_id %}</td>
+            <td style="text-align: center;">{{ item.0.fca }}</td>
+            <td style="text-align: center;">{{ item.0.sca }}</td>
+            <td style="text-align: center;">{{ item.0.exam }}</td>
+            <td style="text-align: center;">{{ item.0.total }}</td>
+            <td style="text-align: center;">{{ item.0.grade }}</td>
+            <td style="text-align: center;">{% get_rank item.0.rank %}</td>
+            <td style="text-align: center;">{{ item.0.remark }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6">
+              No student found.
+            </td>
+          </tr>
+           {% endfor %}
+        </table>
+    </div>
+    <br>
+    <br>
+    <fieldset style="width: 200px; margin-left: 20px; font-size: 10px;">
+      <legend>Summary:</legend>
+        Number of Students: {{ results|length }}<br>
+        Class Average: {{ class_avg }}
+      </fieldset> 
+    <p style="page-break-after: always"/>
+    </body>
+</html>

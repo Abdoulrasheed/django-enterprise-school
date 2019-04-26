@@ -4,7 +4,12 @@ from .models import *
 class GradeAdmin(admin.ModelAdmin):
 	list_display = ['student', 'session', 'term', 'subject', 'remark', 'total']
 
-admin.site.register(User)
+class UserAdmin(admin.ModelAdmin):
+	list_display = ['first_name', 'last_name']
+
+	search_fields = ['first_name', 'last_name']
+
+admin.site.register(User, UserAdmin)
 admin.site.register(Session)
 admin.site.register(Section)
 admin.site.register(Class)

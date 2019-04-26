@@ -1,10 +1,59 @@
+{% load tags %}
 {% for each in ranking %}
 <tr class="_row">
-  <input class="student_id" type="text" name="student_id" hidden value="{{ each.student.id }}">
-  <td><a href="{% url 'profile' user=each.student.user %}">{{ each.student }}</td>
-  <td><img src="{{ each.student.user.get_picture }}" class="rounded-circle" width="50"></td>
-  <td><a href="{% url 'promote' stud_id=each.student.id to_class_id=to_class_id to_session_id=to_session %}" class="btn">Promote</a></td>
+	<td>{{ forloop.counter }}</td>
+  	<input class="student_id" type="text" name="student_id" hidden value="{{ each.id }}">
+  	<td><a href="{% url 'profile' user_id=each.user.id %}">{{ each }}</td>
+  	<td>
+  		{% get_overall_total each.pk term current_session %}
+  	</td>
+  	<td>
+  		{% get_student_rank from_class_id current_session term each.pk as rank %}
+  		{% get_rank rank %}
+  	</td>
+  	{% check_if_promoted each to_session as check_if_promoted %}
+  	<td><img src="{{ each.user.get_picture }}" class="rounded-circle" width="50"></td>
+  	<td>
+  		{% if check_if_promoted == 1 %}
+  		<button style="background-color: lightblue;" class="btn">
+  			Promoted
+  		</button>
+  		{% else %}
+  		<button style="background-color: #fff; color: black" id="btn_promote" target_url="{% url 'promote' stud_id=each.id to_class_id=to_class_id to_session_id=to_session %}" class="btn">	Promote
+  		</button>
+  		<span style="margin-left: 9px; width: 150px" hidden id="loader2" class="progress md-progress primary-color-dark">
+              <span class="indeterminate">
+              </span>
+          </span>
+  		{% endif %}
+  	</td>
 </tr>
 {% empty %}
-<td>No data available <small style="font-style: italic;">Remember to add grades first</small></td>
+<td colspan="4">No data is available</small></td>
 {% endfor %}
+
+{% block script %}
+<script type="text/javascript">
+	$(".btn").click(function(){
+		var row = $(this).closest("tr > td");
+		var url = $(row).find("#btn_promote").attr('target_url');
+
+		$.ajax({
+			url: url,
+			beforeSend: function(){
+				$(row).find("#loader2").removeAttr('hidden');
+				$(row).find("#btn_promote").text("Promoting...");
+			},
+
+			complete: function(){
+				$(row).find("#loader2").attr('hidden', 'hidden');
+				$(row).find("#btn_promote").css('background-color', 'lightblue');
+				$(row).find("#btn_promote").attr('disabled', true);
+			},
+			success: function (data) {
+				$(row).find("#btn_promote").text(data);
+			}
+          });
+	});
+</script>
+{% endblock %}
