@@ -11,5 +11,4 @@ pycparser==2.19
 PyJWT==1.7.1
 Pyphen==0.9.5
 PySocks==1.6.8
-twilio==6.24.0
 
