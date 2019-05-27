@@ -53,10 +53,11 @@
 <div class="tab-content" id="myTabContent">
   <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-4">
+        <span>School Display Name:</span>
         <input value="{{ school_name }}" name="school_name" type="text" class="form-control mb-4" placeholder="School name">
-        <input value="{{ s.school_address }}" name="school_address" type="text" class="form-control mb-4" placeholder="School address">
-        <input value="{{ s.school_slogan }}" name="school_slogan" type="text" class="form-control mb-4" placeholder="School slogan">
+       
+        <span>School Logo:</span>
         <div class="input-group">
           <div class="input-group-prepend">
             <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
@@ -71,21 +72,42 @@
         {% endif %}
         current logo: <img src="{{ s.school_logo.url }}" width="65" class="rounded-circle">
         <br>
-        <span>Third term ends</span>
-        <input value="{{ s.tt_ends|date:"Y-m-d" }}" name="tt_ends" type="date" class="form-control mb-4">
-      </div>
-      <div class="col-md-6">
-        <span>First term begins</span>
+        <br>
+        <span>Facebook Link:</span>
+        <input value="{{ s.social_link1|default_if_none:'' }}" name="social_link1" type="text" class="form-control mb-4" placeholder="Social Link 1">
+          <span>First term begins</span>
         <input value="{{ s.ft_begins|date:"Y-m-d" }}" name="ft_begins" type="date" class="form-control mb-4">
+                 <span>Second term ends</span>
+        <input value="{{ s.st_ends|date:"Y-m-d" }}" name="st_ends" type="date" class="form-control mb-4">
+      </div>
+      <div class="col-md-4">
+        <span>School Physical Address:</span>
+        <input value="{{ s.school_address }}" name="school_address" type="text" class="form-control mb-4" placeholder="School address">
+        <span>Motto:</span>
+        <input value="{{ s.school_slogan }}" name="school_slogan" type="text" class="form-control mb-4" placeholder="School slogan">
+         <span>Business Phone:</span>
+        <input value="{{ s.business_phone1|default_if_none:'' }}" name="business_phone1" type="number" class="form-control mb-4" maxlength="11" minlength="11" placeholder="Business Phone">
+         <span>Twitter handler:</span>
+        <input value="{{ s.social_link2|default_if_none:'' }}" name="social_link2" type="text" class="form-control mb-4" placeholder="Twitter username">
         <span>First term Ends</span>
         <input value="{{ s.ft_ends|date:"Y-m-d" }}" name="ft_ends" type="date" class="form-control mb-4">
-        <span>Second term begins</span>
-        <input value="{{ s.st_begins|date:"Y-m-d" }}" name="st_begins" type="date" class="form-control mb-4">
-        <span>Second term ends</span>
-        <input value="{{ s.st_ends|date:"Y-m-d" }}" name="st_ends" type="date" class="form-control mb-4">
-         <span>Third term begins</span>
+        <span>Third term begins</span>
         <input value="{{ s.tt_begins|date:"Y-m-d" }}" name="tt_begins" type="date" class="form-control mb-4">
   </div>
+   <div class="col-md-4">
+    <span>Town:</span>
+        <input value="{{ s.school_town|default_if_none:'' }}" name="school_town" type="text" class="form-control mb-4" maxlength="20" placeholder="Town">
+                <span>Business Email:</span>
+        <input value="{{ s.business_email|default_if_none:'' }}" name="business_email" type="text" class="form-control mb-4" placeholder="Business Email">
+         <span>Alternative Business Phone:</span>
+        <input value="{{ s.business_phone2|default_if_none:'' }}" name="business_phone2" type="number" class="form-control mb-4" maxlength="11" minlength="11" placeholder="Alternative Business Phone Number">
+         <span>School Whatsapp Number:</span>
+        <input value="{{ s.social_link1|default_if_none:'' }}" name="social_link3" type="text" class="form-control mb-4" placeholder="in the format +2347000000000">
+         <span>Second term begins</span>
+        <input value="{{ s.st_begins|date:"Y-m-d" }}" name="st_begins" type="date" class="form-control mb-4">
+         <span>Third term ends</span>
+        <input value="{{ s.tt_ends|date:"Y-m-d" }}" name="tt_ends" type="date" class="form-control mb-4">
+      </div>
   </div>
 </div>
 <input type="submit" name="submit" value="Save" style="margin-bottom: 27px;" class="btn btn-primary">

@@ -137,18 +137,24 @@ class SettingForm(forms.Form):
     school_logo = forms.ImageField(label="School logo", required=False)
     school_address = forms.CharField(max_length=150, label="School address", required=False)
     school_slogan = forms.CharField(max_length=200, label="Motto / Slogan", required=False)
+    business_phone1 = forms.CharField(max_length=200, label="Business Phone", required=False)
+    business_phone2 = forms.CharField(max_length=200, label="Alternate Phone Number", required=False)
+    business_email = forms.EmailField(label="Business Email", required=False)
+    social_link1 = forms.CharField(max_length=200, label="Social Link #1", required=False)
+    social_link2 = forms.CharField(max_length=200, label="Social Link #2", required=False)
+    social_link3 = forms.CharField(max_length=200, label="Social Link #3", required=False)
     ft_begins = forms.DateField(required=False)
     ft_ends  = forms.DateField(required=False)
     st_begins = forms.DateField(required=False)
     st_ends = forms.DateField(required=False)
     tt_begins = forms.DateField(required=False)
     tt_ends = forms.DateField(required=False)
+    school_town = forms.CharField(max_length=20, label="Town", required=False)
 
 class ChangePasswordForm(forms.Form):
     old_password = forms.CharField(widget=forms.PasswordInput, label="Old Password")
     new_password = forms.CharField(widget=forms.PasswordInput, label="New Password")
     confirm_password = forms.CharField(widget=forms.PasswordInput, label="Confirm Password")
-
 
 class NoticeForm(forms.Form):
     post_title = forms.CharField(max_length=200)

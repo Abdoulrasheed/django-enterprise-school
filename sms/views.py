@@ -1736,6 +1736,14 @@ def general_setting(request):
 			tt_begins = form.cleaned_data.get('tt_begins')
 			tt_ends = form.cleaned_data.get('tt_ends')
 
+			school_business_phone = form.cleaned_data.get('business_phone1')
+			alt_business_phone = form.cleaned_data.get('business_phone2')
+			business_email = form.cleaned_data.get('business_email')
+			school_town = form.cleaned_data.get('school_town')
+			social_link1 = form.cleaned_data.get('social_link1')
+			social_link2 = form.cleaned_data.get('social_link2')
+			social_link3 = form.cleaned_data.get('social_link3')
+
 			a, created = Setting.objects.get_or_create(id=1)
 			if not created:
 				a = Setting.objects.get(id=1)
@@ -1751,13 +1759,21 @@ def general_setting(request):
 				st_begins=st_begins,
 				st_ends=st_ends,
 				tt_begins=tt_begins,
-				tt_ends=tt_ends)
+				tt_ends=tt_ends,
+				business_email=business_email,
+				business_phone1=school_business_phone,
+				business_phone2=alt_business_phone,
+				social_link1=social_link1,
+				social_link2=social_link2,
+				social_link3=social_link3,
+				school_town=school_town)
+
 				fs = FileSystemStorage()
 				name = fs.save(school_logo.name, school_logo)
 				context['url'] = fs.url(name)
 				context['s'] = Setting.objects.all()[0]
 			messages.success(request, 'School settings successfully updated !')
-			return render(request, 'sms/settings/general_setting.html', context)
+			return redirect('general_setting')
 		else:
 			s = Setting.objects.all()[0]
 			form = SettingForm(request.POST)
@@ -2578,38 +2594,9 @@ def broadsheet_report(request):
 		return response
 		return HttpResponse(response.getvalue(), content_type='application/pdf')
 
-@login_required
-def flatpage_list(request):
-	from django.contrib.flatpages.models import FlatPage
-	pages = FlatPage.objects.all()
-	return render(request, 'frontend/pages/pages_list.html', {'pages': pages})
 
 @login_required
-def delete_page(request, page_id):
-	if request.is_ajax:
-		from django.contrib.flatpages.models import FlatPage
-		page = get_object_or_404(FlatPage, id=page_id)
-		page.delete()
-		messages.success(request, 'Successfully deleted {0} '.format(page.title))
-		return HttpResponse('Successfully deleted {0}'.format(page.title))
-
-@login_required
-def toggle_page_restriction(request, page_id):
-	if request.is_ajax:
-		from django.contrib.flatpages.models import FlatPage
-		page = get_object_or_404(FlatPage, id=page_id)
-		if page.registration_required == False:
-			page.registration_required = True
-			page.save()
-			return HttpResponse('Successfully restricted {0}'.format(page.title))
-		else:
-			page.registration_required = False
-			page.save()
-			return HttpResponse('Successfully removed page restriction on {0}'.format(page.title))
-
-@login_required
-def add_new_page(request):
-	if request.method == "POST":
-		pass
-	else:
-		return redirect('')
+@teacher_required
+def reqlll(reqlll):
+	oiin = [i.values.all for i in items.all]
+	return render(request, 'sms/tr/jtm.html')

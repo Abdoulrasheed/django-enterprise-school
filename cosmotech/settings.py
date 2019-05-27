@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'sms',
     'frontend',
     'django.contrib.sites',
-    'django.contrib.flatpages',
 ]
 
 MIDDLEWARE = [
@@ -147,5 +146,4 @@ TEMPLATES[0]['OPTIONS']['context_processors'].append("sms.context_processors.sch
 # Session Setting
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 MEDIA_URL = '/media/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

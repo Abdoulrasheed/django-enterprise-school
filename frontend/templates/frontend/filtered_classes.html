@@ -1,0 +1,5 @@
+ {% for class in classes %}
+<option value="{{ class.pk }}">{{ class.name }}</option>
+{% empty %}
+<option disabled>No class is available</option>
+{% endfor %}

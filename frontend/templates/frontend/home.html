@@ -1,155 +1,138 @@
-{% load static flatpages %}
+{% load static %}
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>SPIRIT LIFE SCHOOLS</title>
-    <!-- BOOTSTRAP CORE STYLE CSS -->
-    <link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet" />
-    <!-- FONT AWESOME CSS -->
-<link href="{% static 'assets/css/font-awesome.min.css' %}" rel="stylesheet" />
-     <!-- FLEXSLIDER CSS -->
-<link href="{% static 'assets/css/flexslider.css' %}" rel="stylesheet" />
-    <!-- CUSTOM STYLE CSS -->
-    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" />    
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>{{ setting.school_name|title }}</title>
+  <!-- BOOTSTRAP CORE STYLE CSS -->
+  <link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet" />
+  <!-- FONT AWESOME CSS -->
+  <link href="{% static 'assets/css/font-awesome.min.css' %}" rel="stylesheet" />
+  <!-- FLEXSLIDER CSS -->
+  <link href="{% static 'assets/css/flexslider.css' %}" rel="stylesheet" />
+  <!-- CUSTOM STYLE CSS -->
+  <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" />    
   <!-- Google Fonts -->
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css' />
 </head>
 <body >
-   
+
  <div class="navbar navbar-inverse navbar-fixed-top " id="menu">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#"><img class="logo-custom" src="{% static 'assets/img/logo180-50.png' %}" alt="logo" /><text style="color:white;">SPIRIT LIFE SCHOOLS</text></a>
-            </div>
-            <div class="navbar-collapse collapse move-me">
-              {% get_flatpages as flatpages %}
-                <ul class="nav navbar-nav navbar-right">
-                  {% for page in flatpages %}
-                    <li><a href="/pages{{ page.url }}">{{ page.title|upper }}</a></li>
-                  {% endfor %}
-                    <li ><a href="#home">HOME</a></li>
-                     <li><a href="#features-sec">ABOUT US</a></li>
-                    <li><a href="#faculty-sec">WHO WE ARE</a></li>
-                     <li><a href="#course-sec">WHAT WE OFFER</a></li>
-                     <li><a href="#contact-sec">CONTACT</a></li>
-                     <li><a href="/app/">LOGIN</a></li>
-                </ul>
-            </div>
-           
-        </div>
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#"><img class="logo-custom" src="{{ setting.school_logo.url }}" alt="logo" /><text style="color:white;">{{ setting.school_name|title }}</text></a>
     </div>
-      <!--NAVBAR SECTION END-->
-       <div class="home-sec" id="home" >
-           <div class="overlay">
+    <div class="navbar-collapse collapse move-me">
+      <ul class="nav navbar-nav navbar-right">
+        <li ><a href="#home">HOME</a></li>
+        <li><a style="color: cyan" href="#features-sec">ABOUT US</a></li>
+        <li><a href="#faculty-sec">WHO WE ARE</a></li>
+        <li><a style="color: cyan" href="#course-sec">WHAT WE OFFER</a></li>
+        <li><a href="#contact-sec">CONTACT</a></li>
+        <li><a style="color: cyan" href="#admission-sec">APPLY FOR ADMISSION</a></li>
+        <li><a href="/app/">LOGIN</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+<!--NAVBAR SECTION END-->
+<div class="home-sec" id="home" >
+ <div class="overlay">
+   <div class="container">
+     <div class="row text-center " >
+
+       <div class="col-lg-12  col-md-12 col-sm-12">
+
+        <div class="flexslider set-flexi" id="main-section" >
+          <ul class="slides move-me">
+            <!-- Slider 01 -->
+            <li>
+              <h3>Delivering Quality Education</h3>
+              <h1>UNIQUE LEARNING METHOD</h1>
+              <a  href="#features-sec" class="btn btn-info btn-lg" >
+                ABOUT US
+              </a>
+            </li>
+            <!-- End Slider 01 -->
+
+            <!-- Slider 02 -->
+            <li>
+              <h3>Delivering Quality Education</h3>
+              <h1>UNMATCHED TEACHING APPROACH</h1>
+              <a  href="#contact-sec" class="btn btn-danger btn-lg" >
+               CONTACT US
+             </a>
+           </li>
+           <li>
+            <h3>Delivering Quality Education</h3>
+            <h1>AWESOME STUDENT TEACHER RELATIONSHIP</h1>
+            <a  href="#admission-sec" class="btn btn-danger btn-lg" >
+             APPLY FOR ADMISSION 
+           </a>
+         </li>
+         <!-- End Slider 02 -->
+
+         <!-- Slider 03 -->
+         <!-- End Slider 03 -->
+       </ul>
+     </div>
+   </div>
+ </div>
+</div>
+</div>
+
+</div>
+<!--HOME SECTION END-->   
+<div  class="tag-line" >
  <div class="container">
-           <div class="row text-center " >
-           
-               <div class="col-lg-12  col-md-12 col-sm-12">
-               
-                <div class="flexslider set-flexi" id="main-section" >
-                    <ul class="slides move-me">
-                        <!-- Slider 01 -->
-                        <li>
-                              <h3>Delivering Quality Education</h3>
-                           <h1>UNIQUE LEARNING METHOD</h1>
-                            <a  href="#features-sec" class="btn btn-info btn-lg" >
-                                ABOUT US
-                            </a>
-                             <a  href="#contact-sec"" class="btn btn-success btn-lg" >
-                                CONTACT US
-                            </a>
-                        </li>
-                        <!-- End Slider 01 -->
-                        
-                        <!-- Slider 02 -->
-                        <li>
-                            <h3>Delivering Quality Education</h3>
-                           <h1>UNMATCHED TEACHING APPROACH</h1>
-                             <a  href="#features-sec" class="btn btn-primary btn-lg" >
-                               ABOUT US 
-                            </a>
-                             <a  href="#contact-sec" class="btn btn-danger btn-lg" >
-                               CONTACT US
-                            </a>
-                        </li>
-                        <!-- End Slider 02 -->
-                        
-                        <!-- Slider 03 -->
-                        <li>
-                            <h3>Delivering Quality Education</h3>
-                           <h1>AWESOME STUDENT TEACHER RELATIONSHIP</h1>
-                             <a  href="#features-sec" class="btn btn-default btn-lg" >
-                               ABOUT US 
-                            </a>
-                             <a  href="#contact-sec" class="btn btn-info btn-lg" >
-                               CONTACT US
-                            </a>
-                        </li>
-                        <!-- End Slider 03 -->
-                    </ul>
-                </div>
-                   
-     
-              
-              
-            </div>
-                
-               </div>
-                </div>
-           </div>
-           
-       </div>
-       <!--HOME SECTION END-->   
-    <div  class="tag-line" >
-         <div class="container">
-           <div class="row  text-center" >
-           
-               <div class="col-lg-12  col-md-12 col-sm-12">
-               
-        <h2 data-scroll-reveal="enter from the bottom after 0.1s" ><i class="fa fa-circle-o-notch"></i> WELCOME TO SPIRIT LIFE SCHOOLS<i class="fa fa-circle-o-notch"></i> </h2>
-                   </div>
-               </div>
-             </div>
-        
+   <div class="row  text-center" >
+
+     <div class="col-lg-12  col-md-12 col-sm-12">
+
+      <h2 data-scroll-reveal="enter from the bottom after 0.1s" ><i class="fa fa-circle-o-notch"></i> WELCOME TO {{ setting.school_name|upper }}<i class="fa fa-circle-o-notch"></i> </h2>
     </div>
-    <!--HOME SECTION TAG LINE END-->   
-         <div id="features-sec" class="container set-pad" >
-             <div class="row text-center">
-                 <div class="col-lg-8 col-lg-offset-2 col-md-8 col-sm-8 col-md-offset-2 col-sm-offset-2">
-                     <h1 data-scroll-reveal="enter from the bottom after 0.2s"  class="header-line"> THE VISIONAR </h1>
-                     <p data-scroll-reveal="enter from the bottom after 0.3s" >
-                     
-                     SPIRITLIFE GROUP OF SCHOOLS CURRENTLY MADE UP OF SPIRITLIFE MODEL SCHOOL INTERNATIONAL (SMSI) AND INTEGRITY COLLEGE YOLA (ICY) IS BORN OUT OF A DIVINE INSTRUCTION- “RAISE ME A NATION OF INTEGRITY”- 1 SAMUEL 2:34-35, 1SAMUEL 3:10-14. BASICALLY THEREFORE, MY PRINCIPAL ASSIGNMENT IS TO RAISE THE YOUNG ONES INTO MEN AND WOMEN OF INTEGRITY THAT WILL LIVE DOING ONLY THAT WHICH IS IN ACCORDANCE WITH THE HEART OF GOD. THIS IS AN ASSIGNMENT THAT IS BEYOUND NIGERIA AND THE AFRICAN CONTINENT. WE ARE WORKING HARD AS A TEAM DEPENDING AND TRUSTING IN THE DIRECTION AND INSTRUCTIONS OF GOD TOWARDS ACHIEVING THIS. THEREFORE, I USE THIS MEDIUM TO ENCOURAGE THE GENERAL PUBLIC TO JOIN ME IN ORDER TO BE ACQUINTED WITH OUR ACHIEVEMENTS AS WE WALK TOGETHER IN THE PURSUIT OF THIS NOBLE ASSIGNMENT.
-                     
-                     
-                     </p>
-                 </div>
+  </div>
+</div>
 
-             </div>
-             <!--/.HEADER LINE END-->
+</div>
+<!--HOME SECTION TAG LINE END-->   
+<div id="features-sec" class="container set-pad" >
+ <div class="row text-center">
+   <div class="col-lg-8 col-lg-offset-2 col-md-8 col-sm-8 col-md-offset-2 col-sm-offset-2">
+     <h1 data-scroll-reveal="enter from the bottom after 0.2s"  class="header-line"> THE VISIONAR </h1>
+     <p data-scroll-reveal="enter from the bottom after 0.3s" >
+
+       SPIRITLIFE GROUP OF SCHOOLS CURRENTLY MADE UP OF SPIRITLIFE MODEL SCHOOL INTERNATIONAL (SMSI) AND INTEGRITY COLLEGE YOLA (ICY) IS BORN OUT OF A DIVINE INSTRUCTION- “RAISE ME A NATION OF INTEGRITY”- 1 SAMUEL 2:34-35, 1SAMUEL 3:10-14. BASICALLY THEREFORE, MY PRINCIPAL ASSIGNMENT IS TO RAISE THE YOUNG ONES INTO MEN AND WOMEN OF INTEGRITY THAT WILL LIVE DOING ONLY THAT WHICH IS IN ACCORDANCE WITH THE HEART OF GOD. THIS IS AN ASSIGNMENT THAT IS BEYOUND NIGERIA AND THE AFRICAN CONTINENT. WE ARE WORKING HARD AS A TEAM DEPENDING AND TRUSTING IN THE DIRECTION AND INSTRUCTIONS OF GOD TOWARDS ACHIEVING THIS. THEREFORE, I USE THIS MEDIUM TO ENCOURAGE THE GENERAL PUBLIC TO JOIN ME IN ORDER TO BE ACQUINTED WITH OUR ACHIEVEMENTS AS WE WALK TOGETHER IN THE PURSUIT OF THIS NOBLE ASSIGNMENT.
 
 
-           <div class="row" >
-           
-               
-                 <div class="col-lg-4  col-md-4 col-sm-4" data-scroll-reveal="enter from the bottom after 0.4s">
-                     <div class="about-div">
-                     <i class="fa fa-paper-plane-o fa-4x icon-round-border" ></i>
-                   <h3 >OUR MISSION</h3>
-                 <hr />
-                       <hr />
-                   <p >
-                   TO CONTRIBUTE IN THE ENHANCING AND DELIVERY OF QUALITY AND STANDARD EDUCATION IN COMFORMITY WITH STANDARD AND BEST PRACTICES WORLD WIDE WHERE AS MANY THAT PASS THROUGH US, WILL BE ABLE TO COMPETE AND STAND STRONG EDUCATIONALLY AND MORALLY IN NIGERIA AND BEYOUND.
-          </p>
+     </p>
+   </div>
+
+ </div>
+ <!--/.HEADER LINE END-->
+
+
+ <div class="row" >
+
+
+   <div class="col-lg-4  col-md-4 col-sm-4" data-scroll-reveal="enter from the bottom after 0.4s">
+     <div class="about-div">
+       <i class="fa fa-paper-plane-o fa-4x icon-round-border" ></i>
+       <h3 >OUR MISSION</h3>
+       <hr />
+       <hr />
+       <p >
+         TO CONTRIBUTE IN THE ENHANCING AND DELIVERY OF QUALITY AND STANDARD EDUCATION IN COMFORMITY WITH STANDARD AND BEST PRACTICES WORLD WIDE WHERE AS MANY THAT PASS THROUGH US, WILL BE ABLE TO COMPETE AND STAND STRONG EDUCATIONALLY AND MORALLY IN NIGERIA AND BEYOUND.
+       </p>
                <!---------<a href="#" class="btn btn-info btn-set"  >ASK THE EXPERT</a>--------->
                 </div>
                    </div>
@@ -187,232 +170,384 @@
                  
                </div>
              </div>
-   <!-- FEATURES SECTION END-->
-    <div id="faculty-sec" >
-    <div class="container set-pad">
-             <div class="row text-center">
+             <!-- FEATURES SECTION END-->
+             <div id="faculty-sec" >
+              <div class="container set-pad">
+               <div class="row text-center">
                  <div class="col-lg-8 col-lg-offset-2 col-md-8 col-sm-8 col-md-offset-2 col-sm-offset-2">
-                     <h1 data-scroll-reveal="enter from the bottom after 0.1s" class="header-line">WHO WE ARE</h1>
-                     <p data-scroll-reveal="enter from the bottom after 0.3s">
-            WE ARE THE PACE SETTERS FOR THE OTHERS TO FOLLOW
-           </div>
+                   <h1 data-scroll-reveal="enter from the bottom after 0.1s" class="header-line">WHO WE ARE</h1>
+                   <p data-scroll-reveal="enter from the bottom after 0.3s">
+                    WE ARE THE PACE SETTERS FOR THE OTHERS TO FOLLOW
+                  </div>
 
-             </div>
-             <!--/.HEADER LINE END-->
+                </div>
+                <!--/.HEADER LINE END-->
 
-           <div class="row" >
-           
-               
+                <div class="row" >
+
+
                  <div class="col-lg-4  col-md-4 col-sm-4" data-scroll-reveal="enter from the bottom after 0.4s">
-                     <div class="faculty-div">
+                   <div class="faculty-div">
                      <img src="{% static 'assets/img/faculty/1.jpg' %}"  class="img-rounded" />
-                   <h3 >BISHOP (DR.) DAVID F.ZAKY </h3>
-                 <hr />
-                         <h4>FOUNDER/VISIONER</h4>
-                   
-                </div>
+                     <h3 >BISHOP (DR.) DAVID F.ZAKY </h3>
+                     <hr />
+                     <h4>FOUNDER/VISIONER</h4>
+
                    </div>
+                 </div>
                  <div class="col-lg-4  col-md-4 col-sm-4" data-scroll-reveal="enter from the bottom after 0.5s">
-                     <div class="faculty-div">
+                   <div class="faculty-div">
                      <img src="{% static 'assets/img/faculty/2.jpg' %}"  class="img-rounded" />
-                   <h3 >PASTOR (MRS.) RUTH D ZAKY</h3>
-                 <hr />
-                         <h4>PROPRIETRESS</h4>
-                </div>
+                     <h3 >PASTOR (MRS.) RUTH D ZAKY</h3>
+                     <hr />
+                     <h4>PROPRIETRESS</h4>
                    </div>
-               <div class="col-lg-4  col-md-4 col-sm-4" data-scroll-reveal="enter from the bottom after 0.6s">
-                     <div class="faculty-div">
+                 </div>
+                 <div class="col-lg-4  col-md-4 col-sm-4" data-scroll-reveal="enter from the bottom after 0.6s">
+                   <div class="faculty-div">
                      <img src="{% static 'assets/img/faculty/3.jpg' %}" class="img-rounded" />
-                   <h3 >MR.SAMUEL E.O. OWEIVI </h3>
-                 <hr />
-                         <h4>ADMINISTRATOR</h4>
-                   
-                </div>
+                     <h3 >MR.SAMUEL E.O. OWEIVI </h3>
+                     <hr />
+                     <h4>ADMINISTRATOR</h4>
+
                    </div>
+                 </div>
                  
                </div>
              </div>
-        </div>
-    <!-- FACULTY SECTION END-->
-      <div id="course-sec" class="container set-pad">
+           </div>
+           <!-- FACULTY SECTION END-->
+           <div id="course-sec" class="container set-pad">
              <div class="row text-center">
-                 <div class="col-lg-8 col-lg-offset-2 col-md-8 col-sm-8 col-md-offset-2 col-sm-offset-2">
-                     <h1 data-scroll-reveal="enter from the bottom after 0.1s" class="header-line">PARENTS TESTIMONIES</h1>
-                     <p data-scroll-reveal="enter from the bottom after 0.3s">
-            WHAT PARENTS SAY ABOUT US
-           </p>
-                 </div>
+               <div class="col-lg-8 col-lg-offset-2 col-md-8 col-sm-8 col-md-offset-2 col-sm-offset-2">
+                 <h1 data-scroll-reveal="enter from the bottom after 0.1s" class="header-line">PARENTS TESTIMONIES</h1>
+                 <p data-scroll-reveal="enter from the bottom after 0.3s">
+                  WHAT PARENTS SAY ABOUT US
+                </p>
+              </div>
 
+            </div>
+            <!--/.HEADER LINE END-->
+
+
+            <div class="row set-row-pad" >
+             <div class="col-lg-6 col-md-6 col-sm-6 " data-scroll-reveal="enter from the bottom after 0.4s" >
+               <img src="{% static 'assets/img/building.jpg' %}" class="img-thumbnail" />
              </div>
-             <!--/.HEADER LINE END-->
+             <div class="col-lg-4 col-md-4 col-sm-4 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
+               <div class="panel-group" id="accordion">
+                <div class="panel panel-default" data-scroll-reveal="enter from the bottom after 0.5s">
+                  <div class="panel-heading" >
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" class="collapsed">
+                        <strong></strong> MRS THOMAS 
+                      </a>
+                    </h4>
+                  </div>
+                  <div id="collapse1" class="panel-collapse collapse" style="height: 0px;">
+                    <div class="panel-body">
 
+                      <p>
+                        SPIRITLIFE MODEL SCHOOL INTERNATIONL IS A NEW AND FAST GROWING SCHOOL; IT HAS GOOD ACCADEMIC EXCELLENT, GOOD TEACHERS AND GOOD SECURITY. ALSO the SPECIAL BOND BETWEEN A TEACHER AND STUDENT IS AMAZING. THEY SPEND SO MUCH TIME TOGETHER THAT KIDS DONTS JUST FEEL COMFOERTABLE BEING WHO THEY ARE, BUT ALSO BECOME MORE EAGER TO LEARN AND  EXPRESS THEMSELVES. HONESTLY, S.M.S.T IS A SCHOOL WHERE EVERY AMBITIONS PARENT WOULD LIKE THEIR CHILDREN TO BE. 
+                        AM PROUD OF THE SCHOOL AND GLAD THAT MY KIDS ARE THERE.
 
-           <div class="row set-row-pad" >
-           <div class="col-lg-6 col-md-6 col-sm-6 " data-scroll-reveal="enter from the bottom after 0.4s" >
-                 <img src="{% static 'assets/img/building.jpg' %}" class="img-thumbnail" />
-           </div>
-               <div class="col-lg-4 col-md-4 col-sm-4 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
-                   <div class="panel-group" id="accordion">
-                        <div class="panel panel-default" data-scroll-reveal="enter from the bottom after 0.5s">
-                            <div class="panel-heading" >
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" class="collapsed">
-                                  <strong></strong> MRS THOMAS 
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapse1" class="panel-collapse collapse" style="height: 0px;">
-                                <div class="panel-body">
-                                    
-                  <p>
-                  SPIRITLIFE MODEL SCHOOL INTERNATIONL IS A NEW AND FAST GROWING SCHOOL; IT HAS GOOD ACCADEMIC EXCELLENT, GOOD TEACHERS AND GOOD SECURITY. ALSO the SPECIAL BOND BETWEEN A TEACHER AND STUDENT IS AMAZING. THEY SPEND SO MUCH TIME TOGETHER THAT KIDS DONTS JUST FEEL COMFOERTABLE BEING WHO THEY ARE, BUT ALSO BECOME MORE EAGER TO LEARN AND  EXPRESS THEMSELVES. HONESTLY, S.M.S.T IS A SCHOOL WHERE EVERY AMBITIONS PARENT WOULD LIKE THEIR CHILDREN TO BE. 
-AM PROUD OF THE SCHOOL AND GLAD THAT MY KIDS ARE THERE.
+                      </p>
 
-                  </p>
-                
-                </div>
-                            </div>
-                        </div>
-                        <div class="panel panel-default" data-scroll-reveal="enter from the bottom after 0.7s">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2" class="collapsed">
-                                      <strong></strong> TESTIMONY TWO 
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapse2" class="panel-collapse collapse" style="height: 0px;">
-                                <div class="panel-body">
-                                    <p>
-                    Hello hello hello hello 
-                  </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel panel-default" data-scroll-reveal="enter from the bottom after 0.9s">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse3" class="collapsed">
-                                        <strong></strong>TESTIMONY THREE
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapse3" class="panel-collapse collapse"  style="height: 0px;">
-                                <div class="panel-body">
-                                    <p>
-                    Hello hello hello hello
-                  </p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                   <div class="alert alert-info" data-scroll-reveal="enter from the bottom after 1.1s" >
-                       <span style="font-size:40px;">
-                          <strong>So much more</strong> 
-                           <hr />
-                           TESTIMONIES
-                       </span>
-                   </div>
+                  </div>
+                </div>
+                <div class="panel panel-default" data-scroll-reveal="enter from the bottom after 0.7s">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapse2" class="collapsed">
+                        <strong></strong> TESTIMONY TWO 
+                      </a>
+                    </h4>
+                  </div>
+                  <div id="collapse2" class="panel-collapse collapse" style="height: 0px;">
+                    <div class="panel-body">
+                      <p>
+                        Hello hello hello hello 
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel panel-default" data-scroll-reveal="enter from the bottom after 0.9s">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapse3" class="collapsed">
+                        <strong></strong>TESTIMONY THREE
+                      </a>
+                    </h4>
+                  </div>
+                  <div id="collapse3" class="panel-collapse collapse"  style="height: 0px;">
+                    <div class="panel-body">
+                      <p>
+                        Hello hello hello hello
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="alert alert-info" data-scroll-reveal="enter from the bottom after 1.1s" >
+               <span style="font-size:40px;">
+                <strong>So much more</strong> 
+                <hr />
+                TESTIMONIES
+              </span>
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
+      <div style=" background-color:rgba(28, 43, 75, 1); color: #fff" id="admission-sec"   >
+       <div class="overlay">
+         <div class="container set-pad">
+          <div class="row text-center">
+           <div class="col-lg-8 col-lg-offset-2 col-md-8 col-sm-8 col-md-offset-2 col-sm-offset-2">
+             <h1 data-scroll-reveal="enter from the bottom after 0.1s" class="header-line" >
+               ADMISSION  
+             </h1>
+             <p data-scroll-reveal="enter from the bottom after 0.3s">
+               We trust the following information will assist every  prospective family and student in understanding our admissions procedures including all the necessary documentation required to process an application for admission
+             </p>
            </div>
+
+         </div>
+         <!--/.HEADER LINE END-->
+         <div class="row set-row-pad"  data-scroll-reveal="enter from the bottom after 0.5s" >
+
+
+           <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
+            <form method="post">
+              <div class="form-group">
+                <input type="text" class="form-control" name="admission_id"  required="required" placeholder="Admission ID" />
+              </div>
+              <div class="form-group">
+                <button type="submit" class="btn btn-info btn-block btn-lg">CHECK ADMISSION STATUS</button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+        <hr />
+        <h6 data-scroll-reveal="enter from the bottom after 0.1s" class="text-center" >
+         FILL THE FORM BELOW
+       </h6>
+       {% if form.errors %}
+       <div style="color: lightblue; text-align: center;">
+            <strong>Please correct the errors below</strong>
+            </button>
+          </div>
+        {% for field in form %}
+        {% if field.errors %}
+         {% for error in field.errors %}
+          <div style="color: red; text-align: center;">
+            <p class="{{ message.tags }}">{{ field.label }}: {{ error }}</p>
+            </button>
+          </div>
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+      {% endif %}
+       <div class="row set-row-pad"  data-scroll-reveal="enter from the bottom after 0.5s" >
+        <form method="post"  action="{% url 'apply_online' %}" enctype="multipart/form-data">{% csrf_token %}
+          <div class="col-lg-4 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
+            <div class="form-group">
+              <input type="text" class="form-control" name="student_fname"  required="required" placeholder="Student Firstname" />
+            </div>
+            <div class="form-group">
+            <select id="section" url="{% url 'get_filtered_classes' %}" class="form-control" name="selected_section">
+              <option disabled selected>Select section</option>
+              {% for section in sections %}
+              <option value="{{ section.pk }}">{{ section.name }}</option>
+              {% empty %}
+              <option disabled>No section is available</option>
+              {% endfor %}
              
-                 
-                 
-               </div>
-             </div>
-      <!-- COURSES SECTION END-->
-    <div id="contact-sec"   >
-           <div class="overlay">
- <div class="container set-pad">
-      <div class="row text-center">
-                 <div class="col-lg-8 col-lg-offset-2 col-md-8 col-sm-8 col-md-offset-2 col-sm-offset-2">
-                     <h1 data-scroll-reveal="enter from the bottom after 0.1s" class="header-line" >CONTACT US  </h1>
-                     <p data-scroll-reveal="enter from the bottom after 0.3s">
-                     Please feel free to send your request at any time, Thank you.
-                         </p>
-                 </div>
-
-             </div>
-             <!--/.HEADER LINE END-->
-           <div class="row set-row-pad"  data-scroll-reveal="enter from the bottom after 0.5s" >
-           
-               
-                 <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
-                    <form>
-                        <div class="form-group">
-                            <input type="text" class="form-control "  required="required" placeholder="Your Name" />
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control " required="required"  placeholder="Your Email" />
-                        </div>
-                        <div class="form-group">
-                            <textarea name="message" required="required" class="form-control" style="min-height: 150px;" placeholder="Message"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-info btn-block btn-lg">SUBMIT REQUEST</button>
-                        </div>
-
-                    </form>
-                </div>
-
-                   
-     
-              
-              
-                
-               </div>
-                </div>
+            </select>
           </div> 
+            <div class="form-group">
+              <input type="text" class="form-control" name="student_oname" required="required"  placeholder="Othername" />
+            </div> 
+            <div class="form-group">
+             <input type="text" class="form-control" name="student_address" required="required"  placeholder="Address" />
+           </div>
+           <div class="form-group">
+             <select class="form-control" name="student_religion">
+              <option disabled selected>Religion</option>
+              <option value="Islam">Islam</option>
+              <option value="Christianity">Christianity</option>
+            </select>
+          </div>
+        </div>
+
+
+        <div class="col-lg-4">
+          <div class="form-group">
+            <input type="text" class="form-control" name="student_lname"  required="required" placeholder="Student Lastname" />
+          </div>
+           <div class="form-group">
+            <select id="filtered_classes" class="form-control" name="student_clss">
+              <option disabled selected>Select a class</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <input type="date" class="form-control" name="student_dob" required="required"  placeholder="Class" />
+          </div>
+          <div class="form-group">
+           <input type="text" class="form-control" name="applicant_phone_no" required="required"  placeholder="Phone number" />
+         </div>
+         <div class="form-group">
+          <select class="form-control" name="student_gender">
+                <option disabled selected>Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+         </div>
        </div>
-     <div class="container">
-             <div class="row set-row-pad"  >
-    <div class="col-lg-4 col-md-4 col-sm-4   col-lg-offset-1 col-md-offset-1 col-sm-offset-1 " data-scroll-reveal="enter from the bottom after 0.4s">
-
-                    <h2 ><strong>Our Location </strong></h2>
-        <hr />
-                    <div ">
-          
-          <h4>SPIRITLIFE MODEL SCHOOL INTERNATIONAL/ INTEGRITY COLLEGE YOLA.</h4>
-                        <h4> No;1 POWER AVENUE, HONG ROAD,OFF GASSOL STREET,
-KAREWA EXTENSION,</h4>
-            
-                        <h4>JIMETA – YOLA</h4>
-            <h4><strong>Call:</strong> 07032205893, 08033803456 </h4>
-                        <h4><strong>Email: </strong>info@spiritlife-yola.com</h4>
-                    </div>
-
-
-                </div>
-                 <div class="col-lg-4 col-md-4 col-sm-4   col-lg-offset-1 col-md-offset-1 col-sm-offset-1" data-scroll-reveal="enter from the bottom after 0.4s">
-
-                    <h2 ><strong>Social Conectivity </strong></h2>
-        <hr />
-                    <div >
-                        <a href="#">  <img src="{% static 'assets/img/Social/facebook.png' %}" alt="" /> </a>
-                     <a href="#"> <img src="{% static 'assets/img/Social/google-plus.png' %}" alt="" /></a>
-                     <a href="#"> <img src="{% static 'assets/img/Social/twitter.png' %}" alt="" /></a>
-                    </div>
-                    </div>
-
-
-                </div>
-                 </div>
-     <!-- CONTACT SECTION END-->
-    <div id="footer">
-          &copy 2018 All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Powered by : Cosmotech</a>
+       <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
+       <div class="form-group">
+            <input type="text" class="form-control" name="student_email" required="required"  placeholder="Email" />
+         </div>
+       </div>
+       <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
+        <div class="form-group">
+          <label>Passport photograph</label>
+          <input type="file" class="form-control file-input file" name="student_passport" required="required"  placeholder="Passport" />
+        </div>
+      </div>
+      <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
+       <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-block btn-lg">APPLY</button>
+      </div>
     </div>
-     <!-- FOOTER SECTION END-->
-   
-    <!--  Jquery Core Script -->
-    <script src="{% static 'assets/js/jquery-1.10.2.js' %}"></script>
-    <!--  Core Bootstrap Script -->
-    <script src="{% static 'assets/js/bootstrap.js' %}"></script>
-    <!--  Flexslider Scripts --> 
-         <script src="{% static 'assets/js/jquery.flexslider.js' %}"></script>
-     <!--  Scrolling Reveal Script -->
-    <script src="{% static 'assets/js/scrollReveal.js' %}"></script>
-    <!--  Scroll Scripts --> 
-    <script src="{% static 'assets/js/jquery.easing.min.js' %}"></script>
-    <!--  Custom Scripts -->  
-         <script src="{% static 'assets/js/custom.js' %}"></script>
+  </form>
+</div>
+</div>
+</div> 
+</div>
+<!-- COURSES SECTION END-->
+<div id="contact-sec"   >
+ <div class="overlay">
+   <div class="container set-pad">
+    <div class="row text-center">
+     <div class="col-lg-8 col-lg-offset-2 col-md-8 col-sm-8 col-md-offset-2 col-sm-offset-2">
+       <h1 data-scroll-reveal="enter from the bottom after 0.1s" class="header-line" >CONTACT US  </h1>
+       <p data-scroll-reveal="enter from the bottom after 0.3s">
+         Please feel free to send your request at any time, Thank you.
+       </p>
+     </div>
+
+   </div>
+   <!--/.HEADER LINE END-->
+   <div class="row set-row-pad"  data-scroll-reveal="enter from the bottom after 0.5s" >
+
+
+     <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
+      <form>
+        <div class="form-group">
+          <input type="text" class="form-control" required="required" placeholder="Your Name" />
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control " required="required"  placeholder="Your Email" />
+        </div>
+        <div class="form-group">
+          <textarea name="message" required="required" class="form-control" style="min-height: 150px;" placeholder="Message"></textarea>
+        </div>
+        <div class="form-group">
+          <button type="submit" id="submit" class="btn btn-info btn-block btn-lg">SUBMIT REQUEST</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+</div> 
+</div>
+<!-- CONTACT SECTION END-->
+
+<div id="footer">
+  <div class="container">
+ <div class="row set-row-pad"  >
+  <div class="col-lg-4 col-md-4 col-sm-4   col-lg-offset-1 col-md-offset-1 col-sm-offset-1 " data-scroll-reveal="enter from the bottom after 0.4s">
+
+    <h2 ><strong>Our Location </strong></h2>
+    <hr />
+    <div ">
+
+      <h4>{{ setting.school_address|default_if_none:'' }}</h4>
+
+      <h4>{{ setting.school_town|default_if_none:'' }}</h4>
+      <h4><strong>Call:</strong> <a href="tel:{{ setting.business_phone1|default_if_none:'' }}">{{ setting.business_phone1|default_if_none:'' }}</a>, <a href="tel: {{ setting.business_phone2|default_if_none:'' }}">{{ setting.business_phone2 }}</a></h4>
+      <h4><strong>Email: </strong><a href="mailto: {{ setting.business_email|default_if_none:'' }}">{{ setting.business_email|default_if_none:'' }}</a></h4>
+    </div>
+
+
+  </div>
+  <div class="col-lg-4 col-md-4 col-sm-4   col-lg-offset-1 col-md-offset-1 col-sm-offset-1" data-scroll-reveal="enter from the bottom after 0.4s">
+    {% if setting.social_link1 or setting.social_link2 or setting.social_link3 %}
+    <h2 ><strong>Social Conectivity </strong></h2>
+    <hr />
+    <div >
+      {% if setting.social_link1 and 'facebook' in setting.social_link1 or 'fb' in setting.social_link1 %}
+      <a href="{{ setting.social_link1 }}">  <img src="{% static 'assets/img/Social/facebook.png' %}" alt="" /> </a>
+      {% endif %}
+      {% if setting.social_link2 %}
+      <a href="https://twitter.com/{{ setting.social_link2 }}"> <img src="{% static 'assets/img/Social/twitter.png' %}" alt="twitter logo" /></a>
+      {% endif %}
+      {% if setting.social_link3 %}
+      <a href="https://api.whatsapp.com/send?phone={{ setting.social_link3 }}&text=Hey%20there,%20Let's%20discuss%20about%20your%20school!"> <img width="80" src="{% static 'assets/img/Social/whatsapp.svg' %}" alt="whatsapp logo" /></a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+</div>
+  &copy 2018 All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Powered by : Cosmotech</a>
+</div>
+<!-- FOOTER SECTION END-->
+
+<!--  Jquery Core Script -->
+<script src="{% static 'assets/js/jquery-1.10.2.js' %}"></script>
+<!--  Core Bootstrap Script -->
+<script src="{% static 'assets/js/bootstrap.js' %}"></script>
+<!--  Flexslider Scripts --> 
+<script src="{% static 'assets/js/jquery.flexslider.js' %}"></script>
+<!--  Scrolling Reveal Script -->
+<script src="{% static 'assets/js/scrollReveal.js' %}"></script>
+<!--  Scroll Scripts --> 
+<script src="{% static 'assets/js/jquery.easing.min.js' %}"></script>
+<!--  Custom Scripts -->  
+<script src="{% static 'assets/js/custom.js' %}"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    $("#section").change(function(){
+      var section = $(this).val();
+      var target = $(this).attr('url');
+
+      $.ajax({
+        url: target,
+        data: {
+          'section': section,
+        },
+
+        beforeSend: function(){
+            $("#loader").removeAttr('hidden');
+           },
+        complete: function(){
+            $("#loader").attr('hidden', 'hidden');
+           },
+
+        success: function (data) {
+          $("#filtered_classes").html(data);
+        }
+      });
+    });
+  });
+</script>
 </body>
 </html>

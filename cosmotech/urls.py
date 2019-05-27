@@ -11,7 +11,6 @@ urlpatterns = [
 	path('app/', include('sms.urls')),
 	path('u/i/admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('pages', include('django.contrib.flatpages.urls')),
     path('accounts/login/', views.LoginView.as_view(), name='login'),
     path('change-password/', change_password, name="change_password"),
     path('accounts/logout/', views.LogoutView.as_view(), name='logout', kwargs={'next_page': '/'}),
