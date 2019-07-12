@@ -267,3 +267,30 @@ h1::after {
     color:#fff;
     font-size:5px;
 }
+
+.jumbotron {
+  animation: jumbotronAnime 10s infinite;
+}
+
+@keyframes jumbotronAnime {
+  0% {
+    background-color: rgb(33, 52, 84);
+    border-radius: 5px;
+    }
+  25%{
+    background-color: rgb(24, 38, 61);
+    border-radius: 10px;
+    }
+  50%{
+    background-color: rgb(15, 24, 38);
+    border-radius: 15px;
+    }
+  75%{
+    background-color: rgb(13, 28, 56);
+    border-radius: 20px;
+    }
+  100% {
+    background-color: rgb(33, 52, 84);
+    border-radius: 25px;
+}
+}

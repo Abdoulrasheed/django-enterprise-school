@@ -307,7 +307,7 @@
          <div class="container set-pad">
           <div class="row text-center">
            <div class="col-lg-8 col-lg-offset-2 col-md-8 col-sm-8 col-md-offset-2 col-sm-offset-2">
-             <h1 data-scroll-reveal="enter from the bottom after 0.1s" class="header-line" >
+             <h1 style="color: rgb(245, 191, 66)" data-scroll-reveal="enter from the bottom after 0.1s" class="header-line" >
                ADMISSION  
              </h1>
              <p data-scroll-reveal="enter from the bottom after 0.3s">
@@ -318,24 +318,42 @@
          </div>
          <!--/.HEADER LINE END-->
          <div class="row set-row-pad"  data-scroll-reveal="enter from the bottom after 0.5s" >
-
-
            <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
-            <form method="post">
+            <form method="get">
               <div class="form-group">
-                <input type="text" class="form-control" name="admission_id"  required="required" placeholder="Admission ID" />
+                <input id="admission_id" type="text" class="form-control" required="required" placeholder="Admission ID" />
               </div>
               <div class="form-group">
-                <button type="submit" class="btn btn-info btn-block btn-lg">CHECK ADMISSION STATUS</button>
+                <button type="button" class="btn btn-info btn-block btn-lg" id="btn-check-status" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Searching for admission ID" url="{% url 'search_admission_status' %}" >CHECK ADMISSION STATUS
+                </button>
               </div>
 
             </form>
           </div>
         </div>
         <hr />
-        <h6 data-scroll-reveal="enter from the bottom after 0.1s" class="text-center" >
+        <h6 id="success" data-scroll-reveal="enter from the bottom after 0.1s" class="text-center" >
          FILL THE FORM BELOW
        </h6>
+       {% if request.session.code %}
+       <div class="jumbotron">
+        <h1 class="display-2">Thank you for applying!</h1>
+        <p class="lead">Thank you for submitting your application to <span style="color: rgb(245, 191, 66)">{{ setting.school_name }}</span> ! We will begin reviewing your application immediately. we will contact you if we have additional questions about your application.</p>
+        <hr class="my-2">
+        <p>Your application number is <span style="color: rgb(245, 191, 66)"> {{ request.session.code }} </span>, you can use it to check for admission status</p>
+        <p class="lead">
+          <a class="btn btn-primary btn-lg" href="#" role="button">Download PDF</a>
+        </p>
+      </div>
+      {% endif %}
+        {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message|safe }}
+          </div>
+        {% endfor %}
+      {% endif %}
        {% if form.errors %}
        <div style="color: lightblue; text-align: center;">
             <strong>Please correct the errors below</strong>
@@ -353,7 +371,7 @@
       {% endfor %}
       {% endif %}
        <div class="row set-row-pad"  data-scroll-reveal="enter from the bottom after 0.5s" >
-        <form method="post"  action="{% url 'apply_online' %}" enctype="multipart/form-data">{% csrf_token %}
+        <form method="post" action="{% url 'apply_online' %}" enctype="multipart/form-data">{% csrf_token %}
           <div class="col-lg-4 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
             <div class="form-group">
               <input type="text" class="form-control" name="student_fname"  required="required" placeholder="Student Firstname" />
@@ -370,7 +388,7 @@
             </select>
           </div> 
             <div class="form-group">
-              <input type="text" class="form-control" name="student_oname" required="required"  placeholder="Othername" />
+              <input type="text" class="form-control" name="student_oname"  placeholder="Othername" />
             </div> 
             <div class="form-group">
              <input type="text" class="form-control" name="student_address" required="required"  placeholder="Address" />
@@ -401,19 +419,19 @@
            <input type="text" class="form-control" name="applicant_phone_no" required="required"  placeholder="Phone number" />
          </div>
          <div class="form-group">
-          <select class="form-control" name="student_gender">
+            <select class="form-control" name="student_gender">
                 <option disabled selected>Gender</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
-              </select>
+            </select>
          </div>
        </div>
        <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
        <div class="form-group">
-            <input type="text" class="form-control" name="student_email" required="required"  placeholder="Email" />
+            <input type="text" class="form-control" name="student_email" placeholder="Email" />
          </div>
        </div>
-       <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
+       <div class="col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
         <div class="form-group">
           <label>Passport photograph</label>
           <input type="file" class="form-control file-input file" name="student_passport" required="required"  placeholder="Passport" />
@@ -524,7 +542,9 @@
 <script src="{% static 'assets/js/custom.js' %}"></script>
 <script type="text/javascript">
   $(document).ready(function(){
-
+    $(document).on("contextmenu",function(){
+       return false;
+    }); 
     $("#section").change(function(){
       var section = $(this).val();
       var target = $(this).attr('url');
@@ -547,6 +567,31 @@
         }
       });
     });
+
+      $("#btn-check-status").click(function(e){
+        e.preventDefault();
+        var data = $('#admission_id').val();
+        var target = $(this).attr('url');
+        $.ajax({
+          url: target,
+          data: {
+            'value': data,
+          },
+
+          beforeSend: function(){
+              var $this = $(this);
+              $this.button('loading');
+             },
+          complete: function(){
+              alert(300);
+             },
+
+          success: function (data) {
+            $("#filtered_classes").html(data);
+            alert(data)
+          }
+        });
+      });
   });
 </script>
 </body>

@@ -322,6 +322,9 @@
 
     // Material Select Initialization
     $(document).ready(function () {
+        $(document).on("contextmenu",function(){
+          return false;
+        }); 
       $('.mdb-select').material_select();
     });
 

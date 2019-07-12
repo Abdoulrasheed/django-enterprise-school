@@ -20,6 +20,8 @@ from .models import *
 from .constants import *
 from django.db import IntegrityError
 
+from . sms_sender import send_sms
+
 from .remark import getRemark, getGrade
 from .forms import (AddStudentForm,
 					AddParentForm,
@@ -51,7 +53,6 @@ from .forms import (AddStudentForm,
 					ProfilePictureForm,)
 
 
-from .send_message import ACCOUNT_SID, AUTH_TOKEN, client
 INDEX = lambda items, key, item: list(items.values_list(key, flat=True)).index(item)+1
 
 def get_item_index(items, key, item):
@@ -372,22 +373,13 @@ def add_assign_teacher(request):
 					record.subjects.add(subjects[i])
 					record.save()
 				Notification(user=teacher, title="Subject Allocation !", body="Admin just updated the subjects allocated to you ! ", message_type=SUCCESS).save()
-				if teacher.phone:
-					if len(str(teacher.phone)) == 0:
-						pass
-					else:
-						if str(teacher.phone)[0] == '0':
-							if len(teacher.phone) != 10:
-								phone = str(teacher.phone)[1:]
-								phone = '+234'+phone
-								try:
-									message = client.messages.create(
-								    	to=phone,
-								    	from_=MSG_FROM,
-								    	body="Hello %s, the school administrator just updated the list of subjects allocated to you. ! Login now for detals" %str(teacher.get_full_name()))
-									print(message.sid)
-								except:
-									print("theres an error while sending sms")
+				
+				sms_body = "Hello {}, \
+							the school administrator just updated \
+							the list of subjects allocated to you. \
+							! Login now for details".format(teacher.get_full_name())
+				send_sms(teacher.phone, sms_body)
+				
 				messages.success(request, 'Subjects were successfully updated')
 				return HttpResponseRedirect(reverse_lazy('assign_teacher_list'))
 			except SubjectAssign.DoesNotExist:
@@ -398,22 +390,12 @@ def add_assign_teacher(request):
 					record.subjects.add(subjects[i])
 					record.save()
 				Notification(user=teacher, title="Subject Allocation !", body="Admin just updated the subjects allocated to you ! ", message_type=SUCCESS).save()
-				if teacher.phone:
-					if len(str(teacher.phone)) == 0:
-						pass
-					else:
-						if str(teacher.phone)[0] == '0':
-							if len(teacher.phone) != 10:
-								phone = str(teacher.phone)[1:]
-								phone = '+234'+phone
-								try:
-									message = client.messages.create(
-								    	to=phone,
-								    	from_=MSG_FROM,
-								    	body="Hello %s, the school administrator just assigned you as a teacher of some subject(s). ! Login now to find out more" %str(teacher.get_full_name()))
-									print(message.sid)
-								except:
-									print("theres an error while sending sms")
+				
+				sms_body = "An admin just updated \
+							the subjects allocated \
+							to you !".format(teacher.get_full_name())
+				send_sms(teacher.phone, sms_body)
+				
 				messages.success(request, 'Subjects were successfully allocated')
 				return HttpResponseRedirect(reverse_lazy('assign_teacher_list'))
 		else:
@@ -592,28 +574,21 @@ def add_student(request):
 				parent = User.objects.get(username=existing_parent)
 				Parent.objects.create(student=student, parent=parent)
 
-			if len(str(parent_phone_number)) == 0:
-				pass
-			else:
-				school = Setting.objects.first()
-				shool_name = school.school_name
-				if str(parent_phone_number)[0] == '0':
-					if len(parent_phone_number) != 10:
-						phone = str(parent_phone_number)[1:]
-						phone = '+234'+parent_phone_number
-						try:
-							message = client.messages.create(
-						    	to=phone,
-						    	from_=MSG_FROM,
-						    	body="Hello {0}, \nWelcome to {1}. \
-						    	Your login details are: \
-						    	 username: {2}\
-						    	 password: {3}\
-						    	 link: {4}".format(parent_fname, shool_name, parent_username, parent_password, request.META['HTTP_HOST']
-						    	))
-							print(message.sid)
-						except:
-							pass
+
+			sms_body = "Hello {0}, \nWelcome to {1}. \
+						Your login details are: \
+						username: {2}\
+						password: {3}\
+						link: {4}".format(
+							parent_fname, 
+							shool_name, 
+							parent_username, 
+							parent_password, 
+							request.META['HTTP_HOST']
+							)
+
+			send_sms(parent_phone_number, sms_body)
+
 			if stud_picture:
 				fs = FileSystemStorage()
 				fs.save(stud_picture.name, stud_picture)
@@ -672,25 +647,23 @@ def add_parent(request):
 				fs = FileSystemStorage()
 				fs.save(picture.name, picture)
 			messages.success(request, firstname + " " + surname +' Was Successfully Recorded! ')
-			if phone:
-					if len(str(phone)) == 0:
-						pass
-					else:
-						if str(phone)[0] == '0':
-							if len(phone) != 10:
-								phone = str(phone)[1:]
-								phone = '+234'+phone
-								message = client.messages.create(
-							    	to=phone,
-							    	from_=MSG_FROM,
-							    	body="Hello {0}, \nYou can now access any of your child's school \
-							    	record right from your mobile or pc device!\nLogin \
-							    	using the link and the credentials below and we recommend you change your password immediately.\
-							    	\nusername: {1}\
-							    	\npassword: {2}\
-							    	\nlink: {3}".format(full_name, username, password, request.META['HTTP_HOST']
-							    	))
-								print(message.sid)
+			
+			sms_body="Hello {0}, \
+					You can now access any of your child's school \
+					record right from your mobile or pc device!\nLogin \
+					using the link and the credentials below and we recommend \
+					you change your password immediately.\
+					username: {1}\
+					password: {2}\
+					link: {3}".format(
+						full_name, 
+						username, 
+						password, 
+						request.META['HTTP_HOST']
+						)
+
+			send_sms(phone, sms_body)
+
 			return HttpResponseRedirect(reverse_lazy('add_parent'))
 		else:
 			form = AddParentForm(request.POST, request.FILES)
@@ -738,25 +711,19 @@ def add_teacher(request):
 				fs = FileSystemStorage()
 				fs.save(picture.name, picture)
 			messages.success(request, firstname + " " + surname +' Was successfully added! ')
-			if len(str(phone)) == 0:
-				pass
-			else:
-				school = Setting.objects.first()
-				school_name = school.school_name
-				if str(phone)[0] == '0':
-					if len(phone) != 10:
-						phone = str(phone)[1:]
-						phone = '+234'+phone
-						message = client.messages.create(
-							to=phone,
-						  	from_=MSG_FROM,
-						  	body="Hello {0}, \nWe are proud to have you as teacher. \
-						  	\nYour login details are: \
-						  	\nusername: {1}\
-						  	\npassword: {2}\
-						  	\nlink: {3}\
-						  	\n{4}".format(firstname, username, password, request.META['HTTP_HOST'], school_name))
-						print(message.sid)
+			
+			sms_body="Hello {0},\
+					We are proud to have you as teacher. \
+					Your login details are: \
+					username: {1}\
+					password: {2}\
+					link: {3}".format(
+						firstname, 
+						username, 
+						password, 
+						request.META['HTTP_HOST']
+					)
+			send_sms(phone, sms_body)
 			return HttpResponseRedirect(reverse_lazy('add_teacher'))
 		else:
 			form = AddParentForm(request.POST, request.FILES)
@@ -1669,13 +1636,13 @@ def sms_list(request):
 
 @login_required
 @teacher_required
-def send_sms(request):
+def send_bulk_sms(request):
 	sms = Sms.objects.all()
 	if request.method == "POST":
 		form = SmsForm(request.POST)
 		if form.is_valid():
 			title = form.cleaned_data.get('title')
-			body = form.cleaned_data.get('body')
+			sms_body = form.cleaned_data.get('body')
 			to_user = form.cleaned_data.get('to_user')
 			if to_user == "Admin":
 				users = User.objects.filter(is_superuser=True)
@@ -1687,20 +1654,9 @@ def send_sms(request):
 				users = User.objects.filter(is_teacher=True)
 
 			for user in users:
-				if len(str(user.phone)) == 0:
-					pass
-				else:
-					if str(user.phone)[0] == '0':
-						if len(user.phone) != 10:
-							phone = str(user.phone)[1:]
-							phone = '+234'+phone
-							message = client.messages.create(
-						    	to=phone,
-						    	from_=MSG_FROM,
-						    	body=title+" "+body)
-							print(message.sid)
+				send_sms(user.phone, '{}, {}'.format(title, sms_body))
 
-			Sms(title=title, body=body, to_user=to_user).save()
+			Sms.objects.create(title=title, body=body, to_user=to_user)
 			context = {
 				"sms": sms,
 				"title": title,
@@ -2593,10 +2549,3 @@ def broadsheet_report(request):
 		response['Content-Disposition'] = 'filename="subject_allocation.pdf"'
 		return response
 		return HttpResponse(response.getvalue(), content_type='application/pdf')
-
-
-@login_required
-@teacher_required
-def reqlll(reqlll):
-	oiin = [i.values.all for i in items.all]
-	return render(request, 'sms/tr/jtm.html')
