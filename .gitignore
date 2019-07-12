@@ -6,7 +6,7 @@ __pycache__/
 # C extensions
 *.so
 key/
-sms/send_message.py
+sms/twilio_token.py
 # Distribution / packaging
 .Python
 env/
