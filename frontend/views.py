@@ -100,4 +100,5 @@ def process_online_admission(request):
 
 
 def search_admission_status(request):
-	return 'hi'
+	print('ji')
+	return 'hi  '

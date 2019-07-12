@@ -1,6 +1,6 @@
 {% load static %}
 ﻿<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
@@ -324,7 +324,7 @@
                 <input id="admission_id" type="text" class="form-control" required="required" placeholder="Admission ID" />
               </div>
               <div class="form-group">
-                <button type="button" class="btn btn-info btn-block btn-lg" id="btn-check-status" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Searching for admission ID" url="{% url 'search_admission_status' %}" >CHECK ADMISSION STATUS
+                <button type="button" class="btn btn-info btn-block btn-lg" id="btn-check-status" data-loading-text="loading ... <i class='fa fa-spinner fa-spin '></i> Searching for admission ID" url="{% url 'search_admission_status' %}" >CHECK ADMISSION STATUS
                 </button>
               </div>
 
@@ -569,28 +569,23 @@
     });
 
       $("#btn-check-status").click(function(e){
-        e.preventDefault();
-        var data = $('#admission_id').val();
-        var target = $(this).attr('url');
         $.ajax({
-          url: target,
-          data: {
-            'value': data,
-          },
+        url: '/',
+        data: {
+          'section': section,
+        },
 
-          beforeSend: function(){
-              var $this = $(this);
-              $this.button('loading');
-             },
-          complete: function(){
-              alert(300);
-             },
+        beforeSend: function(){
+            $("#loader").removeAttr('hidden');
+           },
+        complete: function(){
+            this.btn.button('loading')
+           },
 
-          success: function (data) {
-            $("#filtered_classes").html(data);
-            alert(data)
-          }
-        });
+        success: function (data) {
+          $("#filtered_classes").html(data);
+        }
+      });
       });
   });
 </script>

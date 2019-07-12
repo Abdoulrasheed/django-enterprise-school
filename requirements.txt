@@ -11,6 +11,7 @@ gunicorn==19.9.0
 html5lib==1.0.1
 idna==2.8
 Pillow==5.4.1
+pkg-resources==0.0.0
 psycopg2==2.7.7
 pycparser==2.19
 PyJWT==1.7.1
@@ -18,7 +19,7 @@ Pyphen==0.9.5
 PySocks==1.6.8
 pytz==2018.9
 ranking==0.3.1
-requests==2.21.0
+requests==2.22.0
 six==1.12.0
 sqlparse==0.3.0
 tinycss2==0.6.1
