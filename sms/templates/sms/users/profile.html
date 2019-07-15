@@ -357,9 +357,11 @@
               <!--Avatar-->
               <div class="view overlay avatar z-depth-1-half mb-4">
                 <img src="{{ user.get_picture }}"  class="rounded-circle" alt="{{ user.get_picture }}'s picture">
+                {% if request.user.pk == user.pk %}
                 <a class="mask" data-toggle="modal" data-target="#uploadModal" href="#">
                 <div style="margin-top: 20px;" class="mask white-text">Change Picture</div>
               </a>
+              {% endif %}
               </div>
 
               <div class="card-body pt-0 mt-0">

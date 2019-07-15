@@ -31,6 +31,16 @@
             <div class="col-lg-3 col-md-12">
 
               <!--Name-->
+              {% if request.user.is_teacher %}
+              <select id="class" class="mdb-select colorful-select dropdown-primary mx-2 md-form mt-3 md-dropdown">
+                <option value="" disabled selected>Select a class</option>
+                {% for class in classes %}
+                <option value="{{ class.clss.id }}">{{ class.clss }}</option>
+                {% empty %}
+                <option value="" disabled selected>No class is available</option>
+                {% endfor %}
+              </select>
+              {% else %}
               <select id="class" class="mdb-select colorful-select dropdown-primary mx-2 md-form mt-3 md-dropdown">
                 <option value="" disabled selected>Select a class</option>
                 {% for class in classes %}
@@ -39,6 +49,7 @@
                 <option value="" disabled selected>No class is available</option>
                 {% endfor %}
               </select>
+              {% endif %}
 
             </div>
             <!--Grid column-->

@@ -192,9 +192,9 @@ def home(request):
 		current_session = Session.objects.get(current_session=True)
 		p = Payment.objects.filter(student=student, session=current_session)
 		no_students = Student.objects.filter(in_class__pk=student.in_class.pk, session=current_session).count()
-		subjects = Subject.objects.filter(class__pk=student.pk)
-		no_subjects = subjects.count()
-		ncontext = {}
+		subjects_q = get_object_or_404(Class, pk=student.in_class.pk).subjects
+		subjects = subjects_q.all
+		no_subjects = subjects_q.count()
 		context = {
 		"no_students": no_students,
 		"no_parents": no_parents,
@@ -481,6 +481,7 @@ def add_section_allocation(request):
 @teacher_required
 def add_student(request):
 	classes = Class.objects.all()
+	general_setting = Setting.objects.first()
 	parents = User.objects.filter(is_parent=True)
 	if request.method == "POST":
 		form = AddStudentForm(request.POST, request.FILES)
@@ -573,7 +574,7 @@ def add_student(request):
 			else:
 				parent = User.objects.get(username=existing_parent)
 				Parent.objects.create(student=student, parent=parent)
-
+			print(dir(general_setting))
 
 			sms_body = "Hello {0}, \nWelcome to {1}. \
 						Your login details are: \
@@ -581,7 +582,7 @@ def add_student(request):
 						password: {3}\
 						link: {4}".format(
 							parent_fname, 
-							shool_name, 
+							general_setting.school_name, 
 							parent_username, 
 							parent_password, 
 							request.META['HTTP_HOST']
@@ -1344,6 +1345,13 @@ def view_score(request):
 			"term": get_terms(),
 		}
 		return render(request, 'sms/mark/student_view_score.html', context)
+	elif request.user.is_teacher:
+		teacher = get_object_or_404(User, pk=request.user.id)
+		classes = SubjectAssign.objects.filter(teacher=teacher.pk)
+		context = {
+			"classes": classes
+			}
+		return render(request, 'sms/mark/view_scores.html', context)
 	else:
 		classes = Class.objects.all().order_by('name')
 		context = {

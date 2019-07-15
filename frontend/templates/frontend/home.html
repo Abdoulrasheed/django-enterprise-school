@@ -28,7 +28,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#"><img class="logo-custom" src="{{ setting.school_logo.url }}" alt="logo" /><text style="color:white;">{{ setting.school_name|title }}</text></a>
+      <a class="navbar-brand" href="#"><img class="logo-custom" src="{{ setting.school_logo.url }}" alt="logo" /><text style="color:white;"> {{ setting.school_name|title }}</text></a>
     </div>
     <div class="navbar-collapse collapse move-me">
       <ul class="nav navbar-nav navbar-right">
@@ -317,14 +317,23 @@
 
          </div>
          <!--/.HEADER LINE END-->
+
+         <!-- SEARCHED ADMISSION -->
+           <div class="searched_id">
+             
+             Hi
+           </div>
+          <!-- END OF SEARCHED ADMISSION -->
+
          <div class="row set-row-pad"  data-scroll-reveal="enter from the bottom after 0.5s" >
            <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
-            <form method="get">
+            <form>
               <div class="form-group">
                 <input id="admission_id" type="text" class="form-control" required="required" placeholder="Admission ID" />
               </div>
               <div class="form-group">
-                <button type="button" class="btn btn-info btn-block btn-lg" id="btn-check-status" data-loading-text="loading ... <i class='fa fa-spinner fa-spin '></i> Searching for admission ID" url="{% url 'search_admission_status' %}" >CHECK ADMISSION STATUS
+                <button type="button" class="btn btn-info btn-block btn-lg" id="btn-check-status" data-loading-text="loading ... <i class='fa fa-spinner fa-spin '></i>" url="{% url 'search_admission_status' %}" >
+                  CHECK ADMISSION STATUS
                 </button>
               </div>
 
@@ -569,25 +578,30 @@
     });
 
       $("#btn-check-status").click(function(e){
+        var url = $(this).attr('url')
+        search_id = $("#admission_id").val()
+
         $.ajax({
-        url: '/',
+        url: url,
         data: {
-          'section': section,
+          'admission_id': search_id,
         },
 
         beforeSend: function(){
-            $("#loader").removeAttr('hidden');
+            $("#btn-check-status")
+              .html("Searching, please wait  ... <i class='fa fa-spinner fa-spin '></i>");
            },
         complete: function(){
-            this.btn.button('loading')
+            $("#btn-check-status").text('CHECK ADMISSION STATUS')
            },
 
         success: function (data) {
-          $("#filtered_classes").html(data);
+          $("#searched_id").html(data)
+          alert(data)
         }
       });
       });
-  });
+    });
 </script>
 </body>
 </html>

@@ -1,0 +1,15 @@
+{% if admission_id %}
+<div class="jumbotron">
+	<h1 class="display-2">Admission Status!</h1>
+	<p class="lead">Thank you for submitting your application to <span style="color: rgb(245, 191, 66)">{{ setting.school_name }}</span> ! We will begin reviewing your application immediately. we will contact you if we have additional questions about your application.
+	</p>
+	<hr class="my-2">
+	<p>Your application number is <span style="color: rgb(245, 191, 66)"> {{ request.session.code }} 
+	</span>, you can use it to check for admission status</p>
+	<p class="lead">
+		<a class="btn btn-primary btn-lg" href="#" role="button">Download PDF</a>
+	</p>
+</div>
+{% else %}
+	No results !!
+{% endif %}

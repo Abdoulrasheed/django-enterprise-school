@@ -80,7 +80,7 @@ def process_online_admission(request):
 				 			student_fname, 
 				 			student_lname,
 				 			admission_no
-				 		)
+			)
 			send_sms(applicant_phone_no, sms_body)
 			messages.success(
 				request, 
@@ -100,5 +100,7 @@ def process_online_admission(request):
 
 
 def search_admission_status(request):
-	print('ji')
-	return 'hi  '
+	if request.is_ajax():
+		admission_id = request.GET.get('admission_id')
+		admission_id = OnlineAdmission.objects.filter(admission_id=admission_id) or None
+		return render(request, 'frontend/search_status.html', {'admission_id': admission_id})
