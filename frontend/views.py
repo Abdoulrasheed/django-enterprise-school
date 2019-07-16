@@ -102,5 +102,5 @@ def process_online_admission(request):
 def search_admission_status(request):
 	if request.is_ajax():
 		admission_id = request.GET.get('admission_id')
-		admission_id = OnlineAdmission.objects.filter(admission_id=admission_id) or None
-		return render(request, 'frontend/search_status.html', {'admission_id': admission_id})
+		admission_id = OnlineAdmission.objects.get(admission_id=admission_id) or None
+		return render(request, 'frontend/search_status.html', {'admission': admission_id})

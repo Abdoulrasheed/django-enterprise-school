@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block title %} Online Admission {% endblock title %}
+
+{% block main %}
+  <div style="margin-bottom: 259px;" class="container-fluid">
+       <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="{% url 'home_page' %}">Home Page</a>
+            <span>/</span>
+            <span>Online Admission</span>
+         </h6>
+      </div>
+   </div>
+    {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+<!--Shopping Cart table-->
+<div class="table-responsive">
+    <table class="table product-table">
+        <!--Table head-->
+        <thead>
+            <tr>
+                <th></th>
+                <th>APPLICANT</th>
+                <th>CLASS</th>
+                <th>PHONE</th>
+                <th>STATUS</th>
+                <th>ACTION</th>
+            </tr>
+        </thead>
+        <!--/Table head-->
+
+        <!--Table body-->
+        <tbody>
+
+            <!--Row-->
+            {% for applicant in applications %}
+            <tr>
+                <th scope="row">
+                    <img src="{{ applicant.student_passport.url }}" alt="" class="img-fluid">
+                </th>
+                <td>
+                    <h5><strong>{{ applicant.get_applicant_full_name }}</strong></h5>
+                </td>
+                <td>{{ applicant.student_clss }}</td>
+                <td>{{ applicant.applicant_phone_no }}</td>
+                <td>
+                    <span class="btn btn-sm btn-blue-grey">{{ applicant.status }}</span>
+                </td>
+                <td>
+                    <a title="View" class="btn-floating btn-sm btn-dark"><i class="fas fa-check"></i></a>
+
+                   <a title="Waiting" class="btn-floating btn-sm btn-secondary"><i class="fa fa-pause" aria-hidden="true"></i></a>
+
+                   <a title="Approve Admission" class="btn-floating btn-sm btn-primary"><i class="fa fa-plus" aria-hidden="true"></i></a>
+
+                   <a title="Decline" class="btn-floating btn-sm btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+            <!--/ Row-->
+
+        </tbody>
+        <!--/Table body-->
+    </table>
+</div>
+<!--/Shopping Cart table-->
+{% endblock %}

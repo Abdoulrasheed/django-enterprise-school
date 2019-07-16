@@ -53,6 +53,7 @@ urlpatterns = [
 	path('reset/', views.reset_users_password_view, name="reset_users_password_view"),
 	path('sms/send/', views.send_bulk_sms, name="send_sms"),
 	path('ranking/', views.get_student_position, name="rank"),
+	path('online_admission/', views.online_admission_list, name="online_admission_list"),
 	path('settings/', views.general_setting, name="general_setting"),
 	path('session/del<int:id>/', views.del_session, name="delete_session"),
 	path('ajax/score-list/', views.load_score_table, name="ajax_load_load_score_table"),

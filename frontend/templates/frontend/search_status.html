@@ -1,15 +1,60 @@
-{% if admission_id %}
-<div class="jumbotron">
-	<h1 class="display-2">Admission Status!</h1>
-	<p class="lead">Thank you for submitting your application to <span style="color: rgb(245, 191, 66)">{{ setting.school_name }}</span> ! We will begin reviewing your application immediately. we will contact you if we have additional questions about your application.
-	</p>
-	<hr class="my-2">
-	<p>Your application number is <span style="color: rgb(245, 191, 66)"> {{ request.session.code }} 
-	</span>, you can use it to check for admission status</p>
-	<p class="lead">
-		<a class="btn btn-primary btn-lg" href="#" role="button">Download PDF</a>
-	</p>
-</div>
+{% if admission %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/js/all.js" integrity="sha256-S1WJaJce5DQaJRMMO9igZPd6WRgObuRlQXE8i7yKOd8=" crossorigin="anonymous"></script>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title" id="admissionModalLabel">
+        {{ admission.get_applicant_full_name|upper }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      	 <center>
+      	 	<img src="{{ admission.student_passport.url }}" name="aboutme" width="140" height="140" border="0" class="img-circle"></a>
+      	 	<h3 class="media-heading">{{ admission.get_applicant_full_name }}</h3>
+      	 	<span>
+      	 		<strong>Admission Status: </strong></span>
+      	 		{% if admission.status == 'Approved' %}
+      	 		<span style="background-color: #3b5998" title="Congratulations !!!" class="badge badge-primary">APPROVED</span>
+      	 		{% elif admission.status == 'Waiting' %}
+      	 		<span title="We are currently processing you admission" class="badge badge-info">Waiting</span>
+      	 		{% else %}
+      	 		<span title="We are sorry, we can't admit you" class="badge badge-warning">Denied</span>
+      	 		{% endif %}     
+      	 	</center>
+      	 	<br>   	 
+        <table class="table table-borderless"> 
+				  <tbody>
+				    <tr>
+				    	<td><i class="fas fa-phone"></i></td>
+				      <td>Phone no.</td>
+				      <td></td>
+				      <td>
+				      	{{ admission.applicant_phone_no|slugify|slice:"3" }}-***-*{{ admission.applicant_phone_no|slugify|slice:"7:" }}
+				      </td>
+				    </tr>
+				    <tr>
+				    	<td><i class="fas fa-school"></i></i></td>
+				      <td>Requested Class</td>
+				      <td></td>
+				      <td>{{ admission.student_clss }}</td>
+				    </tr>
+				    <tr>
+				    	<td><i class="fas fa-home"></i></td>
+				      <td>Address</td>
+				      <td></td>
+				      <td>{{ admission.student_address }}</td>
+				    </tr>
+				  </tbody>
+				</table>
+      </div>
+      <div class="modal-footer bg-info">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Download</button>
+      </div>
+    </div>
+  </div>
 {% else %}
 	No results !!
 {% endif %}

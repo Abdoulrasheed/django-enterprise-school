@@ -100,7 +100,6 @@
     </select>
     <select tabindex="10" name="stud_state" class="mdb-select md-form" id="states">
       <option value="" selected disabled>Select State</option>
-              <option class="0" value="">---</option>
               <option class="1" value="Abuja FCT">Abuja FCT</option>
               <option class="2" value="Abia">Abia</option>
               <option class="3" value="Adamawa">Adamawa</option>
@@ -150,7 +149,6 @@
     <input name="stud_oname" type="text" class="form-control mb-4" tabindex="6" placeholder="Othername">
     <select tabindex="9" name="stud_blood_group" class="mdb-select md-form">
       <option value="" disabled selected>Blood group</option>
-      <option class="0" value="">---</option>
       <option value="A+">A+</option>
       <option value="A">A-</option>
       <option value="B+">B</option>
@@ -195,7 +193,6 @@
       <input tabindex="19" name="parent_sname" type="text" class="form-control mb-4" placeholder="Surname">
       <select tabindex="21" name="parent_state" class="mdb-select md-form">
          <option value="" selected disabled>Select State</option>
-              <option class="0" value="">---</option>
               <option value="Abuja FCT">Abuja FCT</option>
               <option value="Abia">Abia</option>
               <option value="Adamawa">Adamawa</option>
@@ -244,7 +241,6 @@
     <div class="row">
       <select style="margin-bottom: -200px;" name="existing_parent" class="mdb-select md-form">
         <option value="" disabled selected>Select Parent</option>
-        <option value="">---</option>
         {% for parent in parents %}
         <option value="{{ parent.username }}">{{ parent.get_full_name }}</option>
         {% empty %}

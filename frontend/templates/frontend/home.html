@@ -15,7 +15,7 @@
   <link href="{% static 'assets/css/flexslider.css' %}" rel="stylesheet" />
   <!-- CUSTOM STYLE CSS -->
   <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" />    
-  <!-- Google Fonts -->
+  <!-- Google Fonts -->    
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css' />
 </head>
 <body >
@@ -318,13 +318,10 @@
          </div>
          <!--/.HEADER LINE END-->
 
-         <!-- SEARCHED ADMISSION -->
-           <div class="searched_id">
-             
-             Hi
-           </div>
+         <!-- SEARCHED ADMISSION -->      
+         <div style="color: black" class="modal fade admission_searched_result" id="admissionModal" tabindex="-1" role="dialog" aria-labelledby="admissionModalLabel" aria-hidden="true">
+         </div>
           <!-- END OF SEARCHED ADMISSION -->
-
          <div class="row set-row-pad"  data-scroll-reveal="enter from the bottom after 0.5s" >
            <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
             <form>
@@ -578,6 +575,9 @@
     });
 
       $("#btn-check-status").click(function(e){
+        if ($("#admission_id").val() == ''){
+          return false
+        } else {
         var url = $(this).attr('url')
         search_id = $("#admission_id").val()
 
@@ -596,10 +596,11 @@
            },
 
         success: function (data) {
-          $("#searched_id").html(data)
-          alert(data)
+          $(".admission_searched_result").html(data)
+          $("#admissionModal").modal('show');
         }
       });
+      }
       });
     });
 </script>

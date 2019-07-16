@@ -136,6 +136,8 @@
                 </ul>
               </div>
             </li>
+             <li><a href="{% url 'online_admission_list' %}" class="collapsible-header waves-effect"><i class="fas fa-user-graduate"></i>
+                Online Admission</a></li>
             <li><a href="{% url 'notice_board' %}" class="collapsible-header waves-effect"><i class="fas fa-bullhorn"></i>
                 Notice</a></li>
             <li><a class="collapsible-header waves-effect arrow-r"><i class="far fa-check-square"></i> Report<i class="fas fa-angle-down rotate-icon"></i></a>
@@ -211,7 +213,7 @@
         </li>
         <li class="nav-item dropdown notifications-nav">
           <a class="nav-link dropdown-toggle waves-effect" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="badge red">{{ all_sessions.count }}</span> <i class="fas fa-layer-group"></i>
+            <span class="badge blue">{{ all_sessions.count }}</span> <i class="fas fa-layer-group"></i>
             <span class="d-none d-md-inline-block">Academic Year</span>
           </a>
           <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
@@ -219,7 +221,7 @@
             <a class="dropdown-item waves-effect waves-light" href="{% if not request.user.is_superuser or session.current_session %}#{% else %}{% url 'toggle_session' id=session.pk %}{% endif %}">
               <i class="fas fa-money mr-2" aria-hidden="true"></i>
               <span>{{ session.name }} {% if session.current_session %} - <span class="blue-text">current</span> {% endif %}</span>
-              <span class="float-right"><i class="far  fa-clock" aria-hidden="true">
+              <span class="float-right"><i class="far fa-clock" aria-hidden="true">
                 created {{ session.created_on|naturaltime }}
               </i></span>
             </a>
@@ -243,7 +245,7 @@
                     {{ notification.body|truncatechars:42 }}
                   </span>
               <small class="float-left">
-                <i class="far  fa-clock" aria-hidden="true"></i>
+                <i class="far fa-clock" aria-hidden="true"></i>
                 {{ notification.time }}
               </small>
               <br><br>

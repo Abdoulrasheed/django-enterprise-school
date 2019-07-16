@@ -23,6 +23,7 @@ from django.db import IntegrityError
 from . sms_sender import send_sms
 
 from .remark import getRemark, getGrade
+from frontend.models import OnlineAdmission
 from .forms import (AddStudentForm,
 					AddParentForm,
 					AddTeacherForm,
@@ -2116,6 +2117,16 @@ def update_section(request, id):
 	else:
 		form = EditSectionForm(instance=section)
 		return render(request, 'sms/section/edit_section.html', {'form': form})
+
+@login_required
+@teacher_required
+def online_admission_list(request):
+	current_session = get_object_or_404(Session, current_session=True)
+	applications = OnlineAdmission.objects.filter(session=current_session)
+	context = {
+			'applications': applications
+	}
+	return render(request, 'sms/online_admission/online_admission_list.html', context)
 
 
 @login_required
