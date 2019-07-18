@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'sms',
     'frontend',
     'django.contrib.sites',
+    'pwa',
 ]
 
 MIDDLEWARE = [
@@ -147,3 +148,7 @@ TEMPLATES[0]['OPTIONS']['context_processors'].append("sms.context_processors.sch
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# service worker
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'sms/static/js', 'serviceworker.js')

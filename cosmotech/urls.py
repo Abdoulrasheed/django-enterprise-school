@@ -8,6 +8,7 @@ from sms.views import change_password
 
 urlpatterns = [
 	path('', include('frontend.urls')),
+	path('', include('pwa.urls')),
 	path('app/', include('sms.urls')),
 	path('u/i/admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),

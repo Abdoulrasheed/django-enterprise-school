@@ -17,7 +17,7 @@ class OnlineAdmission(models.Model):
 	student_gender = models.CharField(choices=GENDER, max_length=7)
 	student_address = models.CharField(max_length=200)
 	student_religion = models.CharField(choices=RELIGION, max_length=13)
-	student_dob = models.DateTimeField()
+	student_dob = models.DateField()
 	student_clss = models.CharField(max_length=50)
 	applicant_phone_no = models.CharField(max_length=11)
 	student_email = models.EmailField(blank=True, null=True)
