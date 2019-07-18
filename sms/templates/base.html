@@ -23,6 +23,7 @@
 
   </style>
 <style type="text/css">/* Chart.js */
+@import "~perfect-scrollbar/dist/css/perfect-scrollbar.css";
 @-webkit-keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}@keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}</style></head>
 
 <body class="fixed-sn white-skin">
@@ -35,7 +36,7 @@
       <ul class="custom-scrollbar ps ps--theme_default" data-ps-id="abfb04e0-478a-fdaf-ec37-be23fad8b5b4">
         <!-- Logo -->
         <li class="logo-sn waves-effect">
-          <div class="text-center">
+          <div style="margin-bottom: 15px;" class="text-center">
             <a href="{% url 'home_page' %}" class="pl-0">
               <img width="80px" src="{{ school_logo }}" class="rounded-circle"></a>
           </div>
