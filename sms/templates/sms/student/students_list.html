@@ -140,28 +140,41 @@
       </div>
    </div>
    </div>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha256-KsRuvuRtUVvobe66OFtOQfjP8WA2SzYsmm4VPfMnxms=" crossorigin="anonymous"></script>
    {% block script %}
       <script type="text/javascript">
         $(document).ready(function(){
         $(".del_student").click(function(){
           var row = $(this).closest("tr > td");
           var del_student = $(row).find("#del_student").attr('target_student')
-          var c = confirm("Are you sure to delete ?", "Confrimation");
-          if (c == true){
-            $.ajax({
+          swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this student!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+              $.ajax({
               url: del_student,
               beforeSend: function(){
                 $("#loader").removeAttr('hidden');
               },
+              
               complete: function(){
                 $("#loader").attr('hidden', 'hidden');
               },
-                  
-                  success: function (data) {
-                  alert("Successfully deleted")
+
+              success: function (data) {
+                  toastr.info('Successfully '+data);
+                  swal("Successfully Deleted!", {
+                    icon: "success",
+                  });
                 }
               });
-          }
+            }
+          });
         });
 
         $(".custom-checkbox").change(function(){
@@ -171,7 +184,13 @@
         $.ajax({
             url: url,
                 success: function (data) {
-                 alert(data);
+                  if (data == 'activated') {
+                    toastr.success('Successfully '+data);
+                    swal ( "Success" ,  "Successfully "+data ,  "success" )
+                  }else{
+                    toastr.info('Successfully '+data);
+                    swal ( "Success" ,  "Successfully "+data ,  "success" )
+                  }
                 }
               });
             });
