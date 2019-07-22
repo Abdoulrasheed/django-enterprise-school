@@ -1,17 +1,19 @@
 {% if admission %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/js/all.js" integrity="sha256-S1WJaJce5DQaJRMMO9igZPd6WRgObuRlQXE8i7yKOd8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/js/all.js" integrity="sha256-S1WJaJce5DQaJRMMO9igZPd6WRgObuRlQXE8i7yKOd8=" crossorigin="anonymous">
+</script>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header bg-info">
         <h5 class="modal-title" id="admissionModalLabel">
-        {{ admission.get_applicant_full_name|upper }}</h5>
+          {{ admission.get_applicant_full_name|upper }}
+        </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
       	 <center>
-      	 	<img src="{{ admission.student_passport.url }}" name="aboutme" width="140" height="140" border="0" class="img-circle"></a>
+      	 	<img src="{{ admission.student_passport.url }}" name="aboutme" width="140" height="140" border="0" class="img-circle"/>
       	 	<h3 class="media-heading">{{ admission.get_applicant_full_name }}</h3>
       	 	<span>
       	 		<strong>Admission Status: </strong></span>
@@ -35,7 +37,7 @@
 				      </td>
 				    </tr>
 				    <tr>
-				    	<td><i class="fas fa-school"></i></i></td>
+				    	<td><i class="fas fa-school"></i></td>
 				      <td>Requested Class</td>
 				      <td></td>
 				      <td>{{ admission.student_clss }}</td>
@@ -51,10 +53,31 @@
       </div>
       <div class="modal-footer bg-info">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Download</button>
+        <a href="{% url 'download_admission_pdf' admID=admission.admission_id %}" class="btn btn-primary">Download</a>
       </div>
     </div>
   </div>
 {% else %}
-	No results !!
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/js/all.js" integrity="sha256-S1WJaJce5DQaJRMMO9igZPd6WRgObuRlQXE8i7yKOd8=" crossorigin="anonymous"></script>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title" id="admissionModalLabel">
+          APPLICANT NOT FOUND
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <center>
+          <h3 class="media-heading">No Applicant is found with this ID</h3>
+        </center>
+        <br>
+      </div>
+      <div class="modal-footer bg-info">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 {% endif %}
