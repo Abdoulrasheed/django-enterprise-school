@@ -270,6 +270,7 @@ def students_view(request):
 	return render(request, 'sms/student/students.html', context)
 
 
+
 @login_required
 @teacher_required
 def delete_user(request, id):
@@ -282,22 +283,23 @@ def delete_user(request, id):
 		    class_id = student.in_class.pk
 		    student.delete()
 		    messages.success(request, user_name + ' Successfully deleted !')
-		    return redirect('students_list_view', id=class_id)
+		    return HttpResponse('deleted')
 		elif user.is_teacher:
 			user.delete()
 			messages.success(request, user_name + ' Successfully deleted !')
-			return redirect('teachers_list')
+			return HttpResponse('deleted')
 		elif user.is_parent:
 			user.delete()
 			messages.success(request, user_name + ' Successfully deleted !')
-			return redirect('parents_list')
+			return HttpResponse('deleted')
 		else:
 			user.delete()
 			messages.success(request, user_name + ' Successfully deleted !')
 			return redirect('home')
 	else:
 		messages.error(request,' Please dont trick me, nothing is deleted !')
-		return redirect('teachers_list')
+		return HttpResponse('nothing deleted')
+
 
 
 @login_required
