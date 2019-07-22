@@ -167,6 +167,7 @@
               },
 
               success: function (data) {
+                  window.location.reload();
                   toastr.info('Successfully '+data);
                   swal("Successfully Deleted!", {
                     icon: "success",

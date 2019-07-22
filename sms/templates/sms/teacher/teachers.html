@@ -185,7 +185,13 @@
             $.ajax({
               url: url,
                 success: function (data) {
-                 alert(data);
+                 if (data == 'activated') {
+                    toastr.success('Successfully '+data);
+                    swal ( "Success" ,  "Successfully "+data ,  "success" )
+                  }else{
+                    toastr.info('Successfully '+data);
+                    swal ( "Success" ,  "Successfully "+data ,  "success" )
+                  }
                 }
               });
             });
