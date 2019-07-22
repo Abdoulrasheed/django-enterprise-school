@@ -1,13 +1,16 @@
 from django.shortcuts import render
-from sms.views import Setting
 from django.core.files.storage import FileSystemStorage
 from .models import OnlineAdmission
-from sms.models import Class, Section, Session
+from sms.models import Class, Section, Session, Setting
 from django.http import HttpResponse
 from .forms import OnlineAdmissionForm
 from django.shortcuts import redirect
 from sms.sms_sender import send_sms
 from django.contrib import messages
+from .models import OnlineAdmission
+# PDF
+from weasyprint import HTML, CSS
+from django.template.loader import get_template
 
 def frontend(request):
 	setting = Setting.objects.first()
@@ -102,5 +105,34 @@ def process_online_admission(request):
 def search_admission_status(request):
 	if request.is_ajax():
 		admission_id = request.GET.get('admission_id')
-		admission_id = OnlineAdmission.objects.get(admission_id=admission_id) or None
+		current_session = Session.objects.get(current_session=True)
+		admission_id = OnlineAdmission.objects.filter(admission_id=admission_id, session=current_session).first()
 		return render(request, 'frontend/search_status.html', {'admission': admission_id})
+
+
+def download_admission(request, admID):
+	current_session = Session.objects.get(current_session=True)
+	applicant = OnlineAdmission.objects.filter(admission_id=admID, session=current_session).first()
+	setting = Setting.objects.first()
+	context = {
+		"setting": setting,
+		"applicant": applicant
+		}
+	template = "reports/adm_status_report.html"
+	template = get_template(template)
+	html = template.render(context)
+
+	css_string = """@page {
+		size: a4 portrait;
+		margin: 1mm;
+		counter-increment: page;
+	}"""
+
+	pdf_file = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(
+			stylesheets=[CSS(string=css_string)], presentational_hints=True)
+
+
+	response = HttpResponse(pdf_file, content_type='application/pdf')
+	response['Content-Disposition'] = 'filename="class_members.pdf"'
+	return response
+	return HttpResponse(response.getvalue(), content_type='application/pdf')
