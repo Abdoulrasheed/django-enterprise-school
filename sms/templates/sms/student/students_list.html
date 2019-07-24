@@ -115,7 +115,7 @@
                      <td class="pt-3-half" contenteditable="false">
                         <a href="{% url 'profile' user_id=student.user.id %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
                         <a href="{% url 'edit_student' id=student.id %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
-                        <a id="del_student" target_student="{% url 'delete_user' id=student.user.pk %}" href="#" title="delete" class="del_student red-text"><i class="fa fa-times"></i></a>
+                        <a id="del_student" target_student="{% url 'delete_user' id=student.user.pk %}" title="delete" class="del_student red-text"><i class="fa fa-times"></i></a>
                      </td>
                      {% endif %}
                   </tr>
@@ -187,10 +187,8 @@
                 success: function (data) {
                   if (data == 'activated') {
                     toastr.success('Successfully '+data);
-                    swal ( "Success" ,  "Successfully "+data ,  "success" )
                   }else{
                     toastr.info('Successfully '+data);
-                    swal ( "Success" ,  "Successfully "+data ,  "success" )
                   }
                 }
               });
