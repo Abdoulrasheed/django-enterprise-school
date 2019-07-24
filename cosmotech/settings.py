@@ -146,6 +146,9 @@ TEMPLATES[0]['OPTIONS']['context_processors'].append("sms.context_processors.sch
 
 # Session Setting
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 1800
+
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
