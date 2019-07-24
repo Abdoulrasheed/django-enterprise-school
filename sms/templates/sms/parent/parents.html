@@ -174,7 +174,7 @@
 
           $(".del_parent").click(function(){
           var row = $(this).closest("tr > td");
-          var del_parent = $(row).find("#del_parent").attr('target_parent')
+          var del_parent = $(row).find(".del_parent").attr('target_parent')
           swal({
             title: "Are you sure?",
             text: "Once deleted, you will not be able to recover this user!",
