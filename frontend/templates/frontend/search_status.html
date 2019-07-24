@@ -53,7 +53,7 @@
       </div>
       <div class="modal-footer bg-info">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <a target="_blank" href="{% url 'download_admission_pdf' admID=admission.admission_id %}" class="btn btn-primary">Download</a>
+        <a href="{% url 'download_admission_pdf' admID=admission.admission_id %}" class="btn btn-primary">Download</a>
       </div>
     </div>
   </div>

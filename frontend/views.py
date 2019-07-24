@@ -113,6 +113,7 @@ def search_admission_status(request):
 def download_admission(request, admID):
 	current_session = Session.objects.get(current_session=True)
 	applicant = OnlineAdmission.objects.filter(admission_id=admID, session=current_session).first()
+	print(admID)
 	setting = Setting.objects.first()
 	context = {
 		"setting": setting,
@@ -133,6 +134,6 @@ def download_admission(request, admID):
 
 
 	response = HttpResponse(pdf_file, content_type='application/pdf')
-	response['Content-Disposition'] = 'filename="class_members.pdf"'
+	response['Content-Disposition'] = 'attachment; filename="admission.pdf"'
 	return response
 	return HttpResponse(response.getvalue(), content_type='application/pdf')

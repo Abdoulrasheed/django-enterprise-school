@@ -1,92 +1,107 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="{% static 'reports/css/adm_status.css' %}" media="all" />
-  </head>
-  <body>
-    <header class="clearfix">
-      <div id="logo">
-        <img src="{{ setting.school_logo.url }}">
+<html>
+<head>
+  <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  <!-- <link rel="stylesheet" href="sass/main.css" media="screen" charset="utf-8"/> -->
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta http-equiv="content-type" content="text-html; charset=utf-8">
+  <link rel="stylesheet" type="text/css" href="{% static 'reports/css/adm_status.css' %}">
+</head>
+<body>
+  <header class="clearfix">
+    <div class="container">
+      <img width="70" src="{{ setting.school_logo.url }}" alt="">
+      <div class="company-info">
+        <h1 class="title">{{ setting.school_name|title }}</h1>
+        <div class="address">
+          <p>{{ setting.school_address }}</p>
+        </div>
+        <div class="phone">
+          <a href="tel:{{ setting.business_phone1 }}">{{ setting.business_phone1 }}</a>
+        </div>
+          <a href="mailto:{{ setting.business_email }}">{{ setting.business_email }}</a>
+        </div>
       </div>
-      <h1>{{ setting.school_name }}</h1>
-      <div id="company" class="clearfix">
-        <div>{{ setting.school_name }}</div>
-        <div>{{ setting.school_address }}</div>
-        <div>(602) 519-0450</div>
-        <div>{{ setting.business_email }}</div>
+    </div>
+  </header>
+
+  <section>
+    <div class="container">
+     <ul class="school-title">
+       ADMISSION LETTER TEMPLATE
+     </ul>
+      <div class="details clearfix">
+        <div class="client left">
+          <p class="name">{{ applicant.get_applicant_full_name|title }}</p>
+          <p>{{ applicant.student_address }}</p>
+          <a href="mailto:john@example.com">john@example.com</a>
+        </div>
+        <div class="data right">
+          <div class="title">ADMISSION STATUS: {{ applicant.status }}</div>
+          <div class="date">
+            ID: {{ applicant.admission_id }}<br>
+            Date Applied: {{ applicant.date_of_application }}
+          </div>
+        </div>
       </div>
-      <div id="project">
-        <div><span>PROJECT</span> Website development</div>
-        <div><span>CLIENT</span> John Doe</div>
-        <div><span>ADDRESS</span> 796 Silver Harbour, TX 79273, US</div>
-        <div><span>EMAIL</span> <a href="mailto:john@example.com">john@example.com</a></div>
-        <div><span>DATE</span> August 17, 2015</div>
-        <div><span>DUE DATE</span> September 17, 2015</div>
-      </div>
-    </header>
-    <main>
-      <table>
+       <ul class="items-title">
+       You are to come to the school with the following items:
+     </ul>
+      <table border="0" cellspacing="0" cellpadding="0">
         <thead>
           <tr>
-            <th class="service">SERVICE</th>
-            <th class="desc">DESCRIPTION</th>
-            <th>PRICE</th>
-            <th>QTY</th>
-            <th>TOTAL</th>
+            <th class="qty">Quantity</th>
+            <th class="desc">Description</th>
+            <th class="unit">Equivalent price</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="service">Design</td>
-            <td class="desc">Creating a recognizable design solution based on the company's existing visual identity</td>
-            <td class="unit">$40.00</td>
-            <td class="qty">26</td>
-            <td class="total">$1,040.00</td>
+            <td class="qty">1</td>
+            <td class="desc"><h3>Packet of chalk</h3>You are to bring one packet of chalk during registration</td>
+            <td class="unit">N800</td>
           </tr>
           <tr>
-            <td class="service">Development</td>
-            <td class="desc">Developing a Content Management System-based Website</td>
-            <td class="unit">$40.00</td>
-            <td class="qty">80</td>
-            <td class="total">$3,200.00</td>
+            <td class="qty">1</td>
+            <td class="desc"><h3>A4 Paper</h3>You are to bring one carton of A4 paper to the school during the time of registration</td>
+            <td class="unit">N1,400</td>
           </tr>
           <tr>
-            <td class="service">SEO</td>
-            <td class="desc">Optimize the site for search engines (SEO)</td>
-            <td class="unit">$40.00</td>
-            <td class="qty">20</td>
-            <td class="total">$800.00</td>
-          </tr>
-          <tr>
-            <td class="service">Training</td>
-            <td class="desc">Initial training sessions for staff responsible for uploading web content</td>
-            <td class="unit">$40.00</td>
-            <td class="qty">4</td>
-            <td class="total">$160.00</td>
-          </tr>
-          <tr>
-            <td colspan="4">SUBTOTAL</td>
-            <td class="total">$5,200.00</td>
-          </tr>
-          <tr>
-            <td colspan="4">TAX 25%</td>
-            <td class="total">$1,300.00</td>
-          </tr>
-          <tr>
-            <td colspan="4" class="grand total">GRAND TOTAL</td>
-            <td class="grand total">$6,500.00</td>
+            <td class="qty">2</td>
+            <td class="desc"><h3>Brooms</h3>You are to bring two brooms to the school during the time of registration</td>
+            <td class="unit">N200</td>
           </tr>
         </tbody>
       </table>
-      <div id="notices">
-        <div>NOTICE:</div>
-        <div class="notice">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
+      <div class="no-break">
+        <table class="grand-total">
+          <tbody>
+            <tr class="total">
+              <td class="qty"></td>
+              <td class="desc"></td>
+              <td class="unit">SUBTOTAL:</td>
+            </tr>
+            <tr class="total">
+              <td class="qty"></td>
+              <td class="desc"></td>
+            </tr>
+           
+          </tbody>
+        </table>
       </div>
-    </main>
-    <footer>
-      Invoice was created on a computer and is valid without the signature and seal.
-    </footer>
-  </body>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div style="color: red">
+        <div class="thanks">NOTE:</div>
+        <div>This Admission Letter should not be considered genuine unless it is being signed and stamped by the Management</div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
 </html>
