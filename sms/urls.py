@@ -90,4 +90,5 @@ urlpatterns = [
 	path('subject/report/', views.subject_report, name="subject_report"),
 	path('broadsheet/report/view', views.broadsheet_report_view, name="broadsheet_report_view"),
 	path('broadsheet/report/', views.broadsheet_report, name="broadsheet_report"),
+	path('onlineadmission/applicant/<int:pk>/view/', views.view_detail_applicant, name='view_detail_applicant'),
 	]
