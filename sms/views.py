@@ -2570,3 +2570,13 @@ def broadsheet_report(request):
 		response['Content-Disposition'] = 'filename="subject_allocation.pdf"'
 		return response
 		return HttpResponse(response.getvalue(), content_type='application/pdf')
+
+@login_required
+@teacher_required
+def view_detail_applicant(request, pk):
+	applicant = get_object_or_404(OnlineAdmission, pk=pk)
+	return render(
+		request, 
+		'sms/online_admission/online_admission_detail_view.html', 
+		{"applicant": applicant}
+	)
