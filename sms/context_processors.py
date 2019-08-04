@@ -33,7 +33,7 @@ def school_setting_processor(request):
 	current_session = Session.objects.get(current_session=True)
 	all_sessions = Session.objects.all()
 	default_logo = 'logo.png'
-	default_name = "Cosmotech"
+	default_name = "Bitpoint Academy"
 
 	try:
 	    logo = Setting.objects.get(id=1)
@@ -45,7 +45,7 @@ def school_setting_processor(request):
 			id=1, school_name=default_name,
 			school_logo=default_logo,
 			school_address="Yola",
-			school_slogan="Great movement",
+			school_slogan="Bringing the future closer to you !",
 			ft_begins=y.today(),
 			ft_ends=y.today(),
 			st_begins=y.today(),

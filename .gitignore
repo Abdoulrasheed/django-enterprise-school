@@ -104,3 +104,4 @@ ENV/
 *.sqlite3
 
 media/
+uploaded_files/
