@@ -8,7 +8,7 @@ from django_tenants.utils import remove_www_and_dev, get_public_schema_name, get
 from django.db import utils
 
 
-class TenantTutorialMiddleware(MiddlewareMixin):
+class BitpointTenantMiddleware(MiddlewareMixin):
     def process_request(self, request):
         connection.set_schema_to_public()
         hostname_without_port = remove_www_and_dev(request.get_host().split(':')[0])

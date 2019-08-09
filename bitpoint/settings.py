@@ -102,13 +102,12 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 
 MIDDLEWARE = (
-    'bitpoint.middleware.TenantTutorialMiddleware',
+    'bitpoint.middleware.BitpointTenantMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
@@ -122,8 +121,6 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                # Insert your TEMPLATE_CONTEXT_PROCESSORS here or use this
-                # list if you haven't customized them:
                 'sms.context_processors.school_setting_processor',
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.debug',
