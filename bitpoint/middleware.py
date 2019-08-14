@@ -15,6 +15,7 @@ class BitpointTenantMiddleware(MiddlewareMixin):
         try:
             domain = get_tenant_domain_model().objects.select_related('tenant').get(domain=hostname_without_port)
             request.tenant = domain.tenant
+            # check n think again...
             if not "sms.context_processors.school_setting_processor" in settings.TEMPLATES[0]['OPTIONS']['context_processors']:
                 settings.TEMPLATES[0]['OPTIONS']['context_processors'].append("sms.context_processors.school_setting_processor")
         except utils.DatabaseError:
