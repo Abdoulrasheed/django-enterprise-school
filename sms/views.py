@@ -1459,8 +1459,9 @@ def expenditure(request):
 def delete_expenditure(request, id):
 	expense = Expense.objects.get(pk=id)
 	expense.delete()
-	messages.success(request, str(expense.item) + ' was successfully deleted')
-	return HttpResponseRedirect(reverse_lazy('view_expenses'))
+	new_exp_list = Expense.objects.all()
+	context = {'expenses': new_exp_list,}
+	return render(request, 'sms/expenses/new_exp_list.html', context)
 
 
 @login_required
