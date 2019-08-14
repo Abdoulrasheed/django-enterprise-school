@@ -1,0 +1,60 @@
+{% load static humanize %}
+<table class="table table-bordered table-responsive-md table-striped text-center">
+                  <tr class="mdb-color darken-3 white-text">
+                    <th class="text-center">#</th>
+                     <th class="text-center">Fullname</th>
+                     <th class="text-center">Picture</th>
+                     <th class="text-center">Roll</th>
+                     <th class="text-center">Email</th>
+                     {% if request.user.is_superuser %}
+                     <th class="text-center">Status</th>
+                     <th class="text-center">Action</th>
+                     {% endif %}
+                  </tr>
+                  {% for student in students %}
+                  <tr>
+                    <td class="pt-3-half text-center" contenteditable="false">
+                        <a href="">{{ forloop.counter }}</a>
+                     </td>
+                     <td class="pt-3-half text-center" name="{{ student.user.first_name }}" contenteditable="false">
+                        <a href="{% url 'profile' user_id=student.user.id %}">{{ student.user.get_full_name }}</a>
+                     </td>
+                     <td class="pt-3-half" name="{{ student.user.first_name }}" contenteditable="false">
+                        <img width="50px" src="{{ student.user.get_picture }}">
+                     </td>
+                     <td class="pt-3-half" contenteditable="false">{{ student.roll_number }}</td>
+                     <td class="pt-3-half" contenteditable="false">{{ student.user.email }}</td>
+                      {% if request.user.is_superuser %}
+                     <td class="pt-3-half">
+                     <div  title="if deativated, this student can no longer have access to this site" class="switch">
+                        <label class="custom-checkbox">
+                          Off
+                          <input deativate-url="{% url 'toggle_user_status' id=student.user.id %}" id="user_status" name="user_status" type="checkbox"
+                          {% if student.user.is_active %} checked {% endif %}/>
+                          <span class="lever"></span> On
+                        </label>
+                      </div>
+                    </td>
+                     <td class="pt-3-half" contenteditable="false">
+                        <a href="{% url 'profile' user_id=student.user.id %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
+                        <a href="{% url 'edit_student' id=student.id %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                        <a id="del_student" target_student="{% url 'delete_user' id=student.user.pk %}" title="delete" class="del_student red-text"><i class="fa fa-times"></i></a>
+                     </td>
+                     {% endif %}
+                  </tr>
+                  {% empty %}
+                  <tr>
+                     <td>No data available</td>
+                  </tr>
+                  {% endfor %}
+               </table>
+               <table>
+                <tr>
+                  <td>
+                    <fieldset>
+                        <legend style="font-size: 15px">Summary:</legend>
+                        <font style="font-size: 13px">Number of students: {{ students.count }} ({{ students.count|apnumber|title }})</font>
+                      </fieldset>
+                  </td>
+                </tr>
+               </table>

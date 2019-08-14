@@ -2,11 +2,10 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import connection
 from django.http import Http404
-from django.utils.deprecation import MiddlewareMixin  # todo change
+from django.utils.deprecation import MiddlewareMixin
 
 from django_tenants.utils import remove_www_and_dev, get_public_schema_name, get_tenant_domain_model
 from django.db import utils
-
 
 class BitpointTenantMiddleware(MiddlewareMixin):
     def process_request(self, request):
@@ -16,15 +15,14 @@ class BitpointTenantMiddleware(MiddlewareMixin):
         try:
             domain = get_tenant_domain_model().objects.select_related('tenant').get(domain=hostname_without_port)
             request.tenant = domain.tenant
+            if not "sms.context_processors.school_setting_processor" in settings.TEMPLATES[0]['OPTIONS']['context_processors']:
+                settings.TEMPLATES[0]['OPTIONS']['context_processors'].append("sms.context_processors.school_setting_processor")
         except utils.DatabaseError:
             request.urlconf = settings.PUBLIC_SCHEMA_URLCONF
             return
         except get_tenant_domain_model().DoesNotExist:
-            if hostname_without_port in ("127.0.0.1", "localhost"):
-                request.urlconf = settings.PUBLIC_SCHEMA_URLCONF
-                return
-            else:
-                raise Http404
+            request.urlconf = settings.PUBLIC_SCHEMA_URLCONF
+            return
 
         connection.set_tenant(request.tenant)
         ContentType.objects.clear_cache()

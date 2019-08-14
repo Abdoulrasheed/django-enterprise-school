@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 from .models import *
-from .constants import *
+from constants import *
 from django.forms import BaseModelFormSet
 
 

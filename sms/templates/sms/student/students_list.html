@@ -20,7 +20,7 @@
          </div>
       </div>
       <!-- Heading -->
-          {% if messages %}
+        {% if messages %}
         {% for message in messages %}
           <div class="alert alert-success alert-dismissable">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -75,7 +75,7 @@
               <div class="indeterminate">
               </div>
           </div>
-            <div id="table" class="table-editable">
+            <div id="table" class="students_body table-editable">
                <table class="table table-bordered table-responsive-md table-striped text-center">
                   <tr class="mdb-color darken-3 white-text">
                     <th class="text-center">#</th>
@@ -140,8 +140,8 @@
       </div>
    </div>
    </div>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha256-KsRuvuRtUVvobe66OFtOQfjP8WA2SzYsmm4VPfMnxms=" crossorigin="anonymous"></script>
    {% block script %}
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha256-KsRuvuRtUVvobe66OFtOQfjP8WA2SzYsmm4VPfMnxms=" crossorigin="anonymous"></script>
       <script type="text/javascript">
         $(document).ready(function(){
         $(".del_student").click(function(){
@@ -167,8 +167,8 @@
               },
 
               success: function (data) {
-                  window.location.reload();
-                  toastr.info('Successfully '+data);
+                  $(".students_body").html(data);
+                  toastr.info('Successfully deleted');
                   swal("Successfully Deleted!", {
                     icon: "success",
                   });

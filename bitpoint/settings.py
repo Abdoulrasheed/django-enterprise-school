@@ -63,7 +63,7 @@ MEDIA_ROOT = ''
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
-MEDIA_URL = ''
+MEDIA_URL = '/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -121,7 +121,6 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'sms.context_processors.school_setting_processor',
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.i18n',
@@ -144,21 +143,27 @@ WSGI_APPLICATION = 'bitpoint.wsgi.application'
 
 SHARED_APPS = (
     'django_tenants',  # mandatory
-    'schools',  # you must list the app where your tenant model resides in
-    'pwa',
+    'django.contrib.admin',
+    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'schools',  # you must list the app where your tenant model resides in
+    'authentication',
     'main_site',
 )
 
 TENANT_APPS = (
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'pwa',
     'sms',
     'frontend',
-    'django.contrib.auth',
-    'django.contrib.admin',
 )
 
 TENANT_MODEL = "schools.Client"  # app.Model
@@ -167,7 +172,7 @@ TENANT_DOMAIN_MODEL = "schools.Domain"  # app.Model
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
-AUTH_USER_MODEL = 'sms.User'
+AUTH_USER_MODEL = 'authentication.User'
 
 LOGIN_REDIRECT_URL = '/'
 

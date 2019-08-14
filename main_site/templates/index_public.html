@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 
@@ -5,26 +6,26 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" href="img/favicon.png" type="image/png">
+    <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/png">
     <title>Bitsmss | Bitpoint School Management System Solution</title>
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <link rel="stylesheet" href="vendors/linericon/style.css">
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="vendors/owl-carousel/owl.carousel.min.css">
-    <link rel="stylesheet" href="vendors/lightbox/simpleLightbox.css">
-    <link rel="stylesheet" href="vendors/nice-select/css/nice-select.css">
-    <link rel="stylesheet" href="vendors/animate-css/animate.css">
-    <link rel="stylesheet" href="vendors/popup/magnific-popup.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/linericon/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/owl-carousel/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/lightbox/simpleLightbox.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/nice-select/css/nice-select.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/animate-css/animate.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/popup/magnific-popup.css' %}">
     <!-- main css -->
-    <link rel="stylesheet" href="css/mdb/all.css">
-    <link rel="stylesheet" href="css/mdb/mdb.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="{% static 'css/mdb/all.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mdb/mdb.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
 
     <!-- Start slider section -->
-    <link rel="stylesheet" type="text/css" href="engine/style.css" />
-    <script type="text/javascript" src="engine/jquery.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'engine/style.css' %}" />
+    <script type="text/javascript" src="{% static 'engine/jquery.js' %}"></script>
     <!-- End slider section -->
     <!-- Font awesome section-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -48,7 +49,7 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                         <ul class="nav navbar-nav menu_nav ml-auto">
-                            <li class="nav-item active"><a class="nav-link" href="#home">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
                             <li class="nav-item"><a class="nav-link" href="#feature">FEATURES</a></li>
                             <li class="nav-item"><a class="nav-link" href="#demo">REQUEST DEMO</a>
                                 <li class="nav-item"><a class="nav-link" href="#price">PRICING</a>
@@ -56,11 +57,11 @@
                                         <li class="nav-item submenu dropdown">
                                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Career</a>
                                             <ul class="dropdown-menu">
-                                                <li class="nav-item"><a class="nav-link" href="elements.html">Internship</a></li>
-                                                <li class="nav-item"><a class="nav-link" href="elements.html">Courses</a></li>
+                                                <li class="nav-item"><a class="nav-link" href="#">Internship</a></li>
+                                                <li class="nav-item"><a class="nav-link" href="#">Courses</a></li>
                                             </ul>
                                         </li>
-                                        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
                         </ul>
                     </div>
                 </div>
@@ -75,13 +76,13 @@
             <div class="container">
                 <div class="row banner_content">
                     <div class="col-lg-9">
-                        <h2 class="tick"><small>A school <span class="fff">Management System</span> <br />That's made <span class="fff">simple </span><br /> And Affordable </small></h2>
+                        <h2 class="tick"><small>A school <span class="fff">Management </span>System <br />That is made <span class="fff">simple </span><br /> And Affordable </small></h2>
                         <p style="color: red;">Managing schools, Bringing the future</p>
                         <a class="banner_btn" href="#">Explore Now</a>
                     </div>
                     <div class="col-lg-3">
                         <div class="banner_map_img">
-                            <img class="img-fluid" src="img/banner/right-mobile.png" alt="">
+                            <img class="img-fluid" src="{% static 'img/banner/right-mobile.png' %}" alt="">
                         </div>
                     </div>
                 </div>
@@ -101,28 +102,28 @@
             <div class="feature_inner row">
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Score Entry</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Attendance Management</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Report Card Sheet</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Notice Board</h5>
                         <p></p>
                     </div>
@@ -133,28 +134,28 @@
             <div class="feature_inner row">
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>View Children's Performance</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Collaborate With Teachers</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>View Payment Information</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>SMS Updates</h5>
                         <p></p>
                     </div>
@@ -166,49 +167,49 @@
             <div class="feature_inner row">
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Manage Students</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Manage Staff</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Student ID Card</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Class Management</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Exams Scheduling</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>SMS / Mailing System</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Marking Permission</h5>
                         <p></p>
                     </div>
@@ -222,28 +223,28 @@
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Landing page customization</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Calender / Events Scheduling</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Library Management</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Purchase / Expenses</h5>
                         <p></p>
                     </div>
@@ -255,28 +256,28 @@
             <div class="feature_inner row">
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5 align="left|right|middle|top|bottom">View Results</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Generate Term Report Sheet</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>View Payment Information</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Access to library resources</h5>
                         <p></p>
                     </div>
@@ -288,28 +289,28 @@
             <div class="feature_inner row">
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Receive Payments</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Generate Invoice</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Handle partial payements</h5>
                         <p></p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="feature_item">
-                        <img src="img/icon/f-icon-1.png" alt="">
+                        <img src="{% static 'img/icon/f-icon-1.png' %}" alt="">
                         <h5>Maintenance</h5>
                         <p></p>
                     </div>
@@ -330,7 +331,7 @@
                         </div>
                     </div>
                     <div class="col-lg-6">
-                        <img class="img-fluid" src="img/interior-2.png" alt="">
+                        <img class="img-fluid" src="{% static 'img/interior-2.png' %}" alt="">
                     </div>
                 </div>
             </div>
@@ -347,7 +348,7 @@
                     </div>
                     <div class="col-lg-6">
                         <!-- Default form register -->
-                        <form class="text-center border border-light p-5" method="post">
+                        <form class="text-center border border-light p-5" method="post">{% csrf_token %}
 
                             <p class="h4 mb-4">Demo</p>
 
@@ -413,7 +414,7 @@
                                     <p>Single branch school</p>
                                 </div>
                                 <div class="float-right">
-                                    <h3> N35,000</h3><small class="pull-right">per school</small>
+                                    <h3> N700</h3><small class="pull-right">per head</small>
                                 </div>
                             </div>
                             <div class="price_body">
@@ -442,7 +443,7 @@
                                     <small>Multi-Branch School</small>
                                 </div>
                                 <div class="float-right">
-                                    <h3> N30,000</h3><small class="pull-right">per school</small>
+                                    <h3> N600</h3><small class="pull-right">per head</small>
                                 </div>
                             </div>
                             <div class="price_body">
@@ -471,7 +472,7 @@
                                     <small>Multi-Branch School</small>
                                 </div>
                                 <div class="float-right">
-                                    <h3> N22,000</h3><small class="pull-right">per school</small>
+                                    <h3> N500</h3><small class="pull-right">per head</small>
                                 </div>
                             </div>
                             <div class="price_body">
@@ -508,62 +509,62 @@
                 <div id="wowslider-container0">
                 <div class="ws_images"><ul>
                     <li>
-                        <img src="data/images/1.png" title="Easy access to informations, right from our extended dashboard" id="wows0_0"/>
+                        <img src="{% static 'data/images/1.png' %}" title="Easy access to informations, right from our extended dashboard" id="wows0_0"/>
                     </li>
                     <li>
-                        <img src="data/images/2.png" title="Manage Students Payment Information" id="wows0_1"/></li>
+                        <img src="{% static 'data/images/2.png'%}" title="Manage Students Payment Information" id="wows0_1"/></li>
                     <li>
-                        <img src="data/images/3.png" title="Assign a class teacher" class teacher" id="wows0_2"/></li>
+                        <img src="{% static 'data/images/3.png' %}" title="Assign a class teacher" class teacher" id="wows0_2"/></li>
                     <li>
-                        <img src="data/images/4.png" title="Add detailed comments on students report sheet" id="wows0_3"/></li>
+                        <img src="{% static 'data/images/4.png' %}" title="Add detailed comments on students report sheet" id="wows0_3"/></li>
                     <li>
-                        <img src="data/images/5.png" title="View Attendance information and account summary of the year" id="wows0_4"/></li>
+                        <img src="{% static 'data/images/5.png' %}" title="View Attendance information and account summary of the year" id="wows0_4"/></li>
                     <li>
-                        <img src="data/images/6.jpg" title="Manage Student information" id="wows0_5"/></li>
+                        <img src="{% static 'data/images/6.jpg' %}" title="Manage Student information" id="wows0_5"/></li>
                     <li>
-                        <img src="data/images/7.png" title="Manage parents information" id="wows0_6"/></li>
+                        <img src="{% static 'data/images/7.png' %}" title="Manage parents information" id="wows0_6"/></li>
                     <li>
-                        <img src="data/images/8.png" title="Manage subjects" id="wows0_7"/></li>
+                        <img src="{% static 'data/images/8.png' %}" title="Manage subjects" id="wows0_7"/></li>
                     <li>
-                        <img src="data/images/9.png" title="Do Subject allocation with ease.png" id="wows0_8"/></li>
+                        <img src="{% static 'data/images/9.png' %}" title="Do Subject allocation with ease.png' %}" id="wows0_8"/></li>
                     <li>
-                        <img src="data/images/10.png" title="Segment a class into batches" id="wows0_9"/></li>
+                        <img src="{% static 'data/images/10.png' %}" title="Segment a class into batches" id="wows0_9"/></li>
                     <li>
-                        <img src="data/images/11.png" title="Manage School Syllables" id="wows0_10"/></li>
+                        <img src="{% static 'data/images/11.png' %}" title="Manage School Syllables" id="wows0_10"/></li>
                     <li>
-                        <img src="data/images/12.png" title="Students home work and Assignments" id="wows0_11"/></li>
+                        <img src="{% static 'data/images/12.png' %}" title="Students home work and Assignments" id="wows0_11"/></li>
                     <li>
-                        <img src="data/images/13.png" title="Manage Class information" id="wows0_12"/></li>
+                        <img src="{% static 'data/images/13.png' %}" title="Manage Class information" id="wows0_12"/></li>
                     <li>
-                        <img src="data/images/14.png" title="Do Section Allocation" id="wows0_13"/></li>
+                        <img src="{% static 'data/images/14.png' %}" title="Do Section Allocation" id="wows0_13"/></li>
                     <li>
-                        <img src="data/images/15.png" title="Manage Attendance information" id="wows0_14"/></li>
+                        <img src="{% static 'data/images/15.png' %}" title="Manage Attendance information" id="wows0_14"/></li>
                     <li>
-                        <img src="data/images/16.png" title="Attendance" id="wows0_15"/></li>
+                        <img src="{% static 'data/images/16.png" title="Attendance" id="wows0_15"/></li>
                     <li>
-                        <img src="data/images/17.png" id="wows0_16"/></li>
+                        <img src="{% static 'data/images/17.png' %}" id="wows0_16"/></li>
                     <li>
-                        <img src="data/images/18.png" title="Allows for creating an Examination Timetable" id="wows0_17"/></li>
+                        <img src="{% static 'data/images/18.png' %}" title="Allows for creating an Examination Timetable" id="wows0_17"/></li>
                     <li>
-                        <img src="data/images/19.png" title="Exam timetable" id="wows0_18"/></li>
+                        <img src="{% static 'data/images/19.png' %}" title="Exam timetable" id="wows0_18"/></li>
                     <li>
-                        <img src="data/images/20.png" title="Flexible Grade Scale" id="wows0_19"/></li>
+                        <img src="{% static 'data/images/20.png' %}" title="Flexible Grade Scale" id="wows0_19"/></li>
                     <li>
-                        <img src="data/images/21.png" title="An easy to use score entry form" id="wows0_20"/></li>
+                        <img src="{% static 'data/images/21.png' %}" title="An easy to use score entry form" id="wows0_20"/></li>
                     <li>
-                        <img src="data/images/22.png" title="Basic and advance promotion module" id="wows0_21"/></li>
+                        <img src="{% static 'data/images/22.png' %}" title="Basic and advance promotion module" id="wows0_21"/></li>
                     <li>
-                        <img src="data/images/23.png" title="School Notice" id="wows0_22"/>
+                        <img src="{% static 'data/images/23.png' %}" title="School Notice" id="wows0_22"/>
                     </li>
                     <li>
-                        <img src="data/images/24.png" title="School Events" id="wows0_23"/></li>
+                        <img src="{% static 'data/images/24.png' %}" title="School Events" id="wows0_23"/></li>
                     <li>
-                        <img src="data/images/25.png" title="School Holiday" id="wows0_24"/></li>
+                        <img src="{% static 'data/images/25.png' %}" title="School Holiday" id="wows0_24"/></li>
                     <li>
-                        <img src="data/images/26.png" title="Auto generate Students ID CARD" id="wows0_25"/>
+                        <img src="{% static 'data/images/26.png' %}" title="Auto generate Students ID CARD" id="wows0_25"/>
                     </li>
                     <li>
-                        <img src="data/images/27.png" title="And so much More" id="wows0_26"/>
+                        <img src="{% static 'data/images/27.png' %}" title="And so much More" id="wows0_26"/>
                     </li>
                 </ul>
             </div>
@@ -571,7 +572,7 @@
                
                 </div>  
                 <script type="text/javascript" src="engine/wowslider.js"></script>
-                <script type="text/javascript" src="engine/script.js"></script>
+                <script type="text/javascript" src="{% static 'engine/script.js' %}"></script>
             </div>
         </section>
         <!--================End Slideshow Area =================-->
@@ -815,21 +816,21 @@
     <!--================ End footer Area  =================-->
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="js/jquery-3.2.1.min.js"></script>
-    <script src="js/popper.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/stellar.js"></script>
-    <script src="vendors/lightbox/simpleLightbox.min.js"></script>
-    <script src="vendors/nice-select/js/jquery.nice-select.min.js"></script>
-    <script src="vendors/isotope/imagesloaded.pkgd.min.js"></script>
-    <script src="vendors/isotope/isotope-min.js"></script>
-    <script src="vendors/owl-carousel/owl.carousel.min.js"></script>
-    <script src="js/jquery.ajaxchimp.min.js"></script>
-    <script src="vendors/counter-up/jquery.waypoints.min.js"></script>
-    <script src="vendors/counter-up/jquery.counterup.js"></script>
-    <script src="js/mail-script.js"></script>
-    <script src="vendors/popup/jquery.magnific-popup.min.js"></script>
-    <script src="js/theme.js"></script>
+    <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/stellar.js' %}"></script>
+    <script src="{% static 'vendors/lightbox/simpleLightbox.min.js' %}"></script>
+    <script src="{% static 'vendors/nice-select/js/jquery.nice-select.min.js' %}"></script>
+    <script src="{% static 'vendors/isotope/imagesloaded.pkgd.min.js' %}"></script>
+    <script src="{% static 'vendors/isotope/isotope-min.js' %}"></script>
+    <script src="{% static 'vendors/owl-carousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/jquery.ajaxchimp.min.js' %}"></script>
+    <script src="{% static 'vendors/counter-up/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'vendors/counter-up/jquery.counterup.js' %}"></script>
+    <script src="{% static 'js/mail-script.js' %}"></script>
+    <script src="{% static 'vendors/popup/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'js/theme.js' %}"></script>
     <!-- Start of HubSpot Embed Code -->
     <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/5236913.js"></script>
     <!-- End of HubSpot Embed Code -->
