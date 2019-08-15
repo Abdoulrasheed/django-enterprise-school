@@ -4,10 +4,17 @@ from django.views.generic import TemplateView
 from django_tenants.utils import remove_www
 from schools.models import Client
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+
+@login_required(login_url='/login/')
+def dashboard(request):
+    template = 'authenticated/dashboard.html'
+    return render(request, template, {})
 
 
 class MainSiteHomeView(TemplateView):
-    template_name = "index_public.html"
+    template_name = "public/index_public.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
