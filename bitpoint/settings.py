@@ -136,6 +136,7 @@ TEMPLATES = [
 
 ROOT_URLCONF = 'bitpoint.urls_tenants'
 PUBLIC_SCHEMA_URLCONF = 'main_site.urls_public'
+ADMIN_URLCONF = 'main_site.urls_login'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'bitpoint.wsgi.application'
@@ -143,7 +144,6 @@ WSGI_APPLICATION = 'bitpoint.wsgi.application'
 
 SHARED_APPS = (
     'django_tenants',  # mandatory
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -161,6 +161,7 @@ TENANT_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'authentication',
     'pwa',
     'sms',
     'frontend',

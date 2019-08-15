@@ -12,10 +12,12 @@ class BitpointTenantMiddleware(MiddlewareMixin):
         connection.set_schema_to_public()
         hostname_without_port = remove_www_and_dev(request.get_host().split(':')[0])
 
+        if hostname_without_port.split('.')[0] == "admin":
+            request.urlconf = settings.ADMIN_URLCONF
+            return
         try:
             domain = get_tenant_domain_model().objects.select_related('tenant').get(domain=hostname_without_port)
             request.tenant = domain.tenant
-            # check n think again...
             if not "sms.context_processors.school_setting_processor" in settings.TEMPLATES[0]['OPTIONS']['context_processors']:
                 settings.TEMPLATES[0]['OPTIONS']['context_processors'].append("sms.context_processors.school_setting_processor")
         except utils.DatabaseError:

@@ -3,6 +3,7 @@ from django.db import utils
 from django.views.generic import TemplateView
 from django_tenants.utils import remove_www
 from schools.models import Client
+from django.contrib.auth import authenticate, login
 
 
 class MainSiteHomeView(TemplateView):
