@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-  <title>{{ school_name }} |{% block title %} Home{% endblock title %}</title>
+  <title>{{ school_setting.school_name }} |{% block title %} Home{% endblock title %}</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{% static 'css/mdb/all.css' %}">
   <!-- Bootstrap core CSS -->
@@ -40,7 +40,7 @@
         <li class="logo-sn waves-effect">
           <div style="margin-bottom: 15px;" class="text-center">
             <a href="{% url 'home_page' %}" class="pl-0">
-              <img width="80px" src="{{ school_logo }}" class="rounded-circle"></a>
+              <img width="80px" src="{{ school_setting.get_logo }}" class="rounded-circle"></a>
           </div>
         </li>
         <!--/. Logo -->
@@ -202,7 +202,7 @@
       </div>
       <!-- Breadcrumb-->
       <div class="breadcrumb-dn mr-auto">
-        <p>{{ school_name }}</p>
+        <p>{{ school_setting.school_name }}</p>
       </div>
 
       <!--Navbar links-->
@@ -293,7 +293,7 @@
       <div class="container-fluid">
           <small>
         <span id="copy"></span> Copyright: &copy;
-        <a href="#">Powered by Bitpoint inc.</a>
+        <a href="#">Bitpoint inc.</a>
         </small>
       </div>
     </div>
@@ -306,6 +306,7 @@
   <!-- SCRIPTS -->
   <!-- JQuery -->
   <script src="{% static 'js/mdb/jquery-3.3.1.min.js' %}"></script>
+  {% include 'session_security/all.html' %}
   <!-- Bootstrap tooltips -->
   <script type="text/javascript" src="{% static 'js/mdb/popper.min.js' %}"></script>
   <!-- Bootstrap core JavaScript -->
@@ -330,7 +331,8 @@
     // Material Select Initialization
     $(document).ready(function () {
         $(document).on("contextmenu",function(){
-          return false;
+          // uncomment the line below to disable mouse right click button
+          //return false;
         }); 
       $('.mdb-select').material_select();
     });

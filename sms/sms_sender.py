@@ -24,4 +24,4 @@ async def send_sms(phone, msg):
 						)
 						print("message send with an ID of {}".format(message.sid))
 					except:
-						print("theres an error while sending sms")
+						print("there is an error while sending an sms")

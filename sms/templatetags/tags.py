@@ -85,8 +85,6 @@ def get_subject_avg(subject_id, session, clss, no_of_students, term):
 
 @register.simple_tag
 def check_if_promoted(student, session):
-	print(student)
-	print(session)
 	if Student.objects.filter(user__pk=student.user.pk, session=session).exists():
 		return 1
 	else:
@@ -98,3 +96,9 @@ def get_grade(total):
 	if total > 100:
 		return 'A'
 	return getGradeWithTotalApproximate(total)
+
+@register.simple_tag
+def get_tenant_domain(tenant_id):
+	from schools.models import Domain
+	tenant_domain = Domain.objects.get(tenant_id=tenant_id).domain
+	return tenant_domain

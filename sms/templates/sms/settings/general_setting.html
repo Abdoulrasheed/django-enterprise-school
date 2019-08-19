@@ -55,7 +55,7 @@
     <div class="row">
       <div class="col-md-4">
         <span>School Display Name:</span>
-        <input value="{{ school_name }}" name="school_name" type="text" class="form-control mb-4" placeholder="School name">
+        <input value="{{ s.school_name }}" name="school_name" type="text" class="form-control mb-4" placeholder="School name">
        
         <span>School Logo:</span>
         <div class="input-group">
@@ -63,14 +63,14 @@
             <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
           </div>
           <div class="custom-file">
-            <input value="{{ s.school_logo.url }}" name="school_logo" type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
+            <input value="{{ s.get_logo }}" name="school_logo" type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
             <label class="custom-file-label" for="inputGroupFile01">School logo</label>
           </div>
         </div><br>
         {% if url %}
         Uploaded logo: <img src="{{ url }}" width="65" class="rounded-circle">
         {% endif %}
-        current logo: <img src="{{ s.school_logo.url }}" width="65" class="rounded-circle">
+        current logo: <img src="{{ s.get_logo }}" width="65" class="rounded-circle">
         <br>
         <br>
         <span>Facebook Link:</span>
@@ -82,9 +82,9 @@
       </div>
       <div class="col-md-4">
         <span>School Physical Address:</span>
-        <input value="{{ s.school_address }}" name="school_address" type="text" class="form-control mb-4" placeholder="School address">
+        <input value="{{ s.school_address|default_if_none:'' }}" name="school_address" type="text" class="form-control mb-4" placeholder="School address">
         <span>Motto:</span>
-        <input value="{{ s.school_slogan }}" name="school_slogan" type="text" class="form-control mb-4" placeholder="School slogan">
+        <input value="{{ s.school_slogan|default_if_none:'' }}" name="school_slogan" type="text" class="form-control mb-4" placeholder="School slogan">
          <span>Business Phone:</span>
         <input value="{{ s.business_phone1|default_if_none:'' }}" name="business_phone1" type="number" class="form-control mb-4" maxlength="11" minlength="11" placeholder="Business Phone">
          <span>Twitter handler:</span>

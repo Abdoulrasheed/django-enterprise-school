@@ -3,6 +3,7 @@
 {% block main %}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/core.js" integrity="sha256-YCbKJH6u4siPpUlk130udu/JepdKVpXjdEyzje+z1pE=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.1/dist/fullcalendar.min.css">
 
   <!--Main layout-->
     <div class="container-fluid">
@@ -192,6 +193,13 @@
               </div>
             </div>
           </div>
+          <div class="col-lg-12 col-md-12">
+            <div class="card mb-4">
+              <div class="card-body">
+                <div id="calendar"></div>
+              </div>
+            </div>
+          </div>
           {% elif request.user.is_student %}
            <div class="col-lg-8 col-md-12">
           <div class="list-group">
@@ -256,4 +264,49 @@
 
   {% block script %}
   	<script src="{% static 'js/sms/chart.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.1/dist/fullcalendar.min.js"></script>
+    <script type="text/javascript">
+      $('#calendar').fullCalendar({
+    header: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'month,agendaWeek,agendaDay,listWeek'
+    },
+    defaultDate: '2018-11-16',
+    navLinks: true,
+    eventLimit: true,
+    events: [{
+            title: 'Front-End Conference',
+            start: '2018-11-16',
+            end: '2018-11-18'
+        },
+        {
+            title: 'Hair stylist with Mike',
+            start: '2018-11-20',
+            allDay: true
+        },
+        {
+            title: 'Car mechanic',
+            start: '2018-11-14T09:00:00',
+            end: '2018-11-14T11:00:00'
+        },
+        {
+            title: 'Dinner with Mike',
+            start: '2018-11-21T19:00:00',
+            end: '2018-11-21T22:00:00'
+        },
+        {
+            title: 'Chillout',
+            start: '2018-11-15',
+            allDay: true
+        },
+        {
+            title: 'Vacation',
+            start: '2018-11-23',
+            end: '2018-11-29'
+        },
+    ]
+});
+    </script>
   {% endblock script %}

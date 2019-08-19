@@ -1,5 +1,5 @@
 from django import forms
-from sms.constants import GENDER, RELIGION
+from constants import GENDER, RELIGION
 from sms.models import Class
 from .models import OnlineAdmission
 

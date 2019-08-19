@@ -1,0 +1,102 @@
+{% extends 'authenticated/dashboard.html' %}
+{% load static tags %}
+{% block custom_style %}
+  <!-- Custom styles for this page -->
+  <link href="{% static 'main_site/authenticated/vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+  {% endblock custom_style %}
+{% block title %} Manage Schools | Bitpoint  Admin {% endblock %}
+{% block main %}
+  <!-- Begin Page Content -->
+  <div class="container-fluid">
+
+   <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Manage Schools</h1>
+      <p class="mb-4"><a href="{% url 'school_add' %}" class="btn btn-primary btn-icon-split">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-arrow-right"></i>
+                    </span>
+                    <span class="text">Add School</span>
+                  </a></p>
+
+      <!-- DataTales Example -->
+      <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Schools (Tenants)</h6>
+          </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>School Name</th>
+                      <th>School Admin</th>
+                      <th>Created on</th>
+                      <th>On Trial</th>
+                      <th>Domain</th>
+                      <th>Active Until</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tfoot>
+                    <tr>
+                      <th>School Name</th>
+                      <th>School Admin</th>
+                      <th>Created on</th>
+                      <th>On Trial</th>
+                      <th>Domain</th>
+                      <th>Active Until</th>
+                      <th>Action</th>
+                    </tr>
+                  </tfoot>
+                  <tbody>
+                    {% for tenant in tenants_list %}
+                    <tr>
+                      <td>{{ tenant.name }}</td>
+                      <td>{{ tenant.school_admin }}</td>
+                      <td>{{ tenant.created_on }}</td>
+                      <td>{{ tenant.on_trial }}</td>
+                      <td>{% get_tenant_domain tenant.pk %}</td>
+                      <td>{{ tenant.active_until }}</td>
+                      <td style="display: flex; justify-content: space-around;">
+                        <p data-toggle="tooltip" title="Upadte"> 
+                          <a href="{% url 'school_change' tenant_id=tenant.id %}" class="btn btn-primary btn-xs">
+                          <i class="fas fa-pencil-alt"></i>
+                         </a>
+                        </p>
+                        <p data-toggle="tooltip" title="View"> 
+                          <a href="" class="btn btn-info btn-xs">
+                          <i class="fas fa-binoculars"></i>
+                         </a>
+                        </p>
+                         <p data-toggle="tooltip" title="Delete"> 
+                          <a href="" class="btn btn-danger btn-xs">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                         </a>
+                        </p>
+                        
+
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      <!-- /.container-fluid -->
+
+    </div>
+  <!-- End of Main Content -->
+{% endblock main %}
+
+{% block custom_js %}
+
+<!-- Page level plugins -->
+  <script src="{% static 'main_site/authenticated/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'main_site/authenticated/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="{% static 'main_site/authenticated/js/demo/datatables-demo.js' %}"></script>
+ {% endblock custom_js %}
