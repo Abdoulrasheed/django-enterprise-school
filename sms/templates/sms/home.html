@@ -4,18 +4,20 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/core.js" integrity="sha256-YCbKJH6u4siPpUlk130udu/JepdKVpXjdEyzje+z1pE=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.1/dist/fullcalendar.min.css">
-<style type="text/css">
-    @media screen and (max-width :  1085px){
-    #target-progress{
-      width: 30vw !important;
+  {% block custom_style %}
+  <style type="text/css">
+    @media screen and (max-width :  1191px){
+      .progress{
+          width: 30vw !important;
+        }
+      }
+       @media screen and (max-width :  737px){
+        .progress {
+          width: 65vw !important;
+        }
     }
-  }
-   @media screen and (max-width :  737px){
-    #target-progress{
-      width: 65vw !important;
-    }
-  }
-</style>
+  </style>
+  {% endblock %}
   <!--Main layout-->
     <div class="container-fluid">
 
@@ -25,7 +27,7 @@
         <!--Grid row-->
         <div class="row">
 
-          <!--Grid column-->
+<!--Grid column-->
           <div class="col-xl-2 col-md-6 mb-4">
 
             <!--Card-->
@@ -34,12 +36,12 @@
               <!--Card Data-->
               <div class="row mt-3">
                 <div class="col-md-5 col-5 text-left pl-4">
-                  <a type="button" class="btn-floating btn-lg primary-color ml-2 waves-effect waves-light"><i class="fas fa-user-tie" aria-hidden="true"></i></a>
+                  <a type="button" class="btn-floating btn-lg primary-color ml-2 waves-effect waves-light"><i class="fas fa-user-graduate" aria-hidden="true"></i></a>
                 </div>
 
                 <div class="col-md-7 col-7 text-right pr-5">
-                  <h5 class="ml-2 mt-4 mb-2 font-weight-bold">{{ no_teachers }}</h5>
-                  <p class="font-small grey-text">Teacher{{ no_teachers|pluralize }}</p>
+                  <h5 class="ml-4 mt-4 mb-2 font-weight-bold">{{ no_teachers }}</h5>
+                  <p class="font-small grey-text"><small>Teachers{{ no_teacher|pluralize }}</small></p>
                 </div>
               </div>
               <!--/.Card Data-->
@@ -63,7 +65,7 @@
 
                 <div class="col-md-7 col-7 text-right pr-5">
                   <h5 class="ml-4 mt-4 mb-2 font-weight-bold">{{ no_students }}</h5>
-                  <p class="font-small grey-text">Student{{ no_students|pluralize }}</p>
+                  <p class="font-small grey-text"><small>Student{{ no_students|pluralize }}</small></p>
                 </div>
               </div>
               <!--/.Card Data-->
@@ -92,7 +94,7 @@
                   {% for i in p %}
                   <small class="ml-4 mt-4 mb-2 font-weight-bold">{{  i.term }} term: {{ i.payment_status }}</small>
                   {% endfor %}
-                  <p class="font-small grey-text">Fee summary ({{ current_session }})</p>
+                  <p class="font-small grey-text"><small>Fee summary ({{ current_session }})</small></p>
                 </div>
               </div>
               <!--/.Card Data-->
@@ -118,7 +120,7 @@
 
                 <div class="col-md-7 col-7 text-right pr-5">
                   <h5 class="ml-4 mt-4 mb-2 font-weight-bold">{{ no_parents }}</h5>
-                  <p class="font-small grey-text">Parent{{ no_parents|pluralize }}</p>
+                  <p class="font-small grey-text"><small>Parent{{ no_parents|pluralize }}</small></p>
                 </div>
               </div>
               <!--/.Card Data-->
@@ -145,7 +147,7 @@
 
                 <div class="col-md-7 col-7 text-right pr-5">
                   <h5 class="ml-4 mt-4 mb-2 font-weight-bold">{{ no_subjects }}</h5>
-                  <p class="font-small grey-text">Subject{{ no_subjects|pluralize }}</p>
+                  <p class="font-small grey-text"><small>Subject{{ no_subjects|pluralize }}</small></p>
                 </div>
               </div>
               <!--/.Card Data-->
@@ -173,7 +175,7 @@
                       {{ target_income|intcomma }}
                     </span> 
                   </h6>
-                  <p class="font-small grey-text">Target Income</p>
+                  <p class="font-small grey-text"><small>Target Income</small></p>
                 </div>
               </div>
               <!--/.Card Data-->
@@ -191,8 +193,8 @@
               <!--Card Data-->
               <div class="row mt-3">
                 <div class="col-md-5 col-5 text-left pl-4">
-                  <div id="target-progress" class="progress md-progress" style="height: 20px; width: 80px">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%; height: 20px" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%
+                  <div class="progress md-progress" style="height: 20px; width: 80px">
+                    <div class="progress-bar target-progress progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%; height: 20px" aria-valuenow="" aria-valuemin="0" aria-valuemax="100">0%
                     </div>
                   </div>
                 </div>
@@ -205,14 +207,14 @@
 
             </div>
             <!--/.Card-->
-
-                        <!--Card-->
+            <!--Card-->
             <div class="card">
               <!--Card Data-->
               <div class="row mt-3">
                 <div class="col-md-5 col-5 text-left pl-4">
-                  <div id="target-progress" class="progress md-progress" style="height: 20px; width: 80px">
-                    <div class="progress-bar bg-warning" role="progressbar" style="width: 0%; height: 20px" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%
+                  <div class="progress md-progress" style="height: 20px; width: 80px">
+                    <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar" style="width: {% if sms_unit >= 200 %}{{ sms_unit|default_if_none:0 }}{% else %}{{ sms_unit|default_if_none:0 }}% {% endif %}; height: 20px" aria-valuenow="{{ sms_unit|default_if_none:0 }}" aria-valuemin="0" aria-valuemax="500">
+                      {{ sms_unit|default_if_none:0 }}
                     </div>
                   </div>
                 </div>
@@ -229,7 +231,6 @@
           </div>
           <!--Grid column-->
           </div>
-        </div>
         <!--Grid row-->
 
       </section>
