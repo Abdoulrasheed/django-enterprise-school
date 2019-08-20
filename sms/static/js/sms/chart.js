@@ -56,15 +56,16 @@ var myLineChart = new Chart(ctx, {
 });}
 
 const getTargetPercentage = (income) => {
+  // target income percentage
   var target_income = $.trim($('.target-income').text());
   target_income = parseFloat(target_income.replace(',', '')); // remove comma
   const reducer = (accumulator, currentValue) => accumulator + currentValue;
   const total_income = income.reduce(reducer);
   const perc = ((total_income/target_income) * 100).toFixed(1); // toFixed three decimal places
-  $(".progress-bar").text(
+  $(".target-progress").text(
     `${perc}%`
   );
-  $(".progress-bar").css(
+  $(".target-progress").css(
     "width", perc
   );
 }
