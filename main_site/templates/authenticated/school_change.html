@@ -17,11 +17,38 @@
         <i class="fas fa-arrow-left"></i>
       </span>
       <span class="text">Go Back</span>
-    </a></p>
-    <!-- ERROR MESSAGE -->
-    <div hidden class="alert alert-warning alert-dismissible fade show" role="alert">
-    </div>
-    <!-- ERROR MESSAGE -->
+    </a>
+  </p>
+    <!-- MESSAGE -->
+    {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+   {% if form %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+   {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+    <!-- MESSAGE -->
     <div class="card o-hidden border-0 shadow-lg my-5">
       <div class="card-body p-0">
         <!-- Nested Row within Card Body -->
@@ -32,47 +59,49 @@
                 <h1 class="h4 text-gray-900 mb-4">
                   Update {{ tenant.name }} ({{ tenant.schema_name }})</h1>
               </div>
-              <form class="user">
+              <form class="user" action="{% url 'school_change_save' tenant_id=tenant.pk %}" method="POST">{% csrf_token %}
                 <div class="form-group row">
                   <div class="col-sm-6 mb-3 mb-sm-0">
-                    <input min="5" max="100" type="text" class="form-control form-control-user" id="school_name" value="{{ tenant.name }}" placeholder="School Name">
+                    <input required minlength="5" maxlength="100" type="text" class="form-control form-control-user" name="school_name" id="school_name" value="{{ tenant.name }}" placeholder="School Name">
                   </div>
                   <div class="col-sm-6">
-                    <input min="2" max="50" type="text" class="form-control form-control-user" id="subdomain" value="{{ tenant.schema_name }}" onkeypress="return AvoidSpace(event)" placeholder="Subdomain">
+                    <input required minlength="2" maxlength="50" type="text" class="form-control form-control-user" name="subdomain" id="subdomain" value="{{ tenant.schema_name }}" onkeypress="return AvoidSpace(event)" placeholder="Subdomain">
                   </div>
                 </div>
                 <div class="form-group">
-                  <input min="10" max="150" type="text" class="form-control form-control-user" id="description" value="{{ tenant.description }}" placeholder="Description">
+                  <input required minlength="10" maxlength="150" type="text" class="form-control form-control-user" name="description" id="description" value="{{ tenant.description }}" placeholder="Description">
                 </div>
                 <div class="form-group row">
                   <div class="col-sm-6 mb-3 mb-sm-0">
-                    <input min="6" max="55" onkeypress="return AvoidSpace(event)" type="email" class="form-control form-control-user" value="{{ tenant.school_admin.email }}" id="email" placeholder="Admin Email">
+                    <input required minlength="6" maxlength="55" onkeypress="return AvoidSpace(event)" type="email" class="form-control form-control-user" value="{{ tenant.school_admin.email }}" name="email" id="email" placeholder="Admin Email">
                   </div>
                   <div class="col-sm-6">
-                    <input max="11" min="11" onkeypress="return AvoidSpace(event)" type="number" value="{{ tenant.school_admin.phone }}" class="form-control form-control-user" id="phone" placeholder="Admin Phone">
+                    <input maxlength="11" minlength="11" required onkeypress="return AvoidSpace(event)" type="number" value="{{ tenant.school_admin.phone }}" class="form-control form-control-user" name="phone" id="phone" placeholder="Admin Phone">
                   </div>
                 </div>
                 <div class="form-group row">
                   <div class="col-sm-6">
-                    <input disabled max="11" min="4" onkeypress="return AvoidSpace(event)" type="text" readonly value="{{ tenant.school_admin.username }}" class="form-control form-control-user" id="username" placeholder="Username">
+                    <input disabled maxlength="11" minlength="4" onkeypress="return AvoidSpace(event)" type="text" readonly value="{{ tenant.school_admin.username }}" class="form-control form-control-user" name="username" id="username" placeholder="Username">
+                    <input name="user_id" type="text" value="{{ tenant.school_admin.pk }}" hidden readonly name="">
                   </div>
                   <div class="col-sm-6 mb-3 mb-sm-0">
-                    <input max="16" min="4" type="password" class="form-control form-control-user" id="password" placeholder="New Password">
+                    <input max="16" min="4" type="password" class="form-control form-control-user" name="password" id="password" placeholder="New Password">
                   </div>
                 </div>
                 <div class="form-group row">
                   <div class="col-sm-6">
                     Put On Trial
-                    <input type="checkbox" checked data-toggle="toggle" data-size="mini">
+                    <input type="checkbox" name="ontrial" {% if tenant.on_trial %} checked {% endif %} data-toggle="toggle" data-size="mini">
 
                   </div>
                   <div class="col-sm-6 mb-3 mb-sm-0">
-                    <input value="{{ tenant.active_until|date:"Y-m-d" }}" type="date" class="form-control form-control-user" id="active_until" placeholder="Active Until">
+                    <input required value="{{ tenant.active_until|date:"Y-m-d" }}" type="date" class="form-control form-control-user" id="active_until" name="active_until" placeholder="Active Until">
+                    Sub Expire Date
                   </div>
                 </div>
-                <a href="#" target_url="{% url 'school_change_save' tenant_id=tenant.pk %}" class="btn btn-primary btn_submit btn-user btn-block">
+                <button type="submit" class="btn btn-primary btn_submit btn-user btn-block">
                   UPDATE
-                </a>
+                </button>
                 <hr>
             </div>
           </div>
@@ -90,172 +119,6 @@
             var k = event ? event.which : window.event.keyCode;
             if (k == 32) return false;
         }
-
-        $(document).ready(()=>{
-        $(".btn_submit").click((e)=>{
-          e.preventDefault();
-          const school_name = $.trim($("#school_name").val());
-          const subdomain = $.trim($("#subdomain").val());
-          const description = $("#description").val();
-          const email = $.trim($("#email").val());
-          const phone = $.trim($("#phone").val());
-          const username = $.trim($("#username").val());
-          const password = $.trim($("#password").val());
-          const ontrial = $("#ontrial").val();
-          const active_until = $.trim($("#active_until").val());
-
-          if(school_name.length == 0 || school_name == ' '){
-            $(".alert-warning").html("\
-              <strong>Value Error !</strong> School Name  \
-              Cannot be left blank.\
-              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
-              <span aria-hidden='true'>&times;</span>\
-              </button>\
-            ");
-            $(".alert-warning").removeAttr('hidden');
-            return false;
-          }else if(school_name.length >  50){
-            $(".alert-warning").html("\
-              <strong>Value Error !</strong> School Name  \
-              Cannot contain more than 50 characters.\
-              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
-              <span aria-hidden='true'>&times;</span>\
-              </button>\
-            ");
-            $(".alert-warning").removeAttr('hidden');
-            return false;
-          }else if(subdomain.length == 0 || subdomain == ' '){
-            $(".alert-warning").html("\
-              <strong>Value Error !</strong> Subdomain  \
-              Cannot be left blank.\
-              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
-              <span aria-hidden='true'>&times;</span>\
-              </button>\
-            ");
-            $(".alert-warning").removeAttr('hidden');
-            return false;
-          }
-          else if(subdomain.length > 50){
-            $(".alert-warning").html("\
-              <strong>Value Error !</strong> Subdomain  \
-              Cannot contain more than 50 characters.\
-              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
-              <span aria-hidden='true'>&times;</span>\
-              </button>\
-            ");
-            $(".alert-warning").removeAttr('hidden');
-            return false;
-          }else if(subdomain.length > 50 || subdomain.length < 2){
-            $(".alert-warning").html("\
-              <strong>Value Error !</strong> Subdomain field \
-              must contain the minimun of 2 and maximum of 50 characters.\
-              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
-              <span aria-hidden='true'>&times;</span>\
-              </button>\
-            ");
-            $(".alert-warning").removeAttr('hidden');
-            return false;
-          }else if(description.length > 100 || description == ' ' || description == ''){
-            $(".alert-warning").html("\
-              <strong>Value Error !</strong> Description field \
-              Cannot be blank and must have the maximum of 100 characters.\
-              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
-              <span aria-hidden='true'>&times;</span>\
-              </button>\
-            ");
-            $(".alert-warning").removeAttr('hidden');
-            return false;
-          }else if(email.length > 50 || email == ' ' || email == ''){
-            $(".alert-warning").html("\
-              <strong>Value Error !</strong> Email field \
-              Cannot be blank.\
-              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
-              <span aria-hidden='true'>&times;</span>\
-              </button>\
-            ");
-            $(".alert-warning").removeAttr('hidden');
-            return false;
-          }else if(phone.length > 11 || phone < 11 || phone == ''){
-            $(".alert-warning").html("\
-              <strong>Value Error !</strong> Phone number field \
-              must contain 11 and 11 characters only !.\
-              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
-              <span aria-hidden='true'>&times;</span>\
-              </button>\
-            ");
-            $(".alert-warning").removeAttr('hidden');
-            return false;
-          }else if(username.length > 30 || username == ' ' || username < 2){
-            $(".alert-warning").html("\
-              <strong>Value Error !</strong> Username field \
-              Cannot be blank and must contain minimun of 2 characters.\
-              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
-              <span aria-hidden='true'>&times;</span>\
-              </button>\
-            ");
-            $(".alert-warning").removeAttr('hidden');
-            return false;
-          }else if(password.length > 16 || password < 4 || password == ''){
-            $(".alert-warning").html("\
-              <strong>Value Error !</strong> Password field \
-              must contain minimun and maximum of 2 and 16 characters respectively.\
-              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
-              <span aria-hidden='true'>&times;</span>\
-              </button>\
-            ");
-            $(".alert-warning").removeAttr('hidden');
-            return false;
-          }else if(active_until == ''){
-            $(".alert-warning").html("\
-              <strong>Value Error !</strong> Please choose active date\
-              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
-              <span aria-hidden='true'>&times;</span>\
-              </button>\
-            ");
-            $(".alert-warning").removeAttr('hidden');
-            return false;
-          }else{
-              $(".alert-warning").hide();
-              target_url = $(".btn_submit").attr('target_url');
-              $.ajax({
-                url: target_url,
-                data: {
-                  "school_name": school_name,
-                  "subdomain": subdomain,
-                  "description": description,
-                  "email": email,
-                  "phone": phone,
-                  "username": username,
-                  "password": password,
-                  "ontrial": ontrial,
-                  "active_until": active_until
-                },
-
-                beforeSend: ()=>{
-                  $(".btn_submit").html("\
-                    <span class='spinner-grow spinner-grow-sm' role='status' aria-hidden='true'></span>\
-                        CREATING " + school_name + " ...");
-                },
-                 
-                complete: ()=>{
-                  $(".btn_submit").html('CONTINUE');
-                },
-
-                success: (data) => {
-                  if(! isNaN(data)){
-                    if (data == 3){ // 3 client does not exist
-                      console.log('Does not exist')
-                    }
-                  }else if(data == 'success'){
-                    swal(`Successfully Updated ${school_name}!`, {
-                    icon: "success",
-                  });
-                }
-              }
-            });
-          }
-      });
-    });
       </script>
       <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
    {% endblock custom_js %}

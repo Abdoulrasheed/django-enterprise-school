@@ -8,8 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Count, Min, Sum, CharField, Value, Q
-from django.http import HttpResponse, JsonResponse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404, redirect, render, render_to_response
 
