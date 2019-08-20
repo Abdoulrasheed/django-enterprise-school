@@ -115,6 +115,23 @@ def school_change(request, tenant_id):
         context = {"tenant": tenant}
         return render(request, template,context)
 
+@login_required(login_url='/login/')
+def schools_view(request, tenant_id):
+    context = {}
+    template = 'authenticated/school_view.html'
+    school = get_object_or_404(Client, id=tenant_id)
+    with schema_context(school.schema_name):
+        no_students = User.objects.filter(is_student).count()
+        no_teachers = User.objects.filter(is_teacher).count()
+        no_parents = User.objects.filter(is_parent).count()
+        setting = Setting.objects.first()
+
+        context['no_students'] = no_students
+        context['no_parents'] = no_parents
+        context['no_teachers'] = no_teachers
+        context['setting'] = setting
+    return render(request, template, context)
+
 @login_required(login_url='/login/')   
 def school_change_save(request, tenant_id):
     if request.is_ajax():
