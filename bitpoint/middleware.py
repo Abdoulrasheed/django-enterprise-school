@@ -12,6 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 
 class BitpointTenantMiddleware(MiddlewareMixin):
     def process_request(self, request):
+        request.META['SMS-CONTEXT-EXIST'] = False
         connection.set_schema_to_public()
         hostname_without_port = remove_www_and_dev(request.get_host().split(':')[0])
         subdomain = hostname_without_port.split('.')[0]
@@ -32,6 +33,7 @@ class BitpointTenantMiddleware(MiddlewareMixin):
                 request.tenant = domain.tenant
                 if sms_context_processor not in context_processors:
                     context_processors.append(sms_context_processor)
+                request.META['SMS-CONTEXT-EXIST'] = True
             except utils.DatabaseError:
                 request.urlconf = settings.PUBLIC_SCHEMA_URLCONF
                 return

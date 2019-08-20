@@ -153,6 +153,7 @@ class Payment(models.Model):
 class Expense(models.Model):
 	item = models.CharField(max_length=100)
 	description = models.CharField(max_length=500, blank=True, null=True)
+	timestamp = models.DateTimeField(auto_now_add=True)
 	session = models.ForeignKey(Session, on_delete=models.CASCADE)
 	term = models.CharField(choices=TERM, max_length=7)
 	amount = models.FloatField()
@@ -178,6 +179,7 @@ class Setting(models.Model):
 	st_ends = models.DateField(blank=True, null=True)
 	tt_begins = models.DateField(blank=True, null=True)
 	tt_ends = models.DateField(blank=True, null=True)
+	sms_unit = models.IntegerField(default=200)
 
 	def get_logo(self):
 		no_logo = settings.STATIC_ROOT + '/static/img/logo.png'

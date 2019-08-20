@@ -178,19 +178,27 @@ def create_report_student(request):
 
 @login_required
 def home(request):
-	no_classes = Class.objects.all().count()
-	no_subjects = Subject.objects.all().count()
-	no_parents = User.objects.filter(is_parent=True).count()
-	no_students = User.objects.filter(is_student=True).count()
-	no_teachers = User.objects.filter(is_teacher=True).count()
-	context = {
-		"no_students": no_students,
-		"no_parents": no_parents,
-		"no_subjects": no_subjects,
-		"no_classes": no_classes,
-		"no_teachers": no_teachers,
-	}
-	if request.user.is_student:
+	context = {}
+	if request.user.is_superuser:
+		no_classes = Class.objects.all().count()
+		no_subjects = Subject.objects.all().count()
+		no_parents = User.objects.filter(is_parent=True).count()
+		no_students = User.objects.filter(is_student=True).count()
+		no_teachers = User.objects.filter(is_teacher=True).count()
+		target_income = 0
+		classes = Class.objects.all()
+		for clss in classes:
+			if clss.amount_to_pay is not None:
+				target_income += clss.amount_to_pay
+
+		context["no_students"] = no_students
+		context["no_parents"] = no_parents
+		context["no_subjects"] = no_subjects
+		context["no_classes"] = no_classes
+		context["no_teachers"] = no_teachers
+		context["target_income"] = int(target_income)
+
+	elif request.user.is_student:
 		student = Student.objects.get(user__pk=request.user.pk)
 		current_session = Session.objects.get(current_session=True)
 		p = Payment.objects.filter(student=student, session=current_session)
@@ -236,29 +244,33 @@ def home(request):
 @teacher_required
 @require_http_methods(["GET"])
 def expenditure_graph(request):
-	total_payments = 0
-	total_spendings = 0
-	target = 0
 	current_session = Session.objects.get(current_session=True)
+	
 	expenditures = Expense.objects.filter(session=current_session)
-	for expenditure in expenditures:
-		total_spendings += expenditure.amount
+	expenditures_by_month = [0] * 12
+	for month in range(1, 13):
+		for expenditure in expenditures.filter(timestamp__month=month):
+			m = expenditure.timestamp.month
+			if expenditures_by_month[m-1] in expenditures_by_month:
+				expenditures_by_month[m-1] += expenditure.amount
+			else:
+				expenditures_by_month[m-1] = expenditure.amount
 
 	payments = Payment.objects.filter(session=current_session)
-	for payment in payments:
-		total_payments += payment.paid_amount
-
-	classes = Class.objects.all()
-	for clss in classes:
-		if not clss.amount_to_pay == None:
-			target += clss.amount_to_pay
+	payments_by_month = [0] * 12
+	for month in range(1, 13):
+		for payment in payments.filter(date_paid__month=month):
+			m = payment.date_paid.month
+			if payments_by_month[m-1] in payments_by_month:
+				payments_by_month[m-1] += payment.paid_amount
+			else:
+				payments_by_month[m-1] = payment.paid_amount
 
 	current_session = Session.objects.get(current_session=True)
-	labels = ["Income", "Expensediture", "Target"]
-	data = [total_payments, total_spendings, target]
+
 	data = {
-		"labels": labels,
-		"data_to_send": data,
+		"expenditure": expenditures_by_month,
+		"income": payments_by_month,
 		"current_session": current_session.name,
 		}
 	return JsonResponse(data)
@@ -1752,7 +1764,7 @@ def general_setting(request):
 				s.social_link3=social_link3
 				s.school_town=school_town
 				s.save()
-				
+
 				fs = FileSystemStorage()
 				name = fs.save(school_logo.name, school_logo)
 				context['url'] = fs.url(name)

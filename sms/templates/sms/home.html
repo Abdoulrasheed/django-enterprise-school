@@ -1,10 +1,21 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static humanize %}
 {% block main %}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/core.js" integrity="sha256-YCbKJH6u4siPpUlk130udu/JepdKVpXjdEyzje+z1pE=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.1/dist/fullcalendar.min.css">
-
+<style type="text/css">
+    @media screen and (max-width :  1085px){
+    #target-progress{
+      width: 30vw !important;
+    }
+  }
+   @media screen and (max-width :  737px){
+    #target-progress{
+      width: 65vw !important;
+    }
+  }
+</style>
   <!--Main layout-->
     <div class="container-fluid">
 
@@ -15,7 +26,7 @@
         <div class="row">
 
           <!--Grid column-->
-          <div class="col-xl-3 col-md-6 mb-4">
+          <div class="col-xl-2 col-md-6 mb-4">
 
             <!--Card-->
             <div class="card">
@@ -23,11 +34,11 @@
               <!--Card Data-->
               <div class="row mt-3">
                 <div class="col-md-5 col-5 text-left pl-4">
-                  <a type="button" class="btn-floating btn-lg primary-color ml-4 waves-effect waves-light"><i class="fas fa-user-tie" aria-hidden="true"></i></a>
+                  <a type="button" class="btn-floating btn-lg primary-color ml-2 waves-effect waves-light"><i class="fas fa-user-tie" aria-hidden="true"></i></a>
                 </div>
 
                 <div class="col-md-7 col-7 text-right pr-5">
-                  <h5 class="ml-4 mt-4 mb-2 font-weight-bold">{{ no_teachers }}</h5>
+                  <h5 class="ml-2 mt-4 mb-2 font-weight-bold">{{ no_teachers }}</h5>
                   <p class="font-small grey-text">Teacher{{ no_teachers|pluralize }}</p>
                 </div>
               </div>
@@ -37,10 +48,9 @@
             <!--/.Card-->
 
           </div>
+          
           <!--Grid column-->
-
-          <!--Grid column-->
-          <div class="col-xl-3 col-md-6 mb-4">
+          <div class="col-xl-2 col-md-6 mb-4">
 
             <!--Card-->
             <div class="card">
@@ -48,7 +58,7 @@
               <!--Card Data-->
               <div class="row mt-3">
                 <div class="col-md-5 col-5 text-left pl-4">
-                  <a type="button" class="btn-floating btn-lg warning-color ml-4 waves-effect waves-light"><i class="fas fa-user-graduate" aria-hidden="true"></i></a>
+                  <a type="button" class="btn-floating btn-lg warning-color ml-2 waves-effect waves-light"><i class="fas fa-user-graduate" aria-hidden="true"></i></a>
                 </div>
 
                 <div class="col-md-7 col-7 text-right pr-5">
@@ -95,7 +105,7 @@
           {% else %}
 
           <!--Grid column-->
-          <div class="col-xl-3 col-md-6 mb-4">
+          <div class="col-xl-2 col-md-6 mb-4">
 
             <!--Card-->
             <div class="card">
@@ -103,7 +113,7 @@
               <!--Card Data-->
               <div class="row mt-3">
                 <div class="col-md-5 col-5 text-left pl-4">
-                  <a type="button" class="btn-floating btn-lg warning-color ml-4 waves-effect waves-light"><i class="fas fa-user-graduate" aria-hidden="true"></i></a>
+                  <a type="button" class="btn-floating btn-lg green ml-2 waves-effect waves-light"><i class="fas fa-user-graduate" aria-hidden="true"></i></a>
                 </div>
 
                 <div class="col-md-7 col-7 text-right pr-5">
@@ -122,7 +132,7 @@
           <!--Grid column-->
 
           <!--Grid column-->
-          <div class="col-xl-3 col-md-6 mb-4">
+          <div class="col-xl-2 col-md-6 mb-4">
 
             <!--Card-->
             <div class="card">
@@ -130,7 +140,7 @@
               <!--Card Data-->
               <div class="row mt-3">
                 <div class="col-md-5 col-5 text-left pl-4">
-                  <a type="button" class="btn-floating btn-lg red accent-2 ml-4 waves-effect waves-light"><i class="fas fa-book-open" aria-hidden="true"></i></a>
+                  <a type="button" class="btn-floating btn-lg red accent-2 ml-2 waves-effect waves-light"><i class="fas fa-book-open" aria-hidden="true"></i></a>
                 </div>
 
                 <div class="col-md-7 col-7 text-right pr-5">
@@ -145,7 +155,80 @@
 
           </div>
           <!--Grid column-->
+          <!--Grid column-->
+          <div class="col-xl-2 col-md-6 mb-4">
 
+            <!--Card-->
+            <div class="card">
+
+              <!--Card Data-->
+              <div class="row mt-4">
+                <div class="col-md-4 col-5 text-left pl-3">
+                  <a type="button" class="btn-floating btn-lg light-blue accent-2 ml-2 waves-effect waves-light"><i class="far fa-money-bill-alt"></i></a>
+                </div>
+
+                <div class="col-md-7 col-7 text-right pr-2">
+                  <h6 class="ml-4 mt-3 mb-2 font-weight-bold">
+                    <span class="target-income">
+                      {{ target_income|intcomma }}
+                    </span> 
+                  </h6>
+                  <p class="font-small grey-text">Target Income</p>
+                </div>
+              </div>
+              <!--/.Card Data-->
+
+            </div>
+            <!--/.Card-->
+
+          </div>
+          <!--Grid column-->
+          <!--Grid column-->
+          <div class="col-xl-2 col-md-6 mb-4">
+
+            <!--Card-->
+            <div class="card">
+              <!--Card Data-->
+              <div class="row mt-3">
+                <div class="col-md-5 col-5 text-left pl-4">
+                  <div id="target-progress" class="progress md-progress" style="height: 20px; width: 80px">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%; height: 20px" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-7 col-7 text-right pr-5">
+                  <p class="font-small grey-text">Target</p>
+                </div>
+              </div>
+              <!--/.Card Data-->
+
+            </div>
+            <!--/.Card-->
+
+                        <!--Card-->
+            <div class="card">
+              <!--Card Data-->
+              <div class="row mt-3">
+                <div class="col-md-5 col-5 text-left pl-4">
+                  <div id="target-progress" class="progress md-progress" style="height: 20px; width: 80px">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 0%; height: 20px" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-7 col-7 text-right pr-5">
+                  <p class="font-small grey-text">SMS</p>
+                </div>
+              </div>
+              <!--/.Card Data-->
+
+            </div>
+            <!--/.Card-->
+
+          </div>
+          <!--Grid column-->
+          </div>
         </div>
         <!--Grid row-->
 
@@ -267,7 +350,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.1/dist/fullcalendar.min.js"></script>
     <script type="text/javascript">
-      $('#calendar').fullCalendar({
+$('#calendar').fullCalendar({
     header: {
         left: 'prev,next today',
         center: 'title',
@@ -275,37 +358,62 @@
     },
     defaultDate: '2018-11-16',
     navLinks: true,
+    editable: true,
     eventLimit: true,
     events: [{
-            title: 'Front-End Conference',
-            start: '2018-11-16',
-            end: '2018-11-18'
+            title: 'All Day Event',
+            start: '2018-11-01'
         },
         {
-            title: 'Hair stylist with Mike',
-            start: '2018-11-20',
-            allDay: true
+            title: 'Long Event',
+            start: '2018-11-07',
+            end: '2018-11-10'
         },
         {
-            title: 'Car mechanic',
-            start: '2018-11-14T09:00:00',
-            end: '2018-11-14T11:00:00'
+            id: 999,
+            title: 'Repeating Event',
+            start: '2018-11-09T16:00:00'
         },
         {
-            title: 'Dinner with Mike',
-            start: '2018-11-21T19:00:00',
-            end: '2018-11-21T22:00:00'
+            id: 999,
+            title: 'Repeating Event',
+            start: '2018-11-16T16:00:00'
         },
         {
-            title: 'Chillout',
-            start: '2018-11-15',
-            allDay: true
+            title: 'Conference',
+            start: '2018-11-11',
+            end: '2018-11-13'
         },
         {
-            title: 'Vacation',
-            start: '2018-11-23',
-            end: '2018-11-29'
+            title: 'Meeting',
+            start: '2018-11-12T10:30:00',
+            end: '2018-11-12T12:30:00'
         },
+        {
+            title: 'Lunch',
+            start: '2018-11-12T12:00:00'
+        },
+        {
+            title: 'Meeting',
+            start: '2018-11-12T14:30:00'
+        },
+        {
+            title: 'Happy Hour',
+            start: '2018-11-12T17:30:00'
+        },
+        {
+            title: 'Dinner',
+            start: '2018-11-12T20:00:00'
+        },
+        {
+            title: 'Birthday Party',
+            start: '2018-11-13T07:00:00'
+        },
+        {
+            title: 'Click for Google',
+            url: 'https://google.com/',
+            start: '2018-11-28'
+        }
     ]
 });
     </script>

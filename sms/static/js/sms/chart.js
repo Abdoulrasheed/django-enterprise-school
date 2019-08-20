@@ -6,11 +6,11 @@ $.ajax({
   method: "GET",
   url: endpoint,
   success: (data) => {
-    labels = data.labels
-    data_to_send = data.data_to_send
-    console.log(data_to_send)
+    expense = data.expenditure
+    income = data.income
     cs = data.current_session
     setAverageGraph()
+    getTargetPercentage(income)
   },
 
   error: (error_data) => {
@@ -18,44 +18,53 @@ $.ajax({
   },
 });
 
-
 const setAverageGraph = () =>{
+//line
   const ctx = document.querySelector("#income_and_expense_graph").getContext('2d');
-  const myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: cs + ' Account Summary (Naira)',
-        data: data_to_send,
+var myLineChart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: [ "January", "February", "March", "April", "May", "June",
+              "July", "August", "September", "October", "November", "December" ],
+    datasets: [{
+        label: "Income",
+        data: income,
         backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
-          ],
+          'rgba(105, 0, 132, .2)',
+        ],
+        borderColor: [
+          'rgba(200, 99, 132, .7)',
+        ],
+        borderWidth: 2
+      },
+      {
+        label: "Expenditure",
+        data: expense,
+        backgroundColor: [
+          'rgba(0, 137, 132, .2)',
+        ],
+        borderColor: [
+          'rgba(0, 10, 130, .7)',
+        ],
+        borderWidth: 2
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+  }
+});}
 
-          borderColor: [
-            'rgba(255,99,132,1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1.5
-          }]
-        },
-
-        options: {
-          scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero:true
-              }
-            }]
-          }
-        }
-      });}
+const getTargetPercentage = (income) => {
+  var target_income = $.trim($('.target-income').text());
+  target_income = parseFloat(target_income.replace(',', '')); // remove comma
+  const reducer = (accumulator, currentValue) => accumulator + currentValue;
+  const total_income = income.reduce(reducer);
+  const perc = ((total_income/target_income) * 100).toFixed(1); // toFixed three decimal places
+  $(".progress-bar").text(
+    `${perc}%`
+  );
+  $(".progress-bar").css(
+    "width", perc
+  );
+}

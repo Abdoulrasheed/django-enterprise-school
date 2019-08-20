@@ -189,7 +189,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_SECURITY_WARN_AFTER = 300
 
 # Time before the user should be logged out if inactive
-SESSION_SECURITY_EXPIRE_AFTER = 300
+SESSION_SECURITY_EXPIRE_AFTER = 600
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
