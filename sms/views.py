@@ -185,6 +185,7 @@ def home(request):
 		no_parents = User.objects.filter(is_parent=True).count()
 		no_students = User.objects.filter(is_student=True).count()
 		no_teachers = User.objects.filter(is_teacher=True).count()
+		sms_unit = Setting.objects.first().sms_unit
 		target_income = 0
 		classes = Class.objects.all()
 		for clss in classes:
@@ -197,6 +198,7 @@ def home(request):
 		context["no_classes"] = no_classes
 		context["no_teachers"] = no_teachers
 		context["target_income"] = int(target_income)
+		context['sms_unit'] = sms_unit
 
 	elif request.user.is_student:
 		student = Student.objects.get(user__pk=request.user.pk)
