@@ -227,3 +227,9 @@ MULTITENANT_RELATIVE_MEDIA_ROOT = "uploaded_files"
 
 # service worker
 PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'sms/static/js', 'serviceworker.js')
+
+# Mail CONF
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+
+with open(BASE_DIR + '/key/sendgrid_api_key.txt') as f:
+    SENDGRID_API_KEY = f.read().strip()
