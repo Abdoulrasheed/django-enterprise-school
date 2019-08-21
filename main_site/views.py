@@ -10,7 +10,7 @@ from django.http import HttpResponse, Http404
 from django_tenants.utils import schema_context, schema_exists
 from authentication.models import User
 from sms.sms_sender import send_sms
-from sms.models import Setting, Notification, Expense
+from sms.models import *
 from django.contrib import messages
 from .forms import UpdateSchoolForm, SchoolDeleteForm, SchoolAddForm
 from django.contrib.auth.hashers import check_password
@@ -147,19 +147,35 @@ def schools_view(request, tenant_id):
         context['setting'] = setting
     return render(request, template, context)
 
+@login_required(login_url='/login/')
 def site_backup(request, tenant_id):
+    # TODO, Not working yet
+    from django.contrib.contenttypes.models import ContentType
     import csv
     tenant = get_object_or_404(Client, id=tenant_id)
     with schema_context(tenant.schema_name):
-        expenses = Expense.objects.all()
-        response = HttpResponse(expenses , content_type='application/vnd.ms-excel;charset=utf-8')
-        response['Content-Disposition'] = 'attachment; filename="expenses.xls"'
+        # Backup individual table as excel
+        content_types = ContentType.objects.filter(app_label='sms')
+        for model in content_types:
+            model_objects = model.model_class().objects.all() # eg User.objects.all()
+            if model_objects:
+                fields = []
+                print('================================{}=================='.format(model.model))
+                # get list of fields (columns) for each model (table)
+                # eg for class table will data like below 
+                # ['student', 'subjectassign', 'feetype', 'id', 'name', 'section', 'amount_to_pay', 'subjects']
+                fields = [field.name for field in model_objects.first()._meta.get_fields()]
+                values = [value for value in model_objects.all()]
+                print(values)
+                response = HttpResponse(model_objects , content_type='application/vnd.ms-excel;charset=utf-8')
+                response['Content-Disposition'] = 'attachment; filename="{}.xls"'.format(model.model)
 
-        writer = csv.writer(response)
-        writer.writerow(['item', 'description', 'timestamp', 'session', 'term', 'amount'])
-        for book in expenses:
-            writer.writerow([book.item, book.description, book.timestamp, book.session, book.term, book.amount])
+                writer = csv.writer(response, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                writer.writerow(fields[3:])
+                for data in model_objects:
+                    writer.writerow(values)
         return response
+
 
 @login_required(login_url='/login/')   
 def school_change_save(request, tenant_id):
