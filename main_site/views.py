@@ -157,6 +157,32 @@ def schools_view(request, tenant_id):
     return render(request, template, context)
 
 
+
+@login_required(login_url='/login/')
+@site_su_required
+def schools_sms_sub_update(request):
+    if request.is_ajax():
+        tenant_id = request.GET.get('tenant_id')
+        sms_unit = request.GET.get('sms_unit')
+        tenant = Client.objects.get(id=tenant_id)
+        print("sms_unit==================== "+sms_unit)
+        with schema_context(tenant.schema_name):
+            setting = Setting.objects.first()
+            setting.sms_unit += int(sms_unit)
+            setting.save()
+            print('Updated--------------------------')
+        return HttpResponse(setting.sms_unit)
+
+@login_required(login_url='/login/')
+@site_su_required
+def schools_sms_sub(request):
+    template = 'authenticated/schools_sms_sub.html'
+    context = {}
+    tenants = Client.objects.exclude(schema_name='public')
+    context['tenants'] = tenants
+    return render(request, template, context)
+
+
 @login_required(login_url='/login/')
 @site_su_required
 def site_backup(request, tenant_id):
