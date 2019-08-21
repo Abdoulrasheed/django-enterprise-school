@@ -54,7 +54,7 @@ def site_su_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, log
     redirects to the log-in page if necessary.
     '''
     actual_decorator = user_passes_test(
-        lambda u: u.is_active and u.is_superuser and u.is_site_su,
+        lambda u: u.is_active and u.is_superuser,
         login_url=login_url,
         redirect_field_name=redirect_field_name
     )

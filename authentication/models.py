@@ -8,7 +8,6 @@ class User(AbstractUser):
     is_student = models.BooleanField(default=False)
     is_teacher = models.BooleanField(default=False)
     is_parent = models.BooleanField(default=False)
-    is_site_su = models.BooleanField(default=False)
     phone = models.CharField(max_length=60, blank=True, null=True)
     address = models.CharField(max_length=200, blank=True, null=True)
     picture = models.ImageField(upload_to="pictures/", blank=True, null=True)
