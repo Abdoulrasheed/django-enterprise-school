@@ -1,4 +1,5 @@
 import asyncio
+from .models import Setting
 from twilio.rest import Client
 from .twilio_token import ACCOUNT_SID, AUTH_TOKEN
 
@@ -23,5 +24,8 @@ async def send_sms(phone, msg):
 							body=msg
 						)
 						print("message send with an ID of {}".format(message.sid))
+						sms_unit = Setting.objects.first()
+						sms_unit.sms_unit -= 1
+						sms_unit.save()
 					except:
 						print("there is an error while sending an sms")
