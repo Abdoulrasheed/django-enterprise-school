@@ -3,14 +3,19 @@
 {% block title %} Add School | Bitpoint Admin {% endblock %}
 {% block custom_style %}
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-<style type="text/css">
-  .btn-submit {
-    text-transform: uppercase;
-  }
-</style>
 {% endblock %}
 {% block main %}
   <div class="container">
+        <p class="mb-4"><a href="{% url 'schools_list' %}" class="btn btn-primary btn-icon-split">
+      <span class="icon text-white-50">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span class="text">Go Back</span>
+    </a>
+  </p>
+  <div id="form-not-valid-errors">
+    
+  </div>
     <!-- ERROR MESSAGE -->
     <div hidden class="alert alert-warning alert-dismissible fade show" role="alert">
     </div>
@@ -24,7 +29,7 @@
               <div class="text-center">
                 <h1 class="h4 text-gray-900 mb-4">Create School!</h1>
               </div>
-              <form class="user">
+              <form class="user">{% csrf_token %}
                 <div class="form-group row">
                   <div class="col-sm-6 mb-3 mb-sm-0">
                     <input max="100" type="text" class="form-control form-control-user" id="school_name" placeholder="School Name">
@@ -82,7 +87,7 @@
             var k = event ? event.which : window.event.keyCode;
             if (k == 32) return false;
         }
-
+        token = $('input[name=csrfmiddlewaretoken]').val();
         $(document).ready(()=>{
         $(".btn_submit").click((e)=>{
           e.preventDefault();
@@ -210,8 +215,10 @@
 
           target_url = $(".btn_submit").attr('target_url');
 
+
           $.ajax({
             url: target_url,
+            method: "POST",
             data: {
               "school_name": school_name,
               "subdomain": subdomain,
@@ -221,7 +228,8 @@
               "username": username,
               "password": password,
               "ontrial": ontrial,
-              "active_until": active_until
+              "active_until": active_until,
+              "csrfmiddlewaretoken": token,
             },
 
             beforeSend: ()=>{
@@ -250,6 +258,11 @@
                 swal(`Successfully Created ${school_name} !`, {
                 icon: "success",
               });
+            }else if(data == 2){
+              $(".alert-warning").html("Subdomain cannot contain any special character");
+              $(".alert-warning").removeAttr('hidden');
+            }else{
+              $("#form-not-valid-errors").html(data);
             }
           }
         });

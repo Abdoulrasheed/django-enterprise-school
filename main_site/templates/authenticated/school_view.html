@@ -3,6 +3,7 @@
 {% block title %} Dashboard | Bitpoint Admin {% endblock title %}
   
 {% block custom_style %}
+<link rel="stylesheet" type="text/css" href="{% static 'main_site/authenticated/css/school_profile.css' %}">
 {% endblock custom_style %}
 {% block main %}
 <!-- Begin Page Content -->
@@ -20,19 +21,14 @@
             <h1 class="h3 mb-0 text-gray-800">{{ setting.school_name }}</h1>
             <div class="flex-row align-items-center justify-content-between">
                 <!-- Button Edit school -->
-                <a title="UPdate {{ setting.school_name }}'s Info Now" href="{% url 'school_change' school.id %}" class="d-none d-sm-inline-block btn btn-sm btn-info shadow-sm">
+                <a title="Update {{ setting.school_name }}'s Info Now" href="{% url 'school_change' school.id %}" class="d-none d-sm-inline-block btn btn-sm btn-info shadow-sm">
                 <i class="fas fa-pencil-square fa-sm text-white-50">
                 </i> Edit Now </a>
 
                 <!-- Button Backup -->
-                <a title="Take {{ setting.school_name }}'s Backup" href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                <a title="Take {{ setting.school_name }}'s Backup" href="{% url 'site_backup' tenant_id=school.id %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
                 <i class="fas fa-download fa-sm text-white-50">
                 </i> Take Backup</a>
-
-                <!-- Button Delete School -->
-                <a title="Delete {{ setting.school_name }}" href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                <i class="fas fa-download fa-sm text-white-50">
-                </i> Delete School </a>
             </div>
             
           </div>
@@ -119,71 +115,26 @@
           </div>
 
           <!-- LOW Content Row -->
-
-          <div class="row">
-
-            <!-- No Students Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">No. of Students</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{ no_students }}</div>
-                        </div>
-                        <div class="col-auto">
-                      <i class="fas fa-users fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
+          <span class="load"></span>
+        <div class="fb-profile">
+            <img id="img-bg" align="left" target_url="{% static 'main_site/authenticated/img/' %}" class="fb-image-lg" src="" alt="Profile image example"/>
+            <img align="left" class="fb-image-profile thumbnail" src="{{ school.school_admin.get_picture }}" alt="Profile image example"/>
+            <div class="fb-profile-text">
+                <h1>{{ school.school_admin.get_full_name }}</h1>
+                    <p>{{ school.name }} Administrator</p>
                 </div>
-              </div>
-            </div>
-
-            <!-- No Teachers Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">No. of Teachers</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        {{ no_teachers }}</div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-user-tie fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-                      <!-- SMS UNIT Card Example -->
-            <div class="col-xl-6 col-md-12 mb-12">
-
-<!-- Card -->
-<div class="card testimonial-card">
-
-  <!-- Background color -->
-  <div class="card-up indigo lighten-1"></div>
-
-  <!-- Avatar -->
-  <div class="avatar mx-auto white">
-    <img src="https://mdbootstrap.com/img/Photos/Avatars/img%20%2810%29.jpg" class="rounded-circle" alt="woman avatar">
-  </div>
-
-  <!-- Content -->
-  <div class="card-body">
-    <!-- Name -->
-    <h4 class="card-title">Anna Doe</h4>
-    <hr>
-    <!-- Quotation -->
-    <p><i class="fas fa-quote-left"></i> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos, adipisci</p>
-  </div>
-
-</div>
-<!-- Card -->
             </div>
         </div>
         <!-- /.container-fluid -->
       </div>
+      {% block custom_js %}
+        <script>
+            $(document).ready(()=>{
+                const target_url = $("#img-bg").attr("target_url");
+                const image = `img-${Math.floor((Math.random() * 3) + 1)}.jpg`;
+                const full_url = `${target_url}${image}`
+                $("#img-bg").attr('src', full_url);
+            });
+        </script>
+      {% endblock %}
       {% endblock main %}

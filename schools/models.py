@@ -11,7 +11,9 @@ class Client(TenantMixin):
     on_trial = models.BooleanField(default=True)
     active_until = models.DateField()
     school_admin = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True)
-
+    auto_drop_schema = True
+    force_drop = True
+    
     def __str__(self):
     	return self.name
 
