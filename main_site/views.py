@@ -14,8 +14,10 @@ from sms.models import *
 from django.contrib import messages
 from .forms import UpdateSchoolForm, SchoolDeleteForm, SchoolAddForm
 from django.contrib.auth.hashers import check_password
+from sms.decorators import site_su_required
 
 @login_required(login_url='/login/')
+@site_su_required
 def dashboard(request):
     template = 'authenticated/dashboard.html'
     tenants = Client.objects.exclude(schema_name='public')
@@ -30,6 +32,7 @@ def dashboard(request):
     return render(request, template, context)
 
 @login_required(login_url='/login/')
+@site_su_required
 def schools_list(request):
     context = {}
     tenants_list = Client.objects.exclude(schema_name='public')
@@ -38,6 +41,7 @@ def schools_list(request):
     return render(request, template, context)
 
 @login_required(login_url='/login/')
+@site_su_required
 def school_add(request):
     template = 'authenticated/schools_add.html'
     return render(request, template, {})
@@ -47,6 +51,7 @@ def special_match(strg, search=re.compile(r'[^a-z0-9.]').search):
     return not bool(search(strg))
 
 @login_required(login_url='/login/')
+@site_su_required
 def school_add_save(request):
     if request.is_ajax():
         if request.method == "POST":
@@ -121,7 +126,10 @@ def school_add_save(request):
                 return render(request, template, context)
         else:
             return HttpResponse('Get')
+
+
 @login_required(login_url='/login/')
+@site_su_required
 def school_change(request, tenant_id):
     if request.method == "GET":
         template = 'authenticated/school_change.html'
@@ -130,6 +138,7 @@ def school_change(request, tenant_id):
         return render(request, template, context)
 
 @login_required(login_url='/login/')
+@site_su_required
 def schools_view(request, tenant_id):
     context = {}
     template = 'authenticated/school_view.html'
@@ -147,7 +156,9 @@ def schools_view(request, tenant_id):
         context['setting'] = setting
     return render(request, template, context)
 
+
 @login_required(login_url='/login/')
+@site_su_required
 def site_backup(request, tenant_id):
     # TODO, Not working yet
     from django.contrib.contenttypes.models import ContentType
@@ -177,7 +188,8 @@ def site_backup(request, tenant_id):
         return response
 
 
-@login_required(login_url='/login/')   
+@login_required(login_url='/login/')
+@site_su_required 
 def school_change_save(request, tenant_id):
     if request.method == "POST":
         form = UpdateSchoolForm(request.POST)
@@ -243,7 +255,8 @@ def school_change_save(request, tenant_id):
         print("get")
         return redirect('school_change', tenant_id=tenant_id)
 
-@login_required(login_url='/login/')  
+@login_required(login_url='/login/')
+@site_su_required
 def school_del(request):
     if request.is_ajax():
         form = SchoolDeleteForm(request.GET)
