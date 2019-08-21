@@ -157,7 +157,6 @@ def schools_view(request, tenant_id):
     return render(request, template, context)
 
 
-
 @login_required(login_url='/login/')
 @site_su_required
 def schools_sms_sub_update(request):

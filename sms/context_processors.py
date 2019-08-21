@@ -15,7 +15,6 @@ def add_months(sourcedate, months):
 	return datetime.date(year, month, day)
 
 def school_setting_processor(request):
-	print(request.META['SMS-CONTEXT-EXIST'])
 	if request.META['SMS-CONTEXT-EXIST']:
 		# try getting the current session if exist, otherwise create the current Session
 		try:

@@ -281,6 +281,19 @@
   </header>
   <!--Main Navigation-->
     <main>
+    {% if school_setting.sms_unit < 50 and school_setting.sms_unit > 0 %}
+      <h2 style="margin-left: 0.8vw;" class="section-heading pb-3">
+        <a target="_blank" class="btn btn-info btn-sm waves-effect waves-light" role="button">You have {{ school_setting.sms_unit }} SMS units remaining, please consider contact an agent for renewal !.
+        <i class="fas fa-bullhorn"></i>
+    </a>
+  </h2>
+  {% elif school_setting.sms_unit == 0 %}
+    <h2 style="margin-left: 0.8vw;" class="section-heading pb-3">
+      <a target="_blank" class="btn btn-danger btn-sm waves-effect waves-light" role="button">You can no longer send an sms until you renew your sms subscription !.
+      <i class="fas fa-bullhorn"></i>
+    </a>
+  </h2>
+  {% endif %}
 {% block main %}
 
 {% endblock %}
