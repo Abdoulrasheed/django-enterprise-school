@@ -1626,8 +1626,16 @@ def load_payment_table(request):
 def load_students_of_class(request):
     current_session = Session.objects.get(current_session=True)
     class_id = request.GET.get('class')
-    students = Student.objects.filter(in_class__pk=class_id, session=current_session).order_by('-id')
+    students = Student.objects.filter(in_class__pk=class_id, session=current_session)
     return render(request, 'sms/payments/ajax_load_students.html', {"students": students})
+
+@login_required
+@teacher_required
+def load_student_users(request):
+    current_session = Session.objects.get(current_session=True)
+    class_id = request.GET.get('class')
+    students = Student.objects.filter(in_class__pk=class_id, session=current_session)
+    return render(request, 'sms/ajax/ajax_load_student_users.html', {"students": students})
 
 @login_required
 @teacher_required

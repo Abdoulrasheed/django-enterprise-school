@@ -2,7 +2,7 @@
 import sys
 import os
 
-DEBUG = True
+DEBUG = False
 
 
 ADMINS = (
