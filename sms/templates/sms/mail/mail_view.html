@@ -98,25 +98,25 @@
 
           <div class="form-group">
             <p>
-              <a href="#" class="badge badge-default">Full Name</a>
+              <a onclick="appendTag('Hi');" class="badge badge-default">Full Name</a>
               <a href="#" class="badge badge-primary">First Name</a>
               <a href="#" class="badge badge-light">Surname</a>
               <a href="#" class="badge badge-default">Other Nname</a>
               <a href="#" class="badge badge-success">Gender</a>
               <a href="#" class="badge badge-warning">Local Govt</a>
-              <a href="#" class="badge badge-info">Class</a>
+              <a href="#" class="badge badge-info stu">Class</a>
               <a href="#" class="badge badge-light">Session</a>
               <a href="#" class="badge badge-danger">State</a>
               <a href="#" class="badge badge-light">Section</a>
-              <a href="#" class="badge badge-light">Assigned Subjects</a>
-              <a href="#" class="badge badge-primary">Class Subjects</a>
+              <a href="#" class="badge badge-light tea">Assigned Subjects</a>
+              <a href="#" class="badge badge-primary stu">Class Subjects</a>
               <a href="#" class="badge badge-secondary">Address</a>
-              <a href="#" class="badge badge-primary">Grades</a>
-              <a href="#" class="badge badge-dark">Paid Name</a>
-              <a href="#" class="badge badge-primary">Attendace</a>
+              <a href="#" class="badge badge-primary stu">Grades</a>
+              <a href="#" class="badge badge-dark stu">School Fee Paid Amount</a>
+              <a href="#" class="badge badge-primary stu">Attendace</a>
               <a href="#" class="badge badge-dark">School Name</a>
-              <a href="#" class="badge badge-danger">Due amount</a>
-              <a href="#" class="badge badge-dark">Teller no</a>
+              <a href="#" class="badge badge-danger stu">Due amount</a>
+              <a href="#" class="badge badge-dark stu">Teller no</a>
               <a href="#" class="badge badge-success">Expense</a>
             </p>
             {% include 'markdown.html' %}
@@ -147,8 +147,13 @@
 {% endblock main %}
 {% block script %}
 <script>
-  var select_class;
+  const appendTag = (text) =>{
+    const pos = simplemde.codemirror.getCursor();
+    simplemde.codemirror.replaceRange(text, pos); 
+  }
   const handleStudents = () => {
+    // show all student tags if hidden
+  $(".stu").fadeIn("slow").removeAttr('hidden');
     // get classes
     $(".user_label").text('students');
       const target = $(".select_class_div").attr('url');
@@ -169,6 +174,9 @@
   }
 
 const handleUsers = (user_type) => {
+  // hide all student tags
+  $(".stu").fadeOut("slow").attr('hidden', true);
+  // get users
   const target = $(".select_user_div").attr('url');
       $.ajax({
         url: target,

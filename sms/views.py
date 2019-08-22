@@ -57,6 +57,8 @@ from .forms import (AddStudentForm,
 					ProfilePictureForm,
 					EmailMessageForm,)
 
+from django.template.loader import render_to_string
+
 
 INDEX = lambda items, key, item: list(items.values_list(key, flat=True)).index(item)+1
 
@@ -1695,20 +1697,35 @@ def mail(request):
 			message = form.cleaned_data.get('message')
 			image = form.cleaned_data.get('image')
 			recipients = form.cleaned_data.get('recipients')
-			recipients_r = request.POST.get('recipients')
-			print(f"==================={recipients_r}====================")
+
+			# get author of the email
 			admin = request.user
+
+			#create email object
 			mail = EmailMessage.objects.create(
 				title=title,
 				content=message,
 				admin=admin
 			)
 			mail.save()
+
+			# prepare html templates
+			template = 'email_template.html'
+			setting = Setting.objects.first()
+			context = {}
+			context['setting'] = setting
+			context['mail'] = mail
+
+			mail_message = render_to_string(template, context)
+			
+			# add recipients one after another
 			receivers = ()
 			for i in recipients:
 				mail.recipients.add(i)
 				receivers += (i.email,)
-			asyncio.run(mail.deliver_mail(recipients=receivers))
+
+			# send the actual email
+			asyncio.run(mail.deliver_mail(recipients=receivers, content=mail_message))
 			messages.success(request, 'Emails Successfully Send !')
 			return redirect('mail')
 		else:

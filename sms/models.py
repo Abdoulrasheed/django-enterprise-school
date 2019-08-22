@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.template.defaultfilters import slugify
 
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage as EMessage
 
 import asyncio
 
@@ -289,12 +289,12 @@ class EmailMessage(models.Model):
         return markdownify(self.content)
 
 
-    async def deliver_mail(self, recipients):
-    	print(f"recipients ============== {recipients}")
-    	send_mail(
+    async def deliver_mail(self, recipients, content):
+    	msg = EMessage(
     		self.title, 
-    		self.content, 
+    		content, 
     		"support@bitpoint.com", 
-    		recipients, 
-    		fail_silently=False
+    		recipients
     		)
+    	msg.content_subtype = 'html'
+    	msg.send()
