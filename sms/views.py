@@ -23,6 +23,8 @@ from . sms_sender import send_sms
 
 from django.views.decorators.http import require_http_methods
 
+import asyncio
+
 from .remark import getRemark, getGrade
 from frontend.models import OnlineAdmission
 from .forms import (AddStudentForm,
@@ -52,7 +54,8 @@ from .forms import (AddStudentForm,
 					EditExpenseForm,
 					EditSessionForm,
 					SetParentForm,
-					ProfilePictureForm,)
+					ProfilePictureForm,
+					EmailMessageForm,)
 
 
 INDEX = lambda items, key, item: list(items.values_list(key, flat=True)).index(item)+1
@@ -1618,7 +1621,6 @@ def load_payment_table(request):
 		session=session)
 	return render(request, 'sms/payments/ajax_load_payment.html', {"payments": payments})
 
-
 @login_required
 @teacher_required
 def load_students_of_class(request):
@@ -1673,7 +1675,42 @@ def del_session(request, id):
 @teacher_required
 def sms_list(request):
 	sms = Sms.objects.all()
-	return render(request, 'sms/mail_and_sms/sms.html', {"sms":sms})
+	return render(request, 'sms/sms/sms.html', {"sms":sms})
+
+@login_required
+@teacher_required
+def mail(request):
+	if request.method == "POST":
+		form = EmailMessageForm(request.POST)
+		if form.is_valid():
+			title = form.cleaned_data.get('title')
+			message = form.cleaned_data.get('message')
+			image = form.cleaned_data.get('image')
+			recipients = form.cleaned_data.get('recipients')
+			recipients_r = request.POST.get('recipients')
+			print(f"==================={recipients_r}====================")
+			admin = request.user
+			mail = EmailMessage.objects.create(
+				title=title,
+				content=message,
+				admin=admin
+			)
+			mail.save()
+			receivers = ()
+			for i in recipients:
+				mail.recipients.add(i)
+				receivers += (i.email,)
+			asyncio.run(mail.deliver_mail(recipients=receivers))
+			messages.success(request, 'Emails Successfully Send !')
+			return redirect('mail')
+		else:
+			form = EmailMessageForm(request.POST)
+			context = {"form": form}
+			template = 'sms/mail/mail_view.html'
+			return render(request, template, context)
+	#mail = Mail.objects.all()
+	template = 'sms/mail/mail_view.html'
+	return render(request, template, {})
 
 
 @login_required
@@ -2611,3 +2648,31 @@ def view_detail_applicant(request, pk):
 		'sms/online_admission/online_admission_detail_view.html', 
 		{"applicant": applicant}
 	)
+
+@login_required
+@teacher_required
+def ajax_get_all_classes(request):
+	if request.is_ajax():
+		classes = Class.objects.all()
+		template = 'sms/ajax/get_all_classes.html'
+		context = {'classes': classes}
+		return render(request, template, context)
+	return HttpResponse('error')
+
+
+@login_required
+@teacher_required
+def ajax_get_users_list(request):
+	if request.is_ajax():
+		template = 'sms/ajax/get_filtered_user_list.html'
+		user_type = request.GET.get('user_type')
+		print(user_type)
+		if user_type == 'parents':
+			users = User.objects.filter(is_parent=True)
+		elif user_type == 'admins':
+			users = User.objects.filter(is_superuser=True)
+		elif user_type == 'teachers':
+			users = User.objects.filter(is_teacher=True)
+		context = {'users': users}
+		return render(request, template, context)
+	return HttpResponse('error')

@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+  {% block custom_style %}
+<style>
+  @media only screen and (max-width: 768px){
+    .row {
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-tabs, form{
+      width: 80vw;
+    }
+  }
+</style>
+  {% endblock %}
+{% block main %}
+<!--Main layout-->
+<div style="margin-bottom: 50px;" class="container-fluid">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% if form %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+  <div class="row">
+    <div class="col-4">
+      <div class="nav nav-tabs md-tabs flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+
+        <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true"><i class="fas fa-envelope"></i> Compose <span class="badge badge-primary pull-right badge-pill">14</span></a>
+
+        <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false"><i class="fas fa-envelope-open-text"></i> Inbox <span class="badge pull-right badge-primary badge-pill">14</span></a>
+
+         <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false"><i class="fas fa-check"></i> Delivered <span class="badge pull-right badge-primary badge-pill">14</span></a>
+
+        <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i class="fas fa-save"></i> Draft <span class="badge pull-right badge-primary badge-pill">14</span></a>
+        <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i class="fas fa-trash"></i> Trash <span class="badge pull-right badge-primary badge-pill">14</span></a>
+        <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false"><i class="fas fa-cogs"></i> Settings <span class="badge pull-right badge-primary badge-pill">14</span></a>
+      </div>
+    </div>
+    <div class="col-8">
+      <div class="tab-content" id="v-pills-tabContent">
+        <div hidden id="loader" class="progress md-progress primary-color-dark">
+              <div class="indeterminate">
+              </div>
+          </div>
+        <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+          <form action="" method="post" class="" role="form">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="title">Send To</label>
+            <select name="user_type" class="browser-default custom-select user-type">
+              <option disabled selected>-----</option>
+              <option value="students">Students</option>
+              <option value="teachers">Teachers</option>
+              <option value="parents">Parents</option>
+              <option value="admins">Admin</option>
+            </select>
+          </div>
+          <div hidden url="{% url 'get_classes' %}" class="form-group select_class_div">
+            <label for="title">Select Class</label>
+            <select class="browser-default custom-select select_class" url="{% url 'ajax_load_students' %}">
+            </select>
+          </div>
+          <div hidden class="form-group select_user_div" url="{% url 'get_users_list' %}">
+            <label for="title">Select <span class="user_label"></span> <kbd>Hold CTRL to select multiple<kbd></label>
+
+            <select name="recipients" class="browser-default custom-select select_user" multiple>
+              
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" name="title" class="form-control" id="title" placeholder="Title">
+          </div>
+
+          <div class="form-group">
+            <p>
+              <a href="#" class="badge badge-default">Full Name</a>
+              <a href="#" class="badge badge-primary">First Name</a>
+              <a href="#" class="badge badge-light">Surname</a>
+              <a href="#" class="badge badge-default">Other Nname</a>
+              <a href="#" class="badge badge-success">Gender</a>
+              <a href="#" class="badge badge-warning">Local Govt</a>
+              <a href="#" class="badge badge-info">Class</a>
+              <a href="#" class="badge badge-light">Session</a>
+              <a href="#" class="badge badge-danger">State</a>
+              <a href="#" class="badge badge-light">Section</a>
+              <a href="#" class="badge badge-light">Assigned Subjects</a>
+              <a href="#" class="badge badge-primary">Class Subjects</a>
+              <a href="#" class="badge badge-secondary">Address</a>
+              <a href="#" class="badge badge-primary">Grades</a>
+              <a href="#" class="badge badge-dark">Paid Name</a>
+              <a href="#" class="badge badge-primary">Attendace</a>
+              <a href="#" class="badge badge-dark">School Name</a>
+              <a href="#" class="badge badge-danger">Due amount</a>
+              <a href="#" class="badge badge-dark">Teller no</a>
+              <a href="#" class="badge badge-success">Expense</a>
+            </p>
+            {% include 'markdown.html' %}
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary save">
+              {% trans 'Publish' %}
+            </button>
+
+            <button type="button" class="btn btn-default draft">
+
+              {% trans 'Save Draft' %}
+            </button>
+            <a href="" class="btn btn-default">
+              {% trans 'Cancel' %}
+            </a>
+          </div>
+      </form>
+        </div>
+        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">...</div>
+  <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
+  <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock main %}
+{% block script %}
+<script>
+  var select_class;
+  const handleStudents = () => {
+    // get classes
+    $(".user_label").text('students');
+      const target = $(".select_class_div").attr('url');
+      $.ajax({
+        url: target,
+        beforeSend: () =>{
+          $("#loader").removeAttr('hidden');
+        },
+
+        complete: () => {
+          $("#loader").attr('hidden', true);
+        },
+
+        success: (data) => {
+          $(".select_class").html(data);
+        }
+      });
+  }
+
+const handleUsers = (user_type) => {
+  const target = $(".select_user_div").attr('url');
+      $.ajax({
+        url: target,
+        data: {
+          'user_type': user_type,
+        },
+
+        beforeSend: () =>{
+          $("#loader").removeAttr('hidden');
+        },
+
+        complete: () => {
+          $("#loader").attr('hidden', true);
+        },
+
+        success: (data) => {
+          $(".select_user").html(data);
+          $(".select_user_div").removeAttr('hidden');
+        }
+      });
+}
+
+  $(document).ready(()=>{
+    $(".user-type").on('change', ()=>{
+      var user_type = $(".user-type").val();
+      user_type !== 'students' ? $(".select_user_div").fadeIn("slow").removeAttr('hidden') : $(".select_user_div").attr('hidden', true);
+      switch (user_type){
+        case 'students':
+          $(".select_class_div").removeAttr('hidden');
+          user_type = 'students'
+          handleStudents();
+          break;
+
+        case 'teachers':
+          $(".select_class_div").attr('hidden', true);
+          $(".user_label").text('Teacher');
+          user_type = 'teachers';
+          handleUsers(user_type);
+          break;
+
+        case 'parents':
+          $(".select_class_div").attr('hidden', true);
+          $(".user_label").text('Parent');
+          user_type = 'parents'
+          handleUsers(user_type);
+          break;
+
+        case 'admins':
+          $(".select_class_div").attr('hidden', true);
+          $(".user_label").text('Admin');
+          user_type = 'admins'
+          handleUsers(user_type);
+          break;
+      }
+    });
+
+    // get students of the selected class
+      $(".select_class").on('change', () => {
+        const target = $(".select_class").attr('url');
+        const class_id = $(".select_class").val();
+        $.ajax({
+          url: target,
+          data: {
+            'class': class_id,
+          },
+
+          beforeSend: () =>{
+            $("#loader").removeAttr('hidden');
+          },
+
+          complete: () => {
+            $("#loader").attr('hidden', true);
+          },
+
+          success: (data) => {
+            $(".select_user").html(data);
+            $(".select_user_div").removeAttr('hidden');
+          }
+        });
+      });
+  });  
+</script>
+ {% endblock script %}

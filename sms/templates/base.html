@@ -100,7 +100,10 @@
                 {% endif %}
           {% if request.user.is_superuser %}
             <li><a href="{% url 'sms_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-envelope"></i>
-                Mail / Sms</a></li>
+                SMS</a></li>
+                 <li><a href="{% url 'mail' %}" class="collapsible-header waves-effect"><i class=" far fas fa-mail-bulk"></i>
+                 
+                MAIL</a></li>
                 {% endif %}
             <li><a class="collapsible-header waves-effect arrow-r"><i class="fab fa-css3"></i> Exam<i class="fas fa-angle-down rotate-icon"></i></a>
               <div class="collapsible-body">
@@ -280,7 +283,7 @@
 
   </header>
   <!--Main Navigation-->
-    <main>
+    <main style="margin-bottom: 80px !important;">
     {% if school_setting.sms_unit < 50 and school_setting.sms_unit > 0 %}
       <h2 style="margin-left: 0.8vw;" class="section-heading pb-3">
         <a target="_blank" class="btn btn-info btn-sm waves-effect waves-light" role="button">You have {{ school_setting.sms_unit }} SMS units remaining, please consider contact an agent for renewal !.
@@ -300,7 +303,7 @@
   </main>
 
 <!--Footer-->
-  <footer class="page-footer pt-0 mt-5 mdb-color lighten-4">
+  <footer class="page-footer center-on-small-only pt-0 mt-5 fixed-bottom">
 
     <!--Copyright-->
     <div class="footer-copyright py-3 text-center">

@@ -144,7 +144,7 @@ WSGI_APPLICATION = 'bitpoint.wsgi.application'
 
 
 SHARED_APPS = (
-    'django_tenants',  # mandatory
+    'django_tenants',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -155,6 +155,7 @@ SHARED_APPS = (
     'authentication',
     'main_site',
     'session_security',
+    'markdownx',
 )
 
 TENANT_APPS = (

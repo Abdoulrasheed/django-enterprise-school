@@ -2,7 +2,15 @@ from django.db import models
 from django.conf import settings
 from authentication.models import User
 from constants import *
+from markdownx.models import MarkdownxField
+from markdownx.utils import markdownify
+from django.utils.translation import ugettext_lazy as _
 
+from django.template.defaultfilters import slugify
+
+from django.core.mail import send_mail
+
+import asyncio
 
 class Session(models.Model):
 	name = models.CharField(max_length=100)
@@ -222,3 +230,71 @@ class NoticeBoard(models.Model):
     posted_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     posted_to = models.CharField(max_length=100, blank=True, null=True)
     posted_on = models.DateTimeField(auto_now_add=True)
+
+
+class EmailQuerySet(models.query.QuerySet):
+    """Personalized queryset created to improve model usability"""
+
+    def get_delivered(self):
+        """Returns only the delivered items in the current queryset."""
+        return self.filter(status="S")
+
+    def get_drafts(self):
+        """Returns only the items marked as DRAFT in the current queryset."""
+        return self.filter(status="D")
+
+    def get_pendings(self):
+        """Returns only the items marked as DRAFT in the current queryset."""
+        return self.filter(status="P")
+
+
+class EmailMessage(models.Model):
+    DRAFT = "D"
+    DELIVERED = "S"
+    PENDING = "P"
+    STATUS = (
+        (DRAFT, _("Draft")),
+        (DELIVERED, _("Delivered")),
+        (PENDING, _("Pending")),
+    )
+
+    admin = models.ForeignKey(
+        User, null=True, related_name="author",
+        on_delete=models.SET_NULL)
+    image = models.ImageField(
+        _('Featured image'), null=True, upload_to='articles_pictures/%Y/%m/%d/')
+    timestamp = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=255, null=False)
+    slug = models.SlugField(max_length=80, null=True, blank=True)
+    status = models.CharField(max_length=1, choices=STATUS, default=PENDING)
+    content = MarkdownxField()
+    recipients = models.ManyToManyField(User)
+    objects = EmailQuerySet.as_manager()
+
+    class Meta:
+        verbose_name = _("Mail")
+        verbose_name_plural = _("Mails")
+        ordering = ("-timestamp",)
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(f"{self.admin.username}-{self.title}")
+
+        super().save(*args, **kwargs)
+
+    def get_markdown(self):
+        return markdownify(self.content)
+
+
+    async def deliver_mail(self, recipients):
+    	print(f"recipients ============== {recipients}")
+    	send_mail(
+    		self.title, 
+    		self.content, 
+    		"support@bitpoint.com", 
+    		recipients, 
+    		fail_silently=False
+    		)

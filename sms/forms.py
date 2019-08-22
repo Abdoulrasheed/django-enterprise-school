@@ -4,6 +4,7 @@ from django.db import transaction
 from .models import *
 from constants import *
 from django.forms import BaseModelFormSet
+from markdownx.fields import MarkdownxFormField
 
 
 class AddStudentForm(forms.Form):
@@ -468,3 +469,11 @@ class SetParentForm(forms.Form):
 
 class ProfilePictureForm(forms.Form):
     picture = forms.ImageField()
+
+
+class EmailMessageForm(forms.ModelForm):
+    message = MarkdownxFormField()
+    image = forms.ImageField(required=False)
+    class Meta:
+        model = EmailMessage
+        fields = ["recipients", "title", "message", 'image']

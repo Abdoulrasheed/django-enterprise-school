@@ -16,6 +16,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/login/', views.LoginView.as_view(), name='login'),
     path('change-password/', change_password, name="change_password"),
+    path('markdownx/', include('markdownx.urls')),
     path('accounts/logout/', views.LogoutView.as_view(), name='logout', kwargs={'next_page': '/'}),
     ]
 

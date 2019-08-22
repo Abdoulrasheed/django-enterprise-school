@@ -49,6 +49,7 @@ urlpatterns = [
 	path('session/', views.session_view, name="session_list"),
 	path('session/add/', views.add_session, name="add_session"),
 	path('sms/', views.sms_list, name="sms_list"),
+	path('mail/', views.mail, name="mail"),
 	path('users-password/', views.reset_users_password, name="reset_users_password"),
 	path('reset/', views.reset_users_password_view, name="reset_users_password_view"),
 	path('sms/send/', views.send_bulk_sms, name="send_sms"),
@@ -91,4 +92,6 @@ urlpatterns = [
 	path('broadsheet/report/view', views.broadsheet_report_view, name="broadsheet_report_view"),
 	path('broadsheet/report/', views.broadsheet_report, name="broadsheet_report"),
 	path('onlineadmission/applicant/<int:pk>/view/', views.view_detail_applicant, name='view_detail_applicant'),
+	path('ajax/classes/', views.ajax_get_all_classes, name='get_classes'),
+	path('ajax/users/', views.ajax_get_users_list, name='get_users_list'),
 	]
