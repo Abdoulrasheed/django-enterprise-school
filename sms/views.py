@@ -252,7 +252,7 @@ def home(request):
 def expenditure_graph(request):
 	current_session = Session.objects.get(current_session=True)
 	
-	expenditures = Expense.objects.filter(session=current_session)
+	expenditures = Expense.objects.filter(session=current_session, term=get_terms())
 	expenditures_by_month = [0] * 12
 	for month in range(1, 13):
 		for expenditure in expenditures.filter(timestamp__month=month):
@@ -262,7 +262,7 @@ def expenditure_graph(request):
 			else:
 				expenditures_by_month[m-1] = expenditure.amount
 
-	payments = Payment.objects.filter(session=current_session)
+	payments = Payment.objects.filter(session=current_session, term=get_terms())
 	payments_by_month = [0] * 12
 	for month in range(1, 13):
 		for payment in payments.filter(date_paid__month=month):
@@ -271,8 +271,6 @@ def expenditure_graph(request):
 				payments_by_month[m-1] += payment.paid_amount
 			else:
 				payments_by_month[m-1] = payment.paid_amount
-
-	current_session = Session.objects.get(current_session=True)
 
 	data = {
 		"expenditure": expenditures_by_month,
