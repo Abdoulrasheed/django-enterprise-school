@@ -98,26 +98,26 @@
 
           <div class="form-group">
             <p>
-              <a onclick="appendTag('Hi');" class="badge badge-default">Full Name</a>
-              <a href="#" class="badge badge-primary">First Name</a>
-              <a href="#" class="badge badge-light">Surname</a>
-              <a href="#" class="badge badge-default">Other Nname</a>
-              <a href="#" class="badge badge-success">Gender</a>
-              <a href="#" class="badge badge-warning">Local Govt</a>
-              <a href="#" class="badge badge-info stu">Class</a>
-              <a href="#" class="badge badge-light">Session</a>
-              <a href="#" class="badge badge-danger">State</a>
-              <a href="#" class="badge badge-light">Section</a>
-              <a href="#" class="badge badge-light tea">Assigned Subjects</a>
-              <a href="#" class="badge badge-primary stu">Class Subjects</a>
-              <a href="#" class="badge badge-secondary">Address</a>
-              <a href="#" class="badge badge-primary stu">Grades</a>
-              <a href="#" class="badge badge-dark stu">School Fee Paid Amount</a>
-              <a href="#" class="badge badge-primary stu">Attendace</a>
-              <a href="#" class="badge badge-dark">School Name</a>
-              <a href="#" class="badge badge-danger stu">Due amount</a>
-              <a href="#" class="badge badge-dark stu">Teller no</a>
-              <a href="#" class="badge badge-success">Expense</a>
+              <a onclick="appendTag('[[fullname]]');" class="badge badge-default default-tag" hidden>Full Name</a>
+              <a onclick="appendTag('[[fname]]');" class="badge badge-primary default-tag" hidden>First Name</a>
+              <a onclick="appendTag('[[sname]]');" class="badge badge-light default-tag" hidden>Surname</a>
+              <a onclick="appendTag('[[oname]]');" class="badge badge-default default-tag" hidden>Other Nname</a>
+              <a onclick="appendTag('[[gender]]');" class="badge badge-success default-tag" hidden>Gender</a>
+              <a onclick="appendTag('[[lga]]');" class="badge badge-warning default-tag" hidden>Local Govt</a>
+              <a onclick="appendTag('[[clss]]');" class="badge badge-info stu" hidden>Class</a>
+              <a onclick="appendTag('[[session]]');" class="badge badge-light default-tag" hidden>Session</a>
+              <a onclick="appendTag('[[state]]');" class="badge badge-danger default-tag" hidden>State</a>
+              <a onclick="appendTag('[[section]]');" class="badge badge-light default-tag" hidden>Section</a>
+              <a onclick="appendTag('[[assub]]');" class="badge badge-light tea" hidden>Assigned Subjects</a>
+              <a onclick="appendTag('[[clssub]]');" class="badge badge-primary stu" hidden>Class Subjects</a>
+              <a onclick="appendTag('[[address]]');" class="badge badge-secondary default-tag" hidden>Address</a>
+              <a onclick="appendTag('[[grades]]');" class="badge badge-primary stu" hidden>Grades</a>
+              <a onclick="appendTag('[[amount]]');" class="badge badge-dark stu" title="for {{ session }}" hidden>School Fee Paid Amount</a>
+              <a onclick="appendTag('[[attnd]]');" class="badge badge-primary stu" hidden>Attendace</a>
+              <a onclick="appendTag('[[scname]]');" class="badge badge-dark default-tag" hidden>School Name</a>
+              <a onclick="appendTag('[[damnt]]');" class="badge badge-danger stu" hidden>Due amount</a>
+              <a onclick="appendTag('[[tno]]');" class="badge badge-dark stu" hidden>Teller no</a>
+              <a onclick="appendTag('[[expnse]]');" class="badge badge-success default-tag" hidden>Expense</a>
             </p>
             {% include 'markdown.html' %}
           </div>
@@ -154,6 +154,7 @@
   const handleStudents = () => {
     // show all student tags if hidden
   $(".stu").fadeIn("slow").removeAttr('hidden');
+  $(".default-tag").fadeIn("slow").removeAttr('hidden');
     // get classes
     $(".user_label").text('students');
       const target = $(".select_class_div").attr('url');
@@ -176,6 +177,10 @@
 const handleUsers = (user_type) => {
   // hide all student tags
   $(".stu").fadeOut("slow").attr('hidden', true);
+  // show default tags
+  $(".default-tag").fadeIn("slow").removeAttr('hidden');
+  // show teachers tag
+  user_type == 'teachers' ? $(".tea").fadeIn("slow").removeAttr('hidden') : $(".tea").fadeOut("slow").attr('hidden', true);
   // get users
   const target = $(".select_user_div").attr('url');
       $.ajax({
@@ -203,6 +208,7 @@ const handleUsers = (user_type) => {
     $(".user-type").on('change', ()=>{
       var user_type = $(".user-type").val();
       user_type !== 'students' ? $(".select_user_div").fadeIn("slow").removeAttr('hidden') : $(".select_user_div").attr('hidden', true);
+
       switch (user_type){
         case 'students':
           $(".select_class_div").removeAttr('hidden');
