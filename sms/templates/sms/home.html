@@ -28,7 +28,7 @@
         <div class="row">
 
 <!--Grid column-->
-          <div class="col-xl-2 col-md-6 mb-4">
+          <div class="col-xl-{{ colxl }} col-md-6 mb-4">
 
             <!--Card-->
             <div class="card">
@@ -52,7 +52,7 @@
           </div>
           
           <!--Grid column-->
-          <div class="col-xl-2 col-md-6 mb-4">
+          <div class="col-xl-{{ colxl }} col-md-6 mb-4">
 
             <!--Card-->
             <div class="card">
@@ -79,7 +79,7 @@
           <!--Grid column-->
                   <!--Grid column-->
                   {% if request.user.is_student %}
-          <div class="col-xl-3 col-md-6 mb-4">
+          <div class="col-xl-{{ colxl }} col-md-6 mb-4">
 
             <!--Card-->
             <div class="card">
@@ -107,7 +107,7 @@
           {% else %}
 
           <!--Grid column-->
-          <div class="col-xl-2 col-md-6 mb-4">
+          <div class="col-xl-{{ colxl }} col-md-6 mb-4">
 
             <!--Card-->
             <div class="card">
@@ -134,7 +134,7 @@
           <!--Grid column-->
 
           <!--Grid column-->
-          <div class="col-xl-2 col-md-6 mb-4">
+          <div class="col-xl-{{ colxl }} col-md-6 mb-4">
 
             <!--Card-->
             <div class="card">
@@ -157,8 +157,9 @@
 
           </div>
           <!--Grid column-->
+          {% if request.user.is_superuser %}
           <!--Grid column-->
-          <div class="col-xl-2 col-md-6 mb-4">
+          <div class="col-xl-{{ colxl }} col-md-6 mb-4">
 
             <!--Card-->
             <div class="card">
@@ -185,8 +186,9 @@
 
           </div>
           <!--Grid column-->
+          
           <!--Grid column-->
-          <div class="col-xl-2 col-md-6 mb-4">
+          <div class="col-xl-{{ colxl }} col-md-6 mb-4">
 
             <!--Card-->
             <div class="card">
@@ -230,6 +232,7 @@
 
           </div>
           <!--Grid column-->
+          {% endif %}
           </div>
         <!--Grid row-->
 

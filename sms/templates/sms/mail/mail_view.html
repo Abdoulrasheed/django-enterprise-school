@@ -98,26 +98,26 @@
 
           <div class="form-group">
             <p>
-              <a onclick="appendTag('[[fullname]]');" class="badge badge-default default-tag" hidden>Full Name</a>
-              <a onclick="appendTag('[[fname]]');" class="badge badge-primary default-tag" hidden>First Name</a>
-              <a onclick="appendTag('[[sname]]');" class="badge badge-light default-tag" hidden>Surname</a>
-              <a onclick="appendTag('[[oname]]');" class="badge badge-default default-tag" hidden>Other Nname</a>
-              <a onclick="appendTag('[[gender]]');" class="badge badge-success default-tag" hidden>Gender</a>
-              <a onclick="appendTag('[[lga]]');" class="badge badge-warning default-tag" hidden>Local Govt</a>
-              <a onclick="appendTag('[[clss]]');" class="badge badge-info stu" hidden>Class</a>
-              <a onclick="appendTag('[[session]]');" class="badge badge-light default-tag" hidden>Session</a>
-              <a onclick="appendTag('[[state]]');" class="badge badge-danger default-tag" hidden>State</a>
-              <a onclick="appendTag('[[section]]');" class="badge badge-light default-tag" hidden>Section</a>
-              <a onclick="appendTag('[[assub]]');" class="badge badge-light tea" hidden>Assigned Subjects</a>
-              <a onclick="appendTag('[[clssub]]');" class="badge badge-primary stu" hidden>Class Subjects</a>
-              <a onclick="appendTag('[[address]]');" class="badge badge-secondary default-tag" hidden>Address</a>
-              <a onclick="appendTag('[[grades]]');" class="badge badge-primary stu" hidden>Grades</a>
-              <a onclick="appendTag('[[amount]]');" class="badge badge-dark stu" title="for {{ session }}" hidden>School Fee Paid Amount</a>
-              <a onclick="appendTag('[[attnd]]');" class="badge badge-primary stu" hidden>Attendace</a>
-              <a onclick="appendTag('[[scname]]');" class="badge badge-dark default-tag" hidden>School Name</a>
-              <a onclick="appendTag('[[damnt]]');" class="badge badge-danger stu" hidden>Due amount</a>
-              <a onclick="appendTag('[[tno]]');" class="badge badge-dark stu" hidden>Teller no</a>
-              <a onclick="appendTag('[[expnse]]');" class="badge badge-success default-tag" hidden>Expense</a>
+              <a onclick="appendTag('==fullname==');" class="badge badge-default default-tag" hidden>Full Name</a>
+              <a onclick="appendTag('==fname==');" class="badge badge-primary default-tag" hidden>First Name</a>
+              <a onclick="appendTag('==sname==');" class="badge badge-light default-tag" hidden>Surname</a>
+              <a onclick="appendTag('==oname==');" class="badge badge-default default-tag" hidden>Other Nname</a>
+              <a onclick="appendTag('==gender==');" class="badge badge-success default-tag" hidden>Gender</a>
+              <a onclick="appendTag('==lga==');" class="badge badge-warning default-tag" hidden>Local Govt</a>
+              <a onclick="appendTag('==clss==');" class="badge badge-info stu" hidden>Class</a>
+              <a onclick="appendTag('==session==');" class="badge badge-light default-tag" hidden>Session</a>
+              <a onclick="appendTag('==state==');" class="badge badge-danger default-tag" hidden>State</a>
+              <a onclick="appendTag('==section==');" class="badge badge-light default-tag" hidden>Section</a>
+              <a onclick="appendTag('==allsub==');" title="Allocated Subjects" class="badge badge-light tea" hidden>Assigned Subjects</a>
+              <a onclick="appendTag('==clssub==');" class="badge badge-primary stu" hidden>Class Subjects</a>
+              <a onclick="appendTag('==address==');" class="badge badge-secondary default-tag" hidden>Address</a>
+              <a onclick="appendTag('==grades==');" class="badge badge-primary stu" hidden>Grades</a>
+              <a onclick="appendTag('==amount==');" class="badge badge-dark stu" title="for {{ session }}" hidden>School Fee Paid Amount</a>
+              <a onclick="appendTag('==attnd==');" class="badge badge-primary stu" hidden>Attendace</a>
+              <a onclick="appendTag('==scname==');" class="badge badge-dark default-tag" hidden>School Name</a>
+              <a onclick="appendTag('==damnt==');" class="badge badge-danger stu" hidden>Due amount</a>
+              <a onclick="appendTag('==tno==');" class="badge badge-dark stu" hidden>Teller no</a>
+              <a onclick="appendTag('==expnse==');" class="badge badge-success default-tag" hidden>Expense</a>
             </p>
             {% include 'markdown.html' %}
           </div>
@@ -228,6 +228,8 @@ const handleUsers = (user_type) => {
           $(".user_label").text('Parent');
           user_type = 'parents'
           handleUsers(user_type);
+           // show all student tags if hidden
+          $(".stu").fadeIn("slow").removeAttr('hidden');
           break;
 
         case 'admins':

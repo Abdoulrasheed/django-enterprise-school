@@ -203,6 +203,7 @@ def home(request):
 		context["no_teachers"] = no_teachers
 		context["target_income"] = int(target_income)
 		context['sms_unit'] = sms_unit
+		context['colxl'] = 2
 
 	elif request.user.is_student:
 		student = Student.objects.get(user__pk=request.user.pk)
@@ -221,6 +222,7 @@ def home(request):
 		"subjects": subjects,
 		"student": student,
 		"p":p,
+		"colxl": 3,
 		}
 	elif request.user.is_teacher:
 		subjects = SubjectAssign.objects.filter(teacher__id=request.user.id)
@@ -231,8 +233,12 @@ def home(request):
 		"no_classes": no_classes,
 		"no_teachers": no_teachers,
 		"subjects": subjects,
+		"colxl": 3,
 	}
 	elif request.user.is_parent:
+		no_classes = Class.objects.all().count()
+		no_subjects = Subject.objects.all().count()
+		no_teachers = User.objects.filter(is_teacher=True).count()
 		wards = Parent.objects.filter(parent__pk=request.user.id)
 		context = {
 		"no_students": wards.count(),
@@ -241,6 +247,7 @@ def home(request):
 		"no_classes": no_classes,
 		"no_teachers": no_teachers,
 		"wards": wards,
+		"colxl": 3,
 		}
 	return render(request, 'sms/home.html', context)
 
@@ -1218,20 +1225,7 @@ def load_subjects(request):
 			subjects = i.subjects.filter(subjectassign__clss=clss)
 	return render(request, 'sms/mark/subject_dropdown_list_options.html', {'subjects': subjects})
 
-def get_terms():
-	term = 'First'
-	now = tz.now()
-	date = tz.localtime(now).date()
-	setting = Setting.objects.first()
 
-	if setting:
-		st_begins, st_ends = setting.st_begins, setting.st_ends
-		tt_begins, tt_ends = setting.tt_begins, setting.tt_ends
-		if (st_begins and st_begins) and (date >= st_begins) and (date <=st_ends):
-			term = 'Second'
-		if (tt_begins and tt_ends) and (date >= tt_begins) and (date <=tt_ends):
-			term = 'Third'
-	return term
 @login_required
 @teacher_required
 def score_list(request):
@@ -1243,7 +1237,6 @@ def score_list(request):
 		context.update({"assigned_subjects": assigned_subjects})
 	return render(request, 'sms/mark/get_score_list.html', context)
 
-from django.utils import timezone as tz
 @login_required
 @teacher_required
 def score_entry(request):
@@ -1360,15 +1353,17 @@ def view_score(request):
 	if request.user.is_parent:
 		session = Session.objects.get(current_session=True)
 		ids = ()
-		students = Parent.objects.filter(parent__pk=request.user.pk).values('parent', 'student').annotate(Count('student'))
+		grades = []
+		students = Parent.objects.filter(parent__pk=request.user.pk)
 		for student in students:
-			stud_id = student['student']
+			stud_id = student.id
 			ids += (stud_id,)
-			grades = Grade.objects.filter(student=stud_id, session=session)
+			grades += Grade.objects.filter(student=stud_id, session=session, term=get_terms())
 		list_students = Student.objects.filter(id__in=ids)
 		context = {
 			"grades": grades,
 			"students": list_students,
+			"term": get_terms(),
 		}
 		return render(request, 'sms/mark/parent_view_scores.html', context)
 	elif request.user.is_student:
@@ -1398,11 +1393,11 @@ def view_score(request):
 
 @login_required
 def load_score_table(request):
-	if request.is_ajax:
+	if request.is_ajax():
 		if request.user.is_parent:
-			session = Session.objects.get(current_session=True)
+			current_session = Session.objects.get(current_session=True)
 			stud_id = request.GET.get('stud_id')
-			grades = Grade.objects.filter(student__pk=stud_id, session=session)
+			grades = Grade.objects.filter(student__pk=stud_id, session=current_session, term=get_terms())
 			context = {"grades": grades}
 			return render(request, 'sms/mark/load_view_score.html', context)
 		else:
@@ -1710,9 +1705,10 @@ def mail(request):
 			# prepare html templates
 			template = 'email_template.html'
 			setting = Setting.objects.first()
-			context = {}
-			context['setting'] = setting
-			context['mail'] = mail
+			context= {
+				'setting': setting,
+				'mail': mail
+				}
 
 			mail_message = render_to_string(template, context)
 			
@@ -1722,7 +1718,7 @@ def mail(request):
 				mail.recipients.add(i)
 				receivers += (i.email,)
 
-			# send the actual email
+			# send the actual email and redirect
 			asyncio.run(mail.deliver_mail(recipients=receivers, content=mail_message))
 			messages.success(request, 'Emails Successfully Send !')
 			return redirect('mail')
@@ -1756,7 +1752,7 @@ def send_bulk_sms(request):
 				users = User.objects.filter(is_teacher=True)
 
 			for user in users:
-				send_sms(user.phone, '{}, {}'.format(title, sms_body))
+				asyncio.run(send_sms(user.phone, '{}, {}'.format(title, sms_body)))
 
 			Sms.objects.create(title=title, body=body, to_user=to_user)
 			context = {
@@ -1944,7 +1940,7 @@ def to_class_list(request):
 @login_required
 @teacher_required
 def load_promotion_list(request):
-	if request.is_ajax:
+	if request.is_ajax():
 		from_class_id = request.GET.get('from_class_id')
 		to_class_id = request.GET.get('to_class_id')
 		current_session = Session.objects.get(current_session=True)
@@ -1975,8 +1971,19 @@ def promote(request, stud_id,  to_class_id, to_session_id):
 		return HttpResponse('Promoted')
 	except Student.DoesNotExist:
 		student = get_object_or_404(Student, id=stud_id)
+
+		# promote and update details of parent to reference
+		# the new create student, so that the parent can access information
+		# such as grades info about the student
+		# WARNING: The parent can lose access to viewing the student object data
+		
+		parent = Parent.objects.get(student__pk=stud_id)
 		s = Student.objects.create(user=student.user, in_class=clss, session=session)
 		s.save()
+
+		# Update parent relationship to the new created student object above
+		parent.student = s
+		parent.save()
 		return HttpResponse('Promoted')
 	return HttpResponse('Error, click again')
 
@@ -2313,12 +2320,13 @@ def update_expense(request, id):
 @teacher_required
 def set_parent(request):
 	if request.method == "POST":
+		print(request.POST.get('student_id'))
 		form = SetParentForm(request.POST)
 		if form.is_valid():
 			student = form.cleaned_data.get('student_id')
 			parent = form.cleaned_data.get('parent_id')
-			parent = get_object_or_404(User, id=parent.id)
-			student = get_object_or_404(Student, id=student.id)
+			parent = get_object_or_404(User, id=parent)
+			student = get_object_or_404(Student, id=student)
 			Parent.objects.create(student=student, parent=parent).save()
 			messages.success(request, "You've successfully set a parent for the selected student")
 			return redirect('set_parent')

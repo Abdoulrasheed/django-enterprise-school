@@ -116,4 +116,3 @@ def get_tenant_data(data, tenant_id):
 		if data == 'no_studs':
 			students = User.objects.filter(is_student=True).count()
 			return students
-
