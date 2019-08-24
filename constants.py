@@ -1,3 +1,4 @@
+from django.utils.translation import ugettext_lazy as _
 FIRST = "First"
 SECOND = "Second"
 THIRD = "Third"
@@ -114,3 +115,12 @@ NOTIFICATION_TYPE = (
 	(ERROR, "Error"),
 	(INFO, "Info"),
 	)
+
+DRAFT = "D"
+DELIVERED = "S"
+PENDING = "P"
+STATUS = (
+    (DRAFT, _("Draft")),
+    (DELIVERED, _("Delivered")),
+    (PENDING, _("Pending")),
+)
