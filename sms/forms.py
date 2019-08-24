@@ -453,19 +453,8 @@ class EditSessionForm(forms.ModelForm):
 
 
 class SetParentForm(forms.Form):
-    try:
-        already_set = Parent.objects.all()
-        stud_ids = ()
-        for i in already_set:
-            stud_ids += (i.student.id,)
-        current_session = Session.objects.get(current_session=True)
-        Uq = User.objects.filter(is_parent=True)
-        Sq = Student.objects.filter(session=current_session).exclude(id__in=stud_ids)
-        parent_id = forms.ModelChoiceField(queryset=Uq, label="Parent")
-        student_id = forms.ModelChoiceField(queryset=Sq, label="Student")
-    except:
-        parent_id = None
-        student_id = None
+    parent_id = forms.IntegerField()
+    student_id = forms.IntegerField()
 
 class ProfilePictureForm(forms.Form):
     picture = forms.ImageField()
