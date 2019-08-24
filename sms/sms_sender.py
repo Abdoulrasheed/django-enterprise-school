@@ -2,6 +2,8 @@ import asyncio
 from .models import Setting
 from twilio.rest import Client
 from .twilio_token import ACCOUNT_SID, AUTH_TOKEN
+from .models import Sms
+from constants import DELIVERED
 
 
 
@@ -21,11 +23,16 @@ async def send_sms(phone, msg):
 						message = client.messages.create(
 							to=phone,
 							from_='Bitpoint inc.',
-							body=msg
+							body=msg,
+							status_callback='https://postb.in/1566539964442-7949227630160',
 						)
 						print("message send with an ID of {}".format(message.sid))
-						sms_unit = Setting.objects.first()
-						sms_unit.sms_unit -= 1
-						sms_unit.save()
+						Sms.objects.get(body=msg)
+						if message.status_callback == 'sent':
+							sms_unit = Setting.objects.first()
+							sms_unit.sms_unit -= 1
+							sms_unit.save()
+							message.status = DELIVERED
+							message.save()
 					except:
 						print("there is an error while sending an sms")
