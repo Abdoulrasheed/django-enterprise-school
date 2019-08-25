@@ -413,7 +413,7 @@ class EmailMessage(models.Model):
     			#	Today's Attendance and
     			#	Grades for the current term and session
     			
-    			childrens = Parent.objects.filter(parent__pk=request.user.id)
+    			childrens = Parent.objects.filter(parent__pk=i.id)
 
     			for child in childrens:
     				subjects = child.student.in_class.subjects.all()
@@ -439,40 +439,54 @@ class EmailMessage(models.Model):
 	    			# re.sub espects string and so the q
 	    			# should be str
 
-	    			p_amount = str(Payment.objects.filter(
-    				student=child, 
-    				session=Session.objects.filter(current_session=True).first().id, 
-    				term=get_terms()).first().paid_amount or 0)
+	    			if Payment.objects.filter(
+	    				student=child.student, 
+	    				session=Session.objects.filter(current_session=True).first().id, 
+	    				term=get_terms()).exists():
+			    			p_amount = str(Payment.objects.filter(
+		    				student=child.student, 
+		    				session=Session.objects.filter(current_session=True).first().id, 
+		    				term=get_terms()).first().paid_amount)
 
-    				# replace ==amount== with the actual amount.
-	    			content = re.sub('==amount==', p_amount, content)
+		    				# replace ==amount== with the actual amount.
+			    			content = re.sub('==amount==', p_amount, content)
 
 	    			# thirdly, due amount
 	    			# due amount
-	    			d_amount = str(Payment.objects.filter(
-	    				student=child, 
-	    				session=Session.objects.filter(current_session=True).first().id, 
-	    				term=get_terms()).first().due_amount or 0)
 
-	    			# again, replace
-	    			content = re.sub('==damnt==', d_amount, content)
+	    			if Payment.objects.filter(
+	    				student=child.student, 
+	    				session=Session.objects.filter(current_session=True).first().id, 
+	    				term=get_terms()):
+			    			d_amount = str(Payment.objects.filter(
+			    				student=child.student, 
+			    				session=Session.objects.filter(current_session=True).first().id, 
+			    				term=get_terms()).first().due_amount)
+
+			    			# again, replace
+			    			content = re.sub('==damnt==', d_amount, content)
 
 	    			# Student attendance
-	    			a_status = Attendance.objects.filter(
-	    				student=student, 
+	    			if Attendance.objects.filter(
+	    				student=child.student, 
 	    				session=Session.objects.filter(current_session=True).first().id, 
 	    				term=get_terms(), 
-	    				date=date.today()).first().is_present or 'Absent'
+	    				date=date.today()):
+			    			a_status = Attendance.objects.filter(
+			    				student=child.student, 
+			    				session=Session.objects.filter(current_session=True).first().id, 
+			    				term=get_terms(), 
+			    				date=date.today()).first().is_present or 'Absent'
 
-	    			if a_status is not 'Absent':
-	    				a_status = 'Present'
+			    			if a_status is not 'Absent':
+			    				a_status = 'Present'
 
-	    			# replace
-	    			content = re.sub('==attnd==', a_status, content)
+			    			# replace
+			    			content = re.sub('==attnd==', a_status, content)
 
 	    			# Get and replace grades
 	    			grades = Grade.objects.filter(
-	    				student=child, 
+	    				student=child.student, 
 	    				session=Session.objects.filter(current_session=True).first().id, 
 	    				term=get_terms())
 
