@@ -13,7 +13,7 @@
          <!--Card content-->
          <div class="card-body d-sm-flex justify-content-between">
             <h6 class="mb-2 mb-sm-0 pt-1">
-               <a href="/">Home Page</a>
+               <a href="{% url 'home_page' %}">Home Page</a>
                <span>/</span>
                <span>Students</span>
             </h6>
@@ -58,6 +58,15 @@
                      </button>
                      <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
                         <h6  class="dropdown-header">Select Class</h6>
+                        {% if request.user.is_teacher %}
+                     {% for class in classes %}
+                      <a data-toggle="tooltip" title="{{ class.clss }}" class="dropdown-item" href="{% url 'students_list_view' id=class.clss.id %}">
+                     {{ class.clss }}
+                      </a>
+                       {% empty %}
+                        <span>No class available</span>
+                     {% endfor %}
+                     {% else %}
                         {% for class in classes %}
                         <a data-toggle="tooltip" title="{{ class }}" class="dropdown-item" href="{% url 'students_list_view' id=class.id %}">
                         {{ class }}
@@ -65,6 +74,7 @@
                         {% empty %}
                         <span>No class available</span>
                         {% endfor %}
+                        {% endif %}
                      </div>
                   </div>
                </div>

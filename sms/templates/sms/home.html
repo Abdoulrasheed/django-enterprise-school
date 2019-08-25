@@ -15,6 +15,10 @@
         .progress {
           width: 65vw !important;
         }
+        .subject-action-buttons {
+          width: 75vw;
+          align-items: center;
+        }
     }
   </style>
   {% endblock %}
@@ -65,7 +69,13 @@
 
                 <div class="col-md-7 col-7 text-right pr-5">
                   <h5 class="ml-4 mt-4 mb-2 font-weight-bold">{{ no_students }}</h5>
-                  <p class="font-small grey-text"><small>Student{{ no_students|pluralize }}</small></p>
+                  <p class="font-small grey-text"><small>
+                  {% if request.user.is_parent %}
+                  Chil{{ no_students|pluralize:"d,dren" }}
+                  {% else %}
+                  Student{{ no_students|pluralize }}
+                  {% endif %}
+                  </small></p>
                 </div>
               </div>
               <!--/.Card Data-->
@@ -280,13 +290,6 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-12 col-md-12">
-            <div class="card mb-4">
-              <div class="card-body">
-                <div id="calendar"></div>
-              </div>
-            </div>
-          </div>
           {% elif request.user.is_student %}
            <div class="col-lg-8 col-md-12">
           <div class="list-group">
@@ -310,11 +313,14 @@
           <button type="button" class="list-group-item list-group-item-action active">
              Your subjects:
           </button>
-          {% for subject in subjects %}
-          ({{ subject.clss }}):
-          {% for each in subject.subjects.all %}
+          {% for obj in allocated_subjects %}
+          ({{ obj.clss }}):
+          {% for subject in obj.subjects.all %}
           <button type="button" class="list-group-item list-group-item-action">
-            {{ each }}
+            {{ subject.name }} 
+            <a href="#" style="float: right;" class="btn btn-secondary btn-sm subject-action-buttons">View Syllabus</a>
+
+            <a href="{% url 'score_list' %}" style="float: right;" class="btn btn-primary btn-sm subject-action-buttons">Input Score</a>
           </button>
           {% endfor %}
           {% empty %}
@@ -328,11 +334,14 @@
         <div class="col-lg-8 col-md-12">
           <div class="list-group">
           <button type="button" class="list-group-item list-group-item-action active">
-            Ward(s) Information
+            My chil{{ wards|pluralize:"d,dren's" }} Information
           </button>
           {% for ward in wards %}
           <button type="button" class="list-group-item list-group-item-action">
             {{ ward.student }} ({{ ward.student.in_class }})
+            <a href="{% url 'profile' user_id=ward.student.user.id %}" style="float: right;" class="btn btn-secondary btn-sm subject-action-buttons">View Profile</a>
+
+            <a href="{% url 'score_list' %}" style="float: right;" class="btn btn-primary btn-sm subject-action-buttons">View Score</a>
           </button>
           {% empty %}
            <button type="button" class="list-group-item list-group-item-action">
@@ -342,8 +351,17 @@
         </div>
         </div>
             {% endif %}
-        </div>
 
+        <!-- Calendar starts here -->
+        <div class="col-lg-12 col-md-12">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div id="calendar"></div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <!-- Calendar ends here -->
       </section>
       <!-- /.Section: data tables -->
   <!--Main layout-->

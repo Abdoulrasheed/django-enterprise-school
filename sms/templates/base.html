@@ -63,7 +63,7 @@
             <li><a href="{% url 'students_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-user-graduate"></i>
                 Student</a></li>
                 {% endif %}
-                 {% if request.user.is_superuser or request.user.is_teacher %}
+                 {% if request.user.is_superuser %}
             <li><a href="{% url 'parents_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-user"></i>
                 Parent</a></li>
                 {% endif %}

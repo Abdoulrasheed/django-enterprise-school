@@ -36,11 +36,21 @@
                   </button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
                      <h6  class="dropdown-header">Select Class</h6>
+                     {% if request.user.is_teacher %}
+                     {% for class in classes %}
+                      <a data-toggle="tooltip" title="{{ class.clss }}" class="dropdown-item" href="{% url 'students_list_view' id=class.clss.id %}">
+                     {{ class.clss }}
+                      </a>
+                       {% empty %}
+                        <span>No class available</span>
+                     {% endfor %}
+                     {% else %}
                      {% for class in classes %}
                       <a data-toggle="tooltip" title="{{ class }}" class="dropdown-item" href="{% url 'students_list_view' id=class.id %}">
                      {{ class }}
                       </a>
                      {% endfor %}
+                     {% endif %}
                   </div>
                </div>
             </div>
