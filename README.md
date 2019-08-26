@@ -14,7 +14,7 @@ git clone https://github.com/Abdoulrasheed/django-enterprise-school.git
 
 > Next, change directory to the root of the project
 ```bash
-cd clc
+cd django-enterprise-school
 ```
 
 > Install requirements
