@@ -61,9 +61,9 @@ python manage.py migrate_schemas
 python manage.py create_tenant_superuser
 ```
 
--Choose public tenant and create the user
+Choose public tenant and create the user
 
--Now visit admin.<domain> (eg _admin.example.local_)
+Now visit admin.<domain> (eg _admin.example.local_)
 
 > Done
 
