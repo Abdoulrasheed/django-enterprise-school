@@ -6,30 +6,30 @@ An Enterprise Online High school management Portal.
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install all requirements.
 
-# First thing first clone this repository
+> First thing first clone this repository
 
 ```bash
 git clone https://github.com/abdoulrasheed/clc.git
 ```
 
-# Next, change directory to the root of the project
+> Next, change directory to the root of the project
 ```bash
 cd clc
 ```
 
-# Install requirements
+> Install requirements
 
 ```bash
 pip install -r requirements.txt
 ```
 
-# Edit Host file and add some subdomains
+> Edit Host file and add some subdomains
 
 ```bash
 sudo nano /etc/hosts
 ```
 
-# Create a public tenant
+> Create a public tenant
 
 ```
 from schools.models import Client, Domain
@@ -49,13 +49,13 @@ domain.is_primary = True
 domain.save()
 ```
 
-# Migrate Database
+> Migrate Database
 
 ```
 python manage.py migrate_schemas
 ```
 
-# Create tenant su
+> Create tenant su
 
 ```
 python manage.py create_tenant_superuser
@@ -65,7 +65,7 @@ python manage.py create_tenant_superuser
 
 -Now visit admin.<domain> (eg _admin.example.local_)
 
-# Done
+> Done
 
 
 ## TODO
@@ -94,4 +94,4 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 
 ## Attribution
-# Commercial usage is prohibited
+### Commercial usage is prohibited
