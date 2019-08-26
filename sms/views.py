@@ -1990,30 +1990,28 @@ def load_promotion_list(request):
 @login_required
 @admin_required
 def promote(request, stud_id,  to_class_id, to_session_id):
-	session = get_object_or_404(Session, id=to_session_id)
-	clss = get_object_or_404(Class, id=to_class_id)
-	try:
-		student = get_object_or_404(Student, id=stud_id)
-		s = Student.objects.get(user__pk=student.user.pk, session=session.id)
-		s.clss = clss
-		s.session = session
-		s.save()
-		return HttpResponse('Promoted')
-	except Student.DoesNotExist:
+	from_session = Session.objects.get(current_session=True)
+	to_session = Session.objects.get(id=to_session_id)
+	to_class = Class.objects.get(id=to_class_id)
 
-		# recreate the student in the next session (to_session)
-		# and add him/her to its original parent
-		
-		parent = Parent.objects.get(student__in=stud_id)
-		s = Student.objects.create(user=student.user, in_class=clss, session=session)
-		s.save()
+	student = Student.objects.get(
+		id=stud_id, 
+		session=from_session)
 
-		# Add the admitted student in the parent studen's list
-		parent.student.add(s)
+	# get the parent of the student if exist
+	parent = student.guardians.first() or student.guardians.none()
 
-		# return
-		return HttpResponse('Promoted')
-	return HttpResponse('Error, click again')
+	# create copy of the student object 
+	# changing only the session and the class of the student
+	student.pk = None
+	student.session = to_session
+	student.in_class = to_class
+	student.save()
+
+	# connect the copied student with a parent
+	parent.student.add(student)
+
+	return HttpResponse('Promoted')
 
 @login_required
 def change_password(request):
@@ -2363,11 +2361,9 @@ def set_parent(request):
 			form = SetParentForm(request.POST)
 			return render(request, 'sms/parent/set_parent.html', {'form': form})
 	else:
-		# Get all parents
 		already_set = Parent.objects.all()
 
-		# Create an empty tuple to store, id of
-		# those students who has parents already
+		# keep track of those students who has parents already
 		# so that we can exclude them in our q
 
 		stud_ids = ()

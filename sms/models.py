@@ -93,7 +93,7 @@ class Student(models.Model):
 
 class Parent(models.Model):
 	parent = models.ForeignKey(User, on_delete=models.CASCADE)
-	student = models.ManyToManyField(Student, related_name="childrens")
+	student = models.ManyToManyField(Student, related_name="guardians")
 
 	def __str__(self):
 		return self.parent.get_full_name()
