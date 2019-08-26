@@ -334,18 +334,18 @@
         <div class="col-lg-8 col-md-12">
           <div class="list-group">
           <button type="button" class="list-group-item list-group-item-action active">
-            My chil{{ wards|pluralize:"d,dren's" }} Information
+            My chil{{ students|pluralize:"d,dren's" }} Information
           </button>
-          {% for ward in wards %}
+          {% for student in students %}
           <button type="button" class="list-group-item list-group-item-action">
-            {{ ward.student }} ({{ ward.student.in_class }})
-            <a href="{% url 'profile' user_id=ward.student.user.id %}" style="float: right;" class="btn btn-secondary btn-sm subject-action-buttons">View Profile</a>
+            {{ student }} ({{ student.in_class }})
+            <a href="{% url 'profile' user_id=student.user.id %}" style="float: right;" class="btn btn-secondary btn-sm subject-action-buttons">View Profile</a>
 
-            <a href="{% url 'score_list' %}" style="float: right;" class="btn btn-primary btn-sm subject-action-buttons">View Score</a>
+            <a href="{% url 'view_score_list' %}" style="float: right;" class="btn btn-primary btn-sm subject-action-buttons">View Score</a>
           </button>
           {% empty %}
            <button type="button" class="list-group-item list-group-item-action">
-            Wards not available
+            no child available
           </button>
           {% endfor %}
         </div>

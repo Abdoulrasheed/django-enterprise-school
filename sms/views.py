@@ -211,7 +211,7 @@ def home(request):
 		context['colxl'] = 2
 
 	elif request.user.is_student:
-		student = Student.objects.get(user__pk=request.user.pk)
+		student = Student.objects.get(user__pk=request.user.pk, session=current_session)
 		p = Payment.objects.filter(student=student, session=current_session)
 		no_students = Student.objects.filter(in_class__pk=student.in_class.pk, session=current_session).count()
 		subjects_q = get_object_or_404(Class, pk=student.in_class.pk).subjects
@@ -240,10 +240,7 @@ def home(request):
 		no_students = 0
 		no_parents = 0
 
-		# if a parent appears to have more than one child
-		# then only return him once, i.e to avoid counting him
-		# more than once
-		# also handle if a student does not have parent set.
+		# also skip those students with no parent.
 
 		parent_ids = ()
 		for clss in subjects:
@@ -252,7 +249,8 @@ def home(request):
 			if Parent.objects.filter(student__in_class__pk=clss.clss.id).exists():
 				if not Parent.objects.filter(student__in_class__pk=clss.clss.id).first().id in parent_ids:
 					no_parents += Parent.objects.filter(student__in_class__pk=clss.clss.id).count()
-				parent_ids += (Parent.objects.filter(student__in_class__pk=clss.clss.id).first().id,)
+					parent_ids += (Parent.objects.filter(student__in_class__pk=clss.clss.id).first().id,)
+
 		context = {
 		"no_students": no_students,
 		"no_parents": len(parent_ids),
@@ -265,14 +263,14 @@ def home(request):
 		no_classes = Class.objects.all().count()
 		no_subjects = Subject.objects.all().count()
 		no_teachers = User.objects.filter(is_teacher=True).count()
-		wards = Parent.objects.filter(parent__pk=request.user.id)
+		parent = Parent.objects.get(parent__pk=request.user.id)
 		context = {
-		"no_students": wards.count(),
+		"no_students": parent.student.filter(session=current_session).count(),
 		"no_parents": 1,
 		"no_subjects": no_subjects,
 		"no_classes": no_classes,
 		"no_teachers": no_teachers,
-		"wards": wards,
+		"students": parent.student.filter(session=current_session),
 		"colxl": 3,
 		}
 	return render(request, 'sms/home.html', context)
@@ -647,14 +645,14 @@ def add_student(request):
 					is_parent = True,
 					)
 
-				Parent.objects.create(student=student, parent=parent)
+				par = Parent.objects.create(parent=parent)
+				par.student.add(student)
 				if parent_picture:
 					fs = FileSystemStorage()
 					fs.save(parent_picture.name, parent_picture)
 			else:
-				parent = User.objects.get(username=existing_parent)
-				Parent.objects.create(student=student, parent=parent)
-			print(dir(general_setting))
+				parent = Parent.objects.get(parent__username=existing_parent)
+				parent.student.add(student)
 
 			sms_body = "Hello {0}, \nWelcome to {1}. \
 						Your login details are: \
@@ -1329,7 +1327,7 @@ def score_entry(request):
 				a.compute_position(term)
 				a.save()
 		messages.success(request, "Score Successfully Recorded !")
-		return redirect('/app/score-entry/')
+		return redirect('score_list')
 
 	selected_class = request.GET.get('class')
 	selected_term = request.GET.get('term')
@@ -1400,17 +1398,16 @@ def score_entry(request):
 def view_score(request):
 	session = Session.objects.get(current_session=True)
 	if request.user.is_parent:
-		ids = ()
-		grades = []
-		students = Parent.objects.filter(parent__pk=request.user.pk)
-		for student in students:
-			stud_id = student.id
-			ids += (stud_id,)
-			grades += Grade.objects.filter(student=stud_id, session=session, term=get_terms())
-		list_students = Student.objects.filter(id__in=ids)
+
+		# Get all the current sesssion students related 
+		# to the parent that  fired the request
+		
+		students = Parent.objects.get(
+			parent__pk=request.user.pk).student.filter(
+			session=session)
+		
 		context = {
-			"grades": grades,
-			"students": list_students,
+			"students": students,
 			"term": get_terms(),
 		}
 		return render(request, 'sms/mark/parent_view_scores.html', context)
@@ -2003,19 +2000,18 @@ def promote(request, stud_id,  to_class_id, to_session_id):
 		s.save()
 		return HttpResponse('Promoted')
 	except Student.DoesNotExist:
+
+		# recreate the student in the next session (to_session)
+		# and add him/her to its original parent
 		
-		# promote and update details of parent to reference
-		# the new created student, so that the parent can access information
-		# such as grades info about the student
-		# WARNING: The parent can lose access to viewing the student's previous data
-		
-		parent = Parent.objects.get(student=stud_id)
+		parent = Parent.objects.get(student__in=stud_id)
 		s = Student.objects.create(user=student.user, in_class=clss, session=session)
 		s.save()
 
-		# Update parent relationship to the new created student object above
-		parent.student = s
-		parent.save()
+		# Add the admitted student in the parent studen's list
+		parent.student.add(s)
+
+		# return
 		return HttpResponse('Promoted')
 	return HttpResponse('Error, click again')
 
@@ -2352,24 +2348,33 @@ def update_expense(request, id):
 @admin_required
 def set_parent(request):
 	if request.method == "POST":
-		print(request.POST.get('student_id'))
 		form = SetParentForm(request.POST)
 		if form.is_valid():
-			student = form.cleaned_data.get('student_id')
-			parent = form.cleaned_data.get('parent_id')
-			parent = get_object_or_404(User, id=parent)
-			student = get_object_or_404(Student, id=student)
-			Parent.objects.create(student=student, parent=parent).save()
+			student_id = form.cleaned_data.get('student_id')
+			parent_id = form.cleaned_data.get('parent_id')
+
+			student = get_object_or_404(Student, id=student_id)
+			parent = get_object_or_404(Parent, parent__pk=parent_id)
+
+			parent.student.add(student)
 			messages.success(request, "You've successfully set a parent for the selected student")
 			return redirect('set_parent')
 		else:
 			form = SetParentForm(request.POST)
 			return render(request, 'sms/parent/set_parent.html', {'form': form})
 	else:
+		# Get all parents
 		already_set = Parent.objects.all()
+
+		# Create an empty tuple to store, id of
+		# those students who has parents already
+		# so that we can exclude them in our q
+
 		stud_ids = ()
-		for i in already_set:
-			stud_ids += (i.student.id,)
+		for parent in already_set:
+			for student in parent.student.all():
+				stud_ids += (student.id,)
+		
 		current_session = Session.objects.get(current_session=True)
 		students = Student.objects.filter(session=current_session).exclude(id__in=stud_ids)
 		parents = User.objects.filter(is_parent=True)
@@ -2377,7 +2382,7 @@ def set_parent(request):
 
 @login_required
 def upload_picture(request):
-	if request.is_ajax:
+	if request.is_ajax():
 		update_msg = "Error: sorry there's problem while updating picture"
 		form = ProfilePictureForm(request.POST, request.FILES)
 		if form.is_valid():

@@ -32,7 +32,7 @@
               <select id="student" name="student" class="mdb-select colorful-select dropdown-primary mx-2 md-form mt-3 md-dropdown">
                 <option value="" disabled selected>Select a student</option>
                 {% for student in students %}
-                <option value="{{ student.id }}">{{ student.user.get_full_name }}</option>
+                <option value="{{ student.id }}">{{ student.user.get_full_name }} ({{ student.in_class }})</option>
                 {% empty %}
                 <option value="" disabled selected>No student is available</option>
                 {% endfor %}
