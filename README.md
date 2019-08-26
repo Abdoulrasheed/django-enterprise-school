@@ -9,7 +9,7 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install all req
 > First thing first clone this repository
 
 ```bash
-git clone https://github.com/abdoulrasheed/clc.git
+git clone https://github.com/Abdoulrasheed/django-enterprise-school.git
 ```
 
 > Next, change directory to the root of the project
