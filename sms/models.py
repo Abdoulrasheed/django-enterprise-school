@@ -7,7 +7,6 @@ from markdownx.utils import markdownify
 from django.utils.translation import ugettext_lazy as _
 
 from django.template.defaultfilters import slugify
-from .utils import multireplace
 from django.core.mail import EmailMessage as EMessage
 
 from datetime import date
