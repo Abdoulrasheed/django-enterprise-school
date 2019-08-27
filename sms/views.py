@@ -1722,7 +1722,6 @@ def mail(request):
 			# get author of the email
 			admin = request.user
 
-			#create email object
 			mail = EmailMessage.objects.create(
 				title=title,
 				content=message,
@@ -1741,13 +1740,12 @@ def mail(request):
 			mail_message = render_to_string(template, context)
 			
 			# add recipients one after another
-			receivers = ()
 			for i in recipients:
 				mail.recipients.add(i)
-				receivers += (i.email,)
+				
 
 			# send the actual email and redirect
-			asyncio.run(mail.deliver_mail(recipients=receivers, content=mail_message))
+			asyncio.run(mail.deliver_mail(content=mail_message))
 			messages.success(request, 'Emails Successfully Send !')
 			return redirect('mail')
 		else:
@@ -1869,10 +1867,8 @@ def general_setting(request):
 @login_required
 @admin_required
 def reset_users_password_view(request):
-	print(request.POST.get('new_password'))
 	if request.is_ajax():
 		if request.method == 'POST':
-			print(request.POST.get('new_password'))
 			user = request.POST.get('selected_user')
 			new_pass = request.POST.get('new_password')
 			user = User.objects.get(username=user)
@@ -2362,9 +2358,9 @@ def set_parent(request):
 			return render(request, 'sms/parent/set_parent.html', {'form': form})
 	else:
 		already_set = Parent.objects.all()
-
-		# keep track of those students who has parents already
-		# so that we can exclude them in our q
+ 
+		# exclude those students 
+		# who already has parents them in our q
 
 		stud_ids = ()
 		for parent in already_set:
@@ -2379,7 +2375,6 @@ def set_parent(request):
 @login_required
 def upload_picture(request):
 	if request.is_ajax():
-		update_msg = "Error: sorry there's problem while updating picture"
 		form = ProfilePictureForm(request.POST, request.FILES)
 		if form.is_valid():
 			picture = form.cleaned_data.get('picture')
@@ -2482,16 +2477,24 @@ def subject_allocation_report(request):
 		if clss == "All":
 			clss = Class.objects.all().order_by('name')
 			for klass in clss:
-				assigned_teachers = SubjectAssign.objects.filter(term=term, session=session.pk, clss=klass)
+				assigned_teachers = SubjectAssign.objects.filter(
+					term=term, 
+					session=session.pk, 
+					clss=klass)
 				default += assigned_teachers
-			assign_teacher_len = len(default)
-			context['assign_teacher_len'] = assign_teacher_len
+			context['assign_teacher_len'] = assign_teacher_len = len(default)
 			context['classes'] = clss
 		else:
 			clss = get_object_or_404(Class, id=clss)
-			default = SubjectAssign.objects.filter(term=term, session=session.pk, clss=clss.id)
+			default = SubjectAssign.objects.filter(
+				term=term, 
+				session=session.pk, 
+				clss=clss.id)
+
 			context['class'] = clss 
-		total_number_of_teachers = User.objects.filter(is_teacher=True).count()
+		total_number_of_teachers = User.objects.filter(
+			is_teacher=True).count()
+
 		context["setting"] = setting
 		context["term"] = term
 		context["session"] = session
@@ -2549,23 +2552,27 @@ def subject_report(request):
 		subject = request.GET.get('subject')
 		subjects = Subject.objects.filter(pk=subject)
 		s = get_object_or_404(Subject, id=subject)
-		subject_teacher = SubjectAssign.objects.filter(clss=class_id, session=session, term=term);
+		subject_teacher = SubjectAssign.objects.filter(
+			clss=class_id, 
+			session=session, 
+			term=term);
 		for i in subject_teacher:
 			for sub in i.subjects.all():
 				if sub == s:
 					subject_teacher = i.teacher
 		clss = get_object_or_404(Class, pk=class_id)
 		current_session = Session.objects.get(current_session=True)
-		students = Student.objects.filter(in_class=clss, session=current_session)
+		students = Student.objects.filter(in_class=clss, 
+			session=current_session)
 		if not students.exists():
-			messages.success(request, 'No students exists for class {} in term {} '.format(clss, term))
+			messages.success(request, 'No students exists for class {} in {} term'.format(clss, term))
 			return redirect('subject_report_view')
 
 		grades = Grade.objects.filter(term=term, student__in_class=clss,session=current_session).order_by('-total')
 		class_avg = grades.filter(subject=subject)
 		class_avg = class_avg.aggregate(class_avg=Sum('total')).get('class_avg') / class_avg.count()
 		if not grades.exists():
-			messages.success(request, 'No grades exists for class {} in term {} '.format(clss, term))
+			messages.success(request, 'No grades exists for class {} in {} term'.format(clss, term))
 			return redirect('subject_report_view')
 
 		records = ()

@@ -7,7 +7,7 @@ from markdownx.utils import markdownify
 from django.utils.translation import ugettext_lazy as _
 
 from django.template.defaultfilters import slugify
-
+from .utils import multireplace
 from django.core.mail import EmailMessage as EMessage
 
 from datetime import date
@@ -313,193 +313,208 @@ class EmailMessage(models.Model):
         return markdownify(self.content)
 
 
-    async def deliver_mail(self, recipients, content):
+    async def deliver_mail(self, content):
     	audience = self.recipients.all()
+    	current_session = Session.objects.get(
+    		current_session=True)
+    	recipients = ()
+
     	for i in audience:
-    		content = re.sub('==fullname==', i.get_full_name(), content)
-    		content = re.sub('==fname==', i.first_name, content)
-    		content = re.sub('==sname==', i.last_name, content)
-    		content = re.sub('==gender==', i.gender or '', content)
-    		content = re.sub('==lga==', i.lga or '', content)
-    		content = re.sub('==session==', Session.get_current_session(), content)
-    		content = re.sub('==state==', i.state, content)
-    		content = re.sub('==address==', i.address, content)
-    		content = re.sub('==scname==', Setting.objects.first().school_name, content)
-    		amount = Expense.objects.aggregate(Sum('amount'))
-    		amount = str(amount['amount__sum'])
-    		content = re.sub('==expnse==', amount , content)
-    		
+    		recipients += (i.email,)
+    		total_expenditure = Expense.objects.aggregate(
+    			Sum('amount'))['amount__sum']
+
+    		default_user_replacements = [
+    			('==fullname==', i.get_full_name()),
+    			('==fname==', i.first_name),
+    			('==sname==', i.last_name),
+    			('==gender==', i.gender or ''),
+    			('==session==', str(current_session)),
+    			('==state==', i.state or ''),
+    			('==address==', i.address or ''),
+    			('==expnse==', str(total_expenditure)),
+    		]
+    		for old, new in default_user_replacements:
+    			content = re.sub(old, new, content)
+
     		if i.is_student:
-    			student = Student.objects.get(user__id=i.id)
-    			content = re.sub('==clss==', student.in_class.name, content)
-    			content = re.sub('==section==', student.in_class.section.name, content)
+    			student = Student.objects.get(
+    				user__id=i.id,
+    				session=current_session)
+    			
+    			subject_q = student.in_class.subjects.all()
 
-    			sq = student.in_class.subjects.all()
-    			s = '<p>Subject(s)</p><ol>'
+    			subjects_html_with_header = '<p>Subject(s)</p><ol>'
 
-    			for each_sub in sq:
-    				s += f'<li style="color: green">{each_sub.name}</li>'
-    			s += '</ol>'
-    			content = re.sub('==clssub==', s, content)
-    			g = Grade.objects.filter(
-    				student=student, 
-    				session=Session.objects.filter(current_session=True).first().id, 
+    			for subject_obj in subject_q:
+    				subjects_html_with_header += f'<li style="color: green">\
+    					{subject_obj.name}\
+    					</li>'
+
+    			subjects_html_with_header += '</ol>'
+    			grades_q = Grade.objects.filter(
+    				student=student,
+    				session=current_session,
     				term=get_terms())
-    			e = '<p><span>Subject</span> <span id="grade" style="margin-left: 35vw;">Grade</span></p><ol>'
+    			grades_html_with_header = '<p><span>Subject</span> \
+    				<span id="grade" style="margin-left: 35vw;">Grade</span>\
+    				</p><ol>'
 
-    			for k in g:
-    				e += f'<li style="color: green"><span>{k.subject}</span> <span id="grade" style="margin-left: 35vw;">{k.grade}</span></li>'
-    			e += '</ol>'
-    			content = re.sub('==grades==', e, content)
+    			for grade_obj in grades_q:
+    				grades_html_with_header += f'<li style="color: green"><span>{grade_obj.subject}</span>\
+    					<span id="grade" style="margin-left: 35vw;">\
+    						{grade_obj.grade}\
+    						</span></li>'
 
-    			pq = Payment.objects.filter(
-    				student=student, 
-    				session=Session.objects.filter(current_session=True).first().id, 
+
+    			grades_html_with_header += '</ol>'
+
+    			payment_q = Payment.objects.filter(
+    				student=student,
+    				session=current_session,
     				term=get_terms()).first().paid_amount
-    			pq = str(pq)
 
-    			content = re.sub('==amount==', pq, content)
+    			paid_amount = str(payment_q)
 
+    			due_amount_q = Payment.objects.filter(
+    				student=student,
+    				session=current_session,
+    				term=get_terms()).first() or '<i>No outstanding fee</i>'
 
-    			a = None
-    			if Attendance.objects.filter(
-    				student=student, 
-    				session=Session.objects.filter(current_session=True).first().id, 
-    				term=get_terms(), 
-    				date=date.today()).exists():
+    			due_amount = str(due_amount_q)
 
-	    			a = Attendance.objects.filter(
-	    				student=student, 
-	    				session=Session.objects.filter(current_session=True).first().id, 
-	    				term=get_terms(), 
-	    				date=date.today()).first().is_present
+    			payment_t_number_q = Payment.objects.filter(
+    				student=student,
+    				session=current_session,
+    				term=get_terms()).first()
+
+    			payment_teller_number = payment_t_number_q.teller_number or ''
+
+    			attendance_status = Attendance.objects.filter(
+    				student=student,
+    				session=current_session,
+    				term=get_terms(),
+    				date=date.today()) or 'Absent'
     			
-    			if a is not True:
-    				a = 'Absent'
-    			else:
-    				a = 'Present'
-    			content = re.sub('==attnd==', a, content)
+    			if attendance_status is not 'Absent':
+    				attendance_status = 'Present'
 
-    			# due amount
-    			due_amount = Payment.objects.filter(
-    				student=student, 
-    				session=Session.objects.filter(current_session=True).first().id, 
-    				term=get_terms()).first().due_amount
-    			due_amount = str(due_amount)
-    			content = re.sub('==damnt==', due_amount, content)
+    			student_replacements = [
+    				('==clss==', student.in_class.name),
+    				('==section==', student.in_class.section.name),
+    				('==clssub==', subjects_html_with_header),
+    				('==grades==', grades_html_with_header),
+    				('==amount==', paid_amount),
+    				('==attnd==', attendance_status),
+    				('==damnt==', due_amount),
+    				('==tno==', payment_teller_number),]
 
-    			content = re.sub('==tno==', Payment.objects.filter(
-    				student=student, 
-    				session=Session.objects.filter(current_session=True).first().id, 
-    				term=get_terms()).first().teller_number, content)
-
+    			for old, new in student_replacements:
+    				content = re.sub(old, new, content)
+    		
     		if i.is_teacher:
-    			# allocated subjects
-    			allocated_s = SubjectAssign.objects.get(
-					session=Session.objects.filter(current_session=True).first().id,
-					term=get_terms(),
-					teacher=i)
-    			subject_string = '<p>Subject(s)</p><ol>'
-    			for subject in allocated_s.subjects.all():
-    				subject_string += f'<li style="color: #85144b">{subject} ({allocated_s.clss})</li>'
-    			subject_string += '</ol>'
-    			content = re.sub('==allsub==', subject_string, content)
+    			allocated_subjects_q = SubjectAssign.objects.get(
+    				session=current_session,
+    				term=get_terms(),
+    				teacher=i)
+
+    			subjects_html_with_header = '<p>Subject(s)</p><ol>'
+
+    			for subject in allocated_subjects_q.subjects.all():
+    				subjects_html_with_header += f'<li style="color: #85144b">\
+    					{subject} ({allocated_s.clss})\
+    					</li>'
+
+    			subjects_html_with_header += '</ol>'
+    			teacher_replacements = [
+    				('==allsub==', subjects_html_with_header),
+    				]
+
+    			for old, new in teacher_replacements:
+    				content = re.sub(old, new, content)
+
     		if i.is_parent:
-    			# Get all his childrens
-    			# Get the pattern and replace with their actual:
-    			#	subjects for the current class
-    			#	School Fee Paid Amount for the current term and session
-    			#	School Fee Due Amount for the current term and session
-    			#	Today's Attendance and
-    			#	Grades for the current term and session
-    			
-    			childrens = Parent.objects.filter(parent__pk=i.id)
+    			"""Get all his childrens
+    				Get the pattern and replace with their actual:
+	    				subjects for the current class
+	    				School Fee Paid Amount for the current term and session
+	    				School Fee Due Amount for the current term and session
+	    				Today's Attendance and
+	    				Grades for the current term and session
+	    		"""
 
-    			for child in childrens:
-    				subjects = child.student.in_class.subjects.all()
+	    		childrens_q = Parent.objects.get(parent__pk=i.id)
 
-    				# First thing first after getting all subjects above
-    				# Create a Header for the subjects, like
-    				# Subject
-    				# 1. English
-    				# 2. Mathematics
-    				# 3. ...
-    				header = '<p>Subject(s)</p><ol>'
+	    		for child in childrens_q.student.all():
+	    			subjects_in_class = child.in_class.subjects.all()
 
-	    			for subject in subjects:
-	    				header += f'<li style="color: green">{subject.name}</li>'
-	    			header += '</ol>'
+	    			subjects_html_with_header = f'{child.user.first_name}\'s <p>Subjects</p><ol>'
 
-	    			# now find and subtitude class subjects 
-	    			# i.e ==clssub== with the header value
+	    			for subject in subjects_in_class:
+	    				subjects_html_with_header += f'<li style="color: green">\
+	    				{subject.name}</li>'
 
-	    			content = re.sub('==clssub==', header, content)
+	    			subjects_html_with_header += '</ol>'
 
-	    			# secondly handle paid amount
-	    			# re.sub espects string and so the q
-	    			# should be str
+	    			# paid amount and due amount
 
-	    			if Payment.objects.filter(
-	    				student=child.student, 
-	    				session=Session.objects.filter(current_session=True).first().id, 
-	    				term=get_terms()).exists():
-			    			p_amount = str(Payment.objects.filter(
-		    				student=child.student, 
-		    				session=Session.objects.filter(current_session=True).first().id, 
-		    				term=get_terms()).first().paid_amount)
+	    			paid_amount = f'{child.user.first_name} <i>Not paid</i>'
+	    			due_amount = f'{child.user.first_name} <i>Not Paid</i>'
+	    			teller_number = ''
 
-		    				# replace ==amount== with the actual amount.
-			    			content = re.sub('==amount==', p_amount, content)
+	    			payment_q = Payment.objects.filter(
+	    				student=child, 
+	    				session=current_session,
+	    				term=get_terms()).first()
 
-	    			# thirdly, due amount
-	    			# due amount
-
-	    			if Payment.objects.filter(
-	    				student=child.student, 
-	    				session=Session.objects.filter(current_session=True).first().id, 
-	    				term=get_terms()):
-			    			d_amount = str(Payment.objects.filter(
-			    				student=child.student, 
-			    				session=Session.objects.filter(current_session=True).first().id, 
-			    				term=get_terms()).first().due_amount)
-
-			    			# again, replace
-			    			content = re.sub('==damnt==', d_amount, content)
+	    			if payment_q:
+	    				paid_amount = f'{child.user.first_name} has paid {payment_q.paid_amount} Naira'
+	    				due_amount = f'{child.user.first_name}\'s due amount is {payment_q.due_amount} Naira'
+	    				teller_number = payment_q.teller_number
 
 	    			# Student attendance
-	    			if Attendance.objects.filter(
-	    				student=child.student, 
-	    				session=Session.objects.filter(current_session=True).first().id, 
-	    				term=get_terms(), 
-	    				date=date.today()):
-			    			a_status = Attendance.objects.filter(
-			    				student=child.student, 
-			    				session=Session.objects.filter(current_session=True).first().id, 
-			    				term=get_terms(), 
-			    				date=date.today()).first().is_present or 'Absent'
+	    			attendance_q = Attendance.objects.filter(
+	    				student=child,
+	    				session=current_session,
+	    				term=get_terms(),
+	    				date=date.today()).first()
 
-			    			if a_status is not 'Absent':
-			    				a_status = 'Present'
+	    			attendance_status = f'{child.user.first_name} is Absent today <small>({date.today()})</small>'
 
-			    			# replace
-			    			content = re.sub('==attnd==', a_status, content)
+	    			if attendance_q:
+	    				attendance_status = f'{child.user.first_name} is <b>Present</b> today <small>({date.today()})</small>'
 
 	    			# Get and replace grades
-	    			grades = Grade.objects.filter(
-	    				student=child.student, 
-	    				session=Session.objects.filter(current_session=True).first().id, 
-	    				term=get_terms())
+	    			grades_q = Grade.objects.filter(
+	    				student=child,
+	    				session=current_session,
+	    				term=get_terms()) or ''
 
-	    			header = '<p><span>Subject</span> <span id="grade" style="margin-left: 35vw;">Grade</span></p><ol>'
+	    			grades_html_with_header = f'<p>{child.user.first_name}\'s results</p><span>Subject</span> \
+	    				<span id="grade" style="margin-left: 35vw;">\
+	    				Grade</span></p><ol>'
 
-	    			for grade in grades:
-	    				header += f'<li style="color: green"><span>{grade.subject}</span> <span id="grade" style="margin-left: 35vw;">{grade.grade}</span></li>'
-	    			header += '</ol>'
+	    			for grade in grades_q:
+	    				grades_html_with_header += f'<li style="color: green">\
+	    				<span>{grade.subject}</span> \
+	    				<span id="grade" style="margin-left: 35vw;">\
+	    				{grade.grade or "<small><i>Nill</i></small>"}</span></li>'
 
-	    			# replace
-	    			content = re.sub('==grades==', header, content)
+	    			grades_html_with_header += '</ol>'
 
-    	msg = EMessage(self.title, content, "support@bitpoint.com", recipients)
+	    			parent_replacements = [
+	    				('==clssub==', subjects_html_with_header),
+	    				('==grades==', grades_html_with_header),
+	    				('==amount==', paid_amount),
+	    				('==attnd==', attendance_status),
+	    				('==damnt==', due_amount),
+	    				('==tno==', teller_number),
+	    				]
+	    			for old, new in parent_replacements:
+	    				content = re.sub(old, new, content)
+
+    	content = re.sub(r"^==.*==$", '', content)
+    	msg = EMessage(self.title, content, "noreply@bitpoint.com", recipients)
     	msg.content_subtype = 'html'
     	msg.send()
     	self.status = DELIVERED
