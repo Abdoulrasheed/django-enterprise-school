@@ -2,7 +2,7 @@
 import sys
 import os
 
-DEBUG = True
+DEBUG = False
 
 
 ADMINS = (
@@ -151,7 +151,7 @@ SHARED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'schools',  # you must list the app where your tenant model resides in
+    'schools',
     'authentication',
     'main_site',
     'session_security',
