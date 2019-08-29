@@ -112,5 +112,117 @@
 </div>
 <input type="submit" name="submit" value="Save" style="margin-bottom: 27px;" class="btn btn-primary">
 </form>
+<h2 class="font-weight-bold my-5 text-left">THEMES</h2>
+
+<!--First row-->
+<div class="row">
+
+  <!--First column-->
+  <div class="col-md-12">
+    <!--Full width lightbox-->
+    <div class="mdb-lightbox">
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/skin-beauty.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-dark btn-dark-skin w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/skin-default.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-default-skin btn-white black-text w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/indigo-skin.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-indigo-skin btn-indigo w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <!--Full width lightbox-->
+    <div class="mdb-lightbox">
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/pink-skin.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-pink-skin btn-pink w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/skin-cyan.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-cyan-skin btn-cyan w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/skin-black.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-black-skin btn-black white-text w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <!--Full width lightbox-->
+    <div class="mdb-lightbox">
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/grey-skin.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-grey-skin btn-grey w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/light-blue-skin.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-blue-skin btn-primary w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/navy-blue-skin.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-n-blue-skin btn-dark w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <!--Full width lightbox-->
+    <div class="mdb-lightbox">
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/deep-purple-skin.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-purple-skin btn-purple w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+    </div>
+  </div>
+
+    </div>
+    <!--/Full width lightbox-->
+
+  </div>
+  <!--/First column-->
+
 </div>
+<!--First row-->
+</div>
+  {% block script %}
+  <script>
+    $("#btn-default-skin").on("click", ()=>{
+      $("body").addClass("white-skin");
+    });
+  </script>
+  {% endblock script %}
 {% endblock %}

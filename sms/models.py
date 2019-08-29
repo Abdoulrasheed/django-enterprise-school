@@ -314,6 +314,7 @@ class EmailMessage(models.Model):
 
     async def deliver_mail(self, content):
     	audience = self.recipients.all()
+    	setting = Setting.objects.first()
     	current_session = Session.objects.get(
     		current_session=True)
     	recipients = ()
@@ -332,6 +333,7 @@ class EmailMessage(models.Model):
     			('==state==', i.state or ''),
     			('==address==', i.address or ''),
     			('==expnse==', str(total_expenditure)),
+    			('==scname==', str(setting.school_name)),
     		]
     		for old, new in default_user_replacements:
     			content = re.sub(old, new, content)
@@ -421,7 +423,7 @@ class EmailMessage(models.Model):
 
     			for subject in allocated_subjects_q.subjects.all():
     				subjects_html_with_header += f'<li style="color: #85144b">\
-    					{subject} ({allocated_s.clss})\
+    					{subject} ({allocated_subjects_q.clss})\
     					</li>'
 
     			subjects_html_with_header += '</ol>'
@@ -512,7 +514,7 @@ class EmailMessage(models.Model):
 	    			for old, new in parent_replacements:
 	    				content = re.sub(old, new, content)
 
-    	content = re.sub(r"^==.*==$", '', content)
+    	content = re.sub('^==.*==$', ' ', content)
     	msg = EMessage(self.title, content, "noreply@bitpoint.com", recipients)
     	msg.content_subtype = 'html'
     	msg.send()

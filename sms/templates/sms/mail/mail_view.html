@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
-{% load staticfiles %}
-{% load i18n %}
+{% load staticfiles i18n humanize %}
   {% block custom_style %}
 <style>
   @media only screen and (max-width: 768px){
@@ -8,7 +7,7 @@
       display: flex;
       flex-direction: column;
     }
-    .nav-tabs, form{
+    .nav-tabs, .draft, form{
       width: 80vw;
     }
   }
@@ -49,15 +48,13 @@
     <div class="col-4">
       <div class="nav nav-tabs md-tabs flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 
-        <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true"><i class="fas fa-envelope"></i> Compose <span class="badge badge-primary pull-right badge-pill">14</span></a>
+        <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true"><i class="fas fa-envelope"></i> Compose <span class="badge badge-primary pull-right badge-pill"><i class="fas fa-share"></i></span></a>
 
-        <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false"><i class="fas fa-envelope-open-text"></i> Inbox <span class="badge pull-right badge-primary badge-pill">14</span></a>
+         <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false"><i class="fas fa-check"></i> Delivered <span class="badge pull-right badge-success badge-pill">14</span></a>
 
-         <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false"><i class="fas fa-check"></i> Delivered <span class="badge pull-right badge-primary badge-pill">14</span></a>
-
-        <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i class="fas fa-save"></i> Draft <span class="badge pull-right badge-primary badge-pill">14</span></a>
-        <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i class="fas fa-trash"></i> Trash <span class="badge pull-right badge-primary badge-pill">14</span></a>
-        <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false"><i class="fas fa-cogs"></i> Settings <span class="badge pull-right badge-primary badge-pill">14</span></a>
+        <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i class="fas fa-save"></i> Draft <span class="badge pull-right badge-secondary badge-pill">14</span></a>
+        <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i class="fas fa-trash"></i> Trash <span class="badge pull-right badge-warning badge-pill">14</span></a>
+        <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false"><i class="fas fa-cogs"></i> Settings <span class="badge pull-right badge-info badge-pill">14</span></a>
       </div>
     </div>
     <div class="col-8">
@@ -107,7 +104,7 @@
               <a onclick="appendTag('==clss==');" class="badge badge-info stu" hidden>Class</a>
               <a onclick="appendTag('==session==');" class="badge badge-light default-tag" hidden>Session</a>
               <a onclick="appendTag('==state==');" class="badge badge-danger default-tag" hidden>State</a>
-              <a onclick="appendTag('==section==');" class="badge badge-light default-tag" hidden>Section</a>
+              <a onclick="appendTag('==section==');" class="badge badge-light stu" hidden>Section</a>
               <a onclick="appendTag('==allsub==');" title="Allocated Subjects" class="badge badge-light tea" hidden>Assigned Subjects</a>
               <a onclick="appendTag('==clssub==');" class="badge badge-primary stu" hidden>Class Subjects</a>
               <a onclick="appendTag('==address==');" class="badge badge-secondary default-tag" hidden>Address</a>
@@ -137,8 +134,98 @@
           </div>
       </form>
         </div>
-        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">...</div>
-  <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
+        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+          <!-- delivered here -->
+        <div style="height: 65vh; overflow-y: auto;" class="card draft">
+          <h4 style="background-color: #2BBBAD" class="card-header text-center font-weight-bold text-uppercase py-1 white-text">Delivered <i class="fas fa-check"></i></h4>
+          <div class="card-body">
+            <div id="table" class="table-editable">
+              <table class="table table-bordered table-responsive-md table-striped text-center">
+                <thead>
+                  <tr>
+                    <th class="text-center">Title</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Content</th>
+                    <th class="text-center">Sender</th>
+                    <th class="text-center">Time</th>
+                    <th class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for mail in delivered_mails %}
+                  <tr>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.title }}</td>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.status }}</td>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.content|truncatewords:3 }}</td>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.admin }}</td>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.timestamp|naturaltime }}</td>
+                    <td>
+                      <span class="table-remove">
+                        <button type="button"
+                          class="btn btn-danger btn-rounded btn-sm my-0">
+                          Deliver
+                        </button>
+                        </span>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="6">
+                      <p>No mail delivered available</p>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+          <!-- delivered Ends Here -->
+        </div>
+  <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+              <!-- Draft Stars here -->
+        <div style="height: 65vh; overflow-y: auto;" class="card draft scrollbar scrollbar-primary">
+          <h4 class="card-header text-center font-weight-bold text-uppercase py-1 white-text">Draft</h4>
+          <div class="card-body">
+            <div id="table" class="table-editable">
+              <table class="table table-bordered table-responsive-md table-striped text-center">
+                <thead>
+                  <tr>
+                    <th class="text-center">Title</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Content</th>
+                    <th class="text-center">Sender</th>
+                    <th class="text-center">Time</th>
+                    <th class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for mail in draft_mails %}
+                  <tr>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.title }}</td>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.status }}</td>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.content|truncatewords:3 }}</td>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.admin }}</td>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.timestamp|naturaltime }}</td>
+                    <td>
+                      <span class="table-remove">
+                        <button type="button"
+                          class="btn btn-danger btn-rounded btn-sm my-0">
+                          Deliver
+                        </button>
+                        </span>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+          <!-- Draft Ends Here -->
+  </div>
   <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
     </div>
   </div>

@@ -10,7 +10,13 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Count, Min, Sum, CharField, Value, Q
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.shortcuts import get_object_or_404, redirect, render, render_to_response
+
+from django.shortcuts import (
+	get_object_or_404, 
+	redirect, 
+	render, 
+	render_to_response
+	)
 
 from django.template import Context
 from django.template.loader import get_template
@@ -1753,10 +1759,15 @@ def mail(request):
 			context = {"form": form}
 			template = 'sms/mail/mail_view.html'
 			return render(request, template, context)
-	#mail = Mail.objects.all()
-	template = 'sms/mail/mail_view.html'
-	return render(request, template, {})
 
+	draft_mails = EmailMessage.objects.filter(status=PENDING)
+	delivered_emails = EmailMessage.objects.filter(status=DELIVERED)
+	context = {
+		'draft_mails': draft_mails,
+		'delivered_emails': delivered_emails
+	}
+	template = 'sms/mail/mail_view.html'
+	return render(request, template, context)
 
 @login_required
 @admin_required

@@ -27,7 +27,7 @@
 @-webkit-keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}@keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}</style>
 </head>
 
-<body class="fixed-sn white-skin">
+<body class="fixed-sn grey-skin">
 
   <!--Main Navigation-->
   <header>
@@ -347,11 +347,15 @@
 
     // Material Select Initialization
     $(document).ready(function () {
-        $(document).on("contextmenu",function(){
+        $("img").on("contextmenu", function(){
           // uncomment the line below to disable mouse right click button
-          //return false;
+          return false;
         }); 
-      $('.mdb-select').material_select();
+        $("img").on("mousedown", function(e){
+            e.preventDefault();
+        });
+        
+        $('.mdb-select').material_select();
     });
 
     // Tooltips Initialization
