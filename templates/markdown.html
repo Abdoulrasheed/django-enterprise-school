@@ -1,0 +1,16 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<label for="exampleFormControlTextarea1">Message</label>
+    <textarea name="message" id="message" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+<script>
+var simplemde = new SimpleMDE();
+var simplemde = new SimpleMDE({
+  autofocus: true,
+  autosave: {
+    enabled: true,
+    uniqueId: "MyUniqueID",
+    delay: 1000,
+  },
+    element: $("#message")[0] 
+  });
+</script>

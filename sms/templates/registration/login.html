@@ -6,7 +6,7 @@
 
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-        <title>Sign in | {{ school_name }}</title>
+        <title>Sign in | {{ school_setting.school_name }}</title>
         <link rel="SHORTCUT ICON" href="{{ school_logo }}">
         <!-- bootstrap 3.0.2 -->
         <link href="{% static 'css/login/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
@@ -22,7 +22,7 @@
     <body class="white-bg-login">
 
         <div class="col-md-4 col-md-offset-4 marg" style="margin-top:30px;">
-            <center><img width="50" height="50" src="{{ school_logo }}"></center>        <center><h4>{{ school_name }}</h4></center>
+            <center><img width="50" height="50" src="{{ school_setting.get_logo }}"></center>        <center><h4>{{ school_setting.school_name }}</h4></center>
         </div>
 
 
@@ -72,7 +72,7 @@
         <div class="col-md-4 col-md-offset-4 marg" style="margin-top:30px;">
         	  <div style="text-align: center;" class="container-fluid">
         	      <span>
-                   Developed by <a href="#">Bitpoint limited | Powered by Cosmotech</a>
+                   Developed by <a href="#">Bitpoint limited</a>
         	      </span>
         	</nav>
         </div>

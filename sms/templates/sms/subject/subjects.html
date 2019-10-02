@@ -17,6 +17,10 @@
       </div>
    </div>
    <!-- Heading -->
+    <div hidden id="loader" class="progress md-progress primary-color-dark">
+      <div class="indeterminate">
+      </div>
+    </div>
           {% if messages %}
         {% for message in messages %}
           <div class="alert alert-info alert-dismissable">
@@ -112,7 +116,7 @@
                 <!--Table head-->
 
                 <!--Table body-->
-                <tbody>
+                <tbody class="subject_body">
                 	{% for subject in subjects %}
                   <tr>
                     <td>{{ subject.name }}</td>
@@ -120,7 +124,7 @@
                     <td></td>
                     <td>
                       <a href="{% url 'edit_subject' id=subject.pk %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
-                      <a href="{% url 'delete_subject' id=subject.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                      <a id="del_subject" target_subject="{% url 'delete_subject' id=subject.pk %}" title="delete" class="del_subject red-text"><i class="fa fa-times"></i></a>
                     </td>
                   </tr>
                   {% empty %}
@@ -171,4 +175,42 @@
   {% endblock main %}
   {% block script %}
   <script src="{% static 'js/sms/sms_script.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha256-KsRuvuRtUVvobe66OFtOQfjP8WA2SzYsmm4VPfMnxms=" crossorigin="anonymous"></script>
+      <script type="text/javascript">
+        $(document).ready(function(){
+        $(".del_subject").click(function(){
+          var row = $(this).closest("tr > td");
+          var target_subject = $(row).find("#del_subject").attr('target_subject')
+          swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this subject!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+              $.ajax({
+              url: target_subject,
+              beforeSend: function(){
+                $("#loader").removeAttr('hidden');
+              },
+              
+              complete: function(){
+                $("#loader").attr('hidden', 'hidden');
+              },
+
+              success: function (data) {
+                  $(".subject_body").html(data);
+                  toastr.info('Successfully deleted');
+                  swal("Successfully Deleted!", {
+                    icon: "success",
+                  });
+                }
+              });
+            }
+          });
+        });
+      });
+      </script>
   {% endblock script %}

@@ -1,0 +1,6 @@
+<option  value="" disabled selected>Select Student</option>
+{% for student in students %}
+<option value="{{ student.user.id }}">{{ student }} ({{ student.in_class }})</option>
+{% empty %}
+<option value="" disabled selected>No Student is available</option>
+{% endfor %}

@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-  <title>{{ school_name }} |{% block title %} Home{% endblock title %}</title>
+  <title>{{ school_setting.school_name }} |{% block title %} Home{% endblock title %}</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{% static 'css/mdb/all.css' %}">
   <!-- Bootstrap core CSS -->
@@ -19,16 +19,15 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 
   <!-- Your custom styles (optional) -->
-  <style>
-    footer {
-   
-    }
-  </style>
+  {% block custom_style %}
+
+  {% endblock %}
 <style type="text/css">/* Chart.js */
 @import "~perfect-scrollbar/dist/css/perfect-scrollbar.css";
-@-webkit-keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}@keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}</style></head>
+@-webkit-keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}@keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}</style>
+</head>
 
-<body class="fixed-sn white-skin">
+<body class="fixed-sn grey-skin">
 
   <!--Main Navigation-->
   <header>
@@ -40,7 +39,7 @@
         <li class="logo-sn waves-effect">
           <div style="margin-bottom: 15px;" class="text-center">
             <a href="{% url 'home_page' %}" class="pl-0">
-              <img width="80px" src="{{ school_logo }}" class="rounded-circle"></a>
+              <img width="80px" src="{{ school_setting.get_logo }}" class="rounded-circle"></a>
           </div>
         </li>
         <!--/. Logo -->
@@ -58,12 +57,13 @@
         <li>
           <ul class="collapsible collapsible-accordion">
             <li><a href="{% url 'home_page' %}" class="collapsible-header waves-effect"><i class=" far fas fa-tachometer-alt"></i>
-                Dashboard</a></li>
+                Dashboard</a>
+              </li>
                 {% if request.user.is_superuser or request.user.is_teacher %}
             <li><a href="{% url 'students_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-user-graduate"></i>
                 Student</a></li>
                 {% endif %}
-                 {% if request.user.is_superuser or request.user.is_teacher %}
+                 {% if request.user.is_superuser %}
             <li><a href="{% url 'parents_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-user"></i>
                 Parent</a></li>
                 {% endif %}
@@ -100,7 +100,10 @@
                 {% endif %}
           {% if request.user.is_superuser %}
             <li><a href="{% url 'sms_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-envelope"></i>
-                Mail / Sms</a></li>
+                SMS</a></li>
+                 <li><a href="{% url 'mail' %}" class="collapsible-header waves-effect"><i class=" far fas fa-mail-bulk"></i>
+                 
+                MAIL</a></li>
                 {% endif %}
             <li><a class="collapsible-header waves-effect arrow-r"><i class="fab fa-css3"></i> Exam<i class="fas fa-angle-down rotate-icon"></i></a>
               <div class="collapsible-body">
@@ -171,7 +174,8 @@
                 </ul>
               </div>
             </li>
-            <li><a class="collapsible-header waves-effect arrow-r"><i class="fas fa-user-cog"></i></i>Administrator<i class="fas fa-angle-down rotate-icon"></i></a>
+            <li>
+              <a class="collapsible-header waves-effect arrow-r"><i class="fas fa-user-cog"></i></i>Administrator<i class="fas fa-angle-down rotate-icon"></i></a>
               <div class="collapsible-body">
                 <ul>
                   <li><a href="{% url 'session_list' %}" class="waves-effect">Academic Year</a>
@@ -202,14 +206,14 @@
       </div>
       <!-- Breadcrumb-->
       <div class="breadcrumb-dn mr-auto">
-        <p>{{ school_name }}</p>
+        <p>{{ school_setting.school_name }}</p>
       </div>
 
       <!--Navbar links-->
       <ul class="nav navbar-nav nav-flex-icons ml-auto">
 
         <!-- Dropdown -->
-                <li class="nav-item dropdown notifications-nav">
+                <li class="nav-item dropdown notifications-nav"></li>
           <a href="/" class="nav-link waves-effect">
             <span class="badge red"></span> <i class="fas fa-globe"></i>
             <span class="d-none d-md-inline-block">View Site</span>
@@ -279,21 +283,34 @@
 
   </header>
   <!--Main Navigation-->
-    <main>
+    <main style="margin-bottom: 80px !important;">
+    {% if school_setting.sms_unit < 50 and school_setting.sms_unit > 0 %}
+      <h2 style="margin-left: 0.8vw;" class="section-heading pb-3">
+        <a target="_blank" class="btn btn-info btn-sm waves-effect waves-light" role="button">You have {{ school_setting.sms_unit }} SMS units remaining, please consider contact an agent for renewal !.
+        <i class="fas fa-bullhorn"></i>
+    </a>
+  </h2>
+  {% elif school_setting.sms_unit == 0 %}
+    <h2 style="margin-left: 0.8vw;" class="section-heading pb-3">
+      <a target="_blank" class="btn btn-danger btn-sm waves-effect waves-light" role="button">You can no longer send an sms until you renew your sms subscription !.
+      <i class="fas fa-bullhorn"></i>
+    </a>
+  </h2>
+  {% endif %}
 {% block main %}
 
 {% endblock %}
   </main>
 
 <!--Footer-->
-  <footer class="page-footer pt-0 mt-5 mdb-color lighten-4">
+  <footer class="page-footer center-on-small-only pt-0 mt-5 fixed-bottom">
 
     <!--Copyright-->
     <div class="footer-copyright py-3 text-center">
       <div class="container-fluid">
           <small>
         <span id="copy"></span> Copyright: &copy;
-        <a href="#">Powered by Bitpoint inc.</a>
+        <a href="#">Bitpoint inc.</a>
         </small>
       </div>
     </div>
@@ -306,6 +323,7 @@
   <!-- SCRIPTS -->
   <!-- JQuery -->
   <script src="{% static 'js/mdb/jquery-3.3.1.min.js' %}"></script>
+  {% include 'session_security/all.html' %}
   <!-- Bootstrap tooltips -->
   <script type="text/javascript" src="{% static 'js/mdb/popper.min.js' %}"></script>
   <!-- Bootstrap core JavaScript -->
@@ -329,10 +347,15 @@
 
     // Material Select Initialization
     $(document).ready(function () {
-        $(document).on("contextmenu",function(){
+        $("img").on("contextmenu", function(){
+          // uncomment the line below to disable mouse right click button
           return false;
         }); 
-      $('.mdb-select').material_select();
+        $("img").on("mousedown", function(e){
+            e.preventDefault();
+        });
+        
+        $('.mdb-select').material_select();
     });
 
     // Tooltips Initialization

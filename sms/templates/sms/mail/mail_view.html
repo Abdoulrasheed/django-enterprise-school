@@ -1,0 +1,357 @@
+{% extends 'base.html' %}
+{% load staticfiles i18n humanize %}
+  {% block custom_style %}
+<style>
+  @media only screen and (max-width: 768px){
+    .row {
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-tabs, .draft, form{
+      width: 80vw;
+    }
+  }
+</style>
+  {% endblock %}
+{% block main %}
+<!--Main layout-->
+<div style="margin-bottom: 50px;" class="container-fluid">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% if form %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+  <div class="row">
+    <div class="col-4">
+      <div class="nav nav-tabs md-tabs flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+
+        <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true"><i class="fas fa-envelope"></i> Compose <span class="badge badge-primary pull-right badge-pill"><i class="fas fa-share"></i></span></a>
+
+         <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false"><i class="fas fa-check"></i> Delivered <span class="badge pull-right badge-success badge-pill">14</span></a>
+
+        <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i class="fas fa-save"></i> Draft <span class="badge pull-right badge-secondary badge-pill">14</span></a>
+        <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i class="fas fa-trash"></i> Trash <span class="badge pull-right badge-warning badge-pill">14</span></a>
+        <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false"><i class="fas fa-cogs"></i> Settings <span class="badge pull-right badge-info badge-pill">14</span></a>
+      </div>
+    </div>
+    <div class="col-8">
+      <div class="tab-content" id="v-pills-tabContent">
+        <div hidden id="loader" class="progress md-progress primary-color-dark">
+              <div class="indeterminate">
+              </div>
+          </div>
+        <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+          <form action="" method="post" class="" role="form">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="title">Send To</label>
+            <select name="user_type" class="browser-default custom-select user-type">
+              <option disabled selected>-----</option>
+              <option value="students">Students</option>
+              <option value="teachers">Teachers</option>
+              <option value="parents">Parents</option>
+              <option value="admins">Admin</option>
+            </select>
+          </div>
+          <div hidden url="{% url 'get_classes' %}" class="form-group select_class_div">
+            <label for="title">Select Class</label>
+            <select class="browser-default custom-select select_class" url="{% url 'ajax_load_student_users' %}">
+            </select>
+          </div>
+          <div hidden class="form-group select_user_div" url="{% url 'get_users_list' %}">
+            <label for="title">Select <span class="user_label"></span> <kbd>Hold CTRL to select multiple<kbd></label>
+
+            <select name="recipients" class="browser-default custom-select select_user" multiple>
+              
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" name="title" class="form-control" id="title" placeholder="Title">
+          </div>
+
+          <div class="form-group">
+            <p>
+              <a onclick="appendTag('==fullname==');" class="badge badge-default default-tag" hidden>Full Name</a>
+              <a onclick="appendTag('==fname==');" class="badge badge-primary default-tag" hidden>First Name</a>
+              <a onclick="appendTag('==sname==');" class="badge badge-light default-tag" hidden>Surname</a>
+              <a onclick="appendTag('==oname==');" class="badge badge-default default-tag" hidden>Other Nname</a>
+              <a onclick="appendTag('==gender==');" class="badge badge-success default-tag" hidden>Gender</a>
+              <a onclick="appendTag('==lga==');" class="badge badge-warning default-tag" hidden>Local Govt</a>
+              <a onclick="appendTag('==clss==');" class="badge badge-info stu" hidden>Class</a>
+              <a onclick="appendTag('==session==');" class="badge badge-light default-tag" hidden>Session</a>
+              <a onclick="appendTag('==state==');" class="badge badge-danger default-tag" hidden>State</a>
+              <a onclick="appendTag('==section==');" class="badge badge-light stu" hidden>Section</a>
+              <a onclick="appendTag('==allsub==');" title="Allocated Subjects" class="badge badge-light tea" hidden>Assigned Subjects</a>
+              <a onclick="appendTag('==clssub==');" class="badge badge-primary stu" hidden>Class Subjects</a>
+              <a onclick="appendTag('==address==');" class="badge badge-secondary default-tag" hidden>Address</a>
+              <a onclick="appendTag('==grades==');" class="badge badge-primary stu" hidden>Grades</a>
+              <a onclick="appendTag('==amount==');" class="badge badge-dark stu" title="for {{ session }}" hidden>School Fee Paid Amount</a>
+              <a onclick="appendTag('==attnd==');" class="badge badge-primary stu" hidden>Attendace</a>
+              <a onclick="appendTag('==scname==');" class="badge badge-dark default-tag" hidden>School Name</a>
+              <a onclick="appendTag('==damnt==');" class="badge badge-danger stu" hidden>Due amount</a>
+              <a onclick="appendTag('==tno==');" class="badge badge-dark stu" hidden>Teller no</a>
+              <a onclick="appendTag('==expnse==');" class="badge badge-success default-tag" hidden>Expense</a>
+            </p>
+            {% include 'markdown.html' %}
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary save">
+              {% trans 'Publish' %}
+            </button>
+
+            <button type="button" class="btn btn-default draft">
+
+              {% trans 'Save Draft' %}
+            </button>
+            <a href="" class="btn btn-default">
+              {% trans 'Cancel' %}
+            </a>
+          </div>
+      </form>
+        </div>
+        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+          <!-- delivered here -->
+        <div style="height: 65vh; overflow-y: auto;" class="card draft">
+          <h4 style="background-color: #2BBBAD" class="card-header text-center font-weight-bold text-uppercase py-1 white-text">Delivered <i class="fas fa-check"></i></h4>
+          <div class="card-body">
+            <div id="table" class="table-editable">
+              <table class="table table-bordered table-responsive-md table-striped text-center">
+                <thead>
+                  <tr>
+                    <th class="text-center">Title</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Content</th>
+                    <th class="text-center">Sender</th>
+                    <th class="text-center">Time</th>
+                    <th class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for mail in delivered_mails %}
+                  <tr>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.title }}</td>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.status }}</td>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.content|truncatewords:3 }}</td>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.admin }}</td>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.timestamp|naturaltime }}</td>
+                    <td>
+                      <span class="table-remove">
+                        <button type="button"
+                          class="btn btn-danger btn-rounded btn-sm my-0">
+                          Deliver
+                        </button>
+                        </span>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="6">
+                      <p>No mail delivered available</p>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+          <!-- delivered Ends Here -->
+        </div>
+  <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+              <!-- Draft Stars here -->
+        <div style="height: 65vh; overflow-y: auto;" class="card draft scrollbar scrollbar-primary">
+          <h4 class="card-header text-center font-weight-bold text-uppercase py-1 white-text">Draft</h4>
+          <div class="card-body">
+            <div id="table" class="table-editable">
+              <table class="table table-bordered table-responsive-md table-striped text-center">
+                <thead>
+                  <tr>
+                    <th class="text-center">Title</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Content</th>
+                    <th class="text-center">Sender</th>
+                    <th class="text-center">Time</th>
+                    <th class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for mail in draft_mails %}
+                  <tr>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.title }}</td>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.status }}</td>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.content|truncatewords:3 }}</td>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.admin }}</td>
+                    <td class="pt-3-half" contenteditable="false">{{ mail.timestamp|naturaltime }}</td>
+                    <td>
+                      <span class="table-remove">
+                        <button type="button"
+                          class="btn btn-danger btn-rounded btn-sm my-0">
+                          Deliver
+                        </button>
+                        </span>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+          <!-- Draft Ends Here -->
+  </div>
+  <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock main %}
+{% block script %}
+<script>
+  const appendTag = (text) =>{
+    const pos = simplemde.codemirror.getCursor();
+    simplemde.codemirror.replaceRange(text, pos); 
+  }
+  const handleStudents = () => {
+    // show all student tags if hidden
+  $(".stu").fadeIn("slow").removeAttr('hidden');
+  $(".default-tag").fadeIn("slow").removeAttr('hidden');
+    // get classes
+    $(".user_label").text('students');
+      const target = $(".select_class_div").attr('url');
+      $.ajax({
+        url: target,
+        beforeSend: () =>{
+          $("#loader").removeAttr('hidden');
+        },
+
+        complete: () => {
+          $("#loader").attr('hidden', true);
+        },
+
+        success: (data) => {
+          $(".select_class").html(data);
+        }
+      });
+  }
+
+const handleUsers = (user_type) => {
+  // hide all student tags
+  $(".stu").fadeOut("slow").attr('hidden', true);
+  // show default tags
+  $(".default-tag").fadeIn("slow").removeAttr('hidden');
+  // show teachers tag
+  user_type == 'teachers' ? $(".tea").fadeIn("slow").removeAttr('hidden') : $(".tea").fadeOut("slow").attr('hidden', true);
+  // get users
+  const target = $(".select_user_div").attr('url');
+      $.ajax({
+        url: target,
+        data: {
+          'user_type': user_type,
+        },
+
+        beforeSend: () =>{
+          $("#loader").removeAttr('hidden');
+        },
+
+        complete: () => {
+          $("#loader").attr('hidden', true);
+        },
+
+        success: (data) => {
+          $(".select_user").html(data);
+          $(".select_user_div").removeAttr('hidden');
+        }
+      });
+}
+
+  $(document).ready(()=>{
+    $(".user-type").on('change', ()=>{
+      var user_type = $(".user-type").val();
+      user_type !== 'students' ? $(".select_user_div").fadeIn("slow").removeAttr('hidden') : $(".select_user_div").attr('hidden', true);
+
+      switch (user_type){
+        case 'students':
+          $(".select_class_div").removeAttr('hidden');
+          user_type = 'students'
+          handleStudents();
+          break;
+
+        case 'teachers':
+          $(".select_class_div").attr('hidden', true);
+          $(".user_label").text('Teacher');
+          user_type = 'teachers';
+          handleUsers(user_type);
+          break;
+
+        case 'parents':
+          $(".select_class_div").attr('hidden', true);
+          $(".user_label").text('Parent');
+          user_type = 'parents'
+          handleUsers(user_type);
+           // show all student tags if hidden
+          $(".stu").fadeIn("slow").removeAttr('hidden');
+          break;
+
+        case 'admins':
+          $(".select_class_div").attr('hidden', true);
+          $(".user_label").text('Admin');
+          user_type = 'admins'
+          handleUsers(user_type);
+          break;
+      }
+    });
+
+    // get students of the selected class
+      $(".select_class").on('change', () => {
+        const target = $(".select_class").attr('url');
+        const class_id = $(".select_class").val();
+        $.ajax({
+          url: target,
+          data: {
+            'class': class_id,
+          },
+
+          beforeSend: () =>{
+            $("#loader").removeAttr('hidden');
+          },
+
+          complete: () => {
+            $("#loader").attr('hidden', true);
+          },
+
+          success: (data) => {
+            $(".select_user").html(data);
+            $(".select_user_div").removeAttr('hidden');
+          }
+        });
+      });
+  });  
+</script>
+ {% endblock script %}

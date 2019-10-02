@@ -1,0 +1,107 @@
+{% extends 'authenticated/dashboard.html' %}
+{% load tags %}
+{% block title %} Manage SMS {% endblock %}
+{% block custom_style %}
+<style>
+	.pt-3-half {
+		padding-top: 1.4rem;
+	}
+</style>
+{% endblock custom_style %}
+{% block main %}
+<!-- Editable table -->
+<div class="card">
+  <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Manage Schools SMS Units</h3>
+  <div class="card-body">
+    <div id="table" class="table-editable">
+      <table class="table table-bordered table-responsive-md table-striped text-center">
+        <thead>
+          <tr>
+            <th class="text-center">School Name</th>
+            <th class="text-center">No. Students</th>
+            <th class="text-center">On Trial</th>
+            <th class="text-center">Sub. Ends On</th>
+            <th class="text-center">Current SMS Unit</th>
+            <th class="text-center">Add SMS Unit</th>
+            <th class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+        	{% for tenant in tenants %}
+          <!-- This is our clonable table line -->
+          <tr class="hide">
+            <td class="pt-3-half" contenteditable="false">{{ tenant.name }}</td>
+            <td class="pt-3-half" contenteditable="fasle">{% get_tenant_data data='no_studs' tenant_id=tenant.id %}</td>
+            <td class="pt-3-half" contenteditable="false">{{ tenant.on_trial }}</td>
+            <td class="pt-3-half" contenteditable="false">{{ tenant.active_until }}</td>
+            <td class="pt-3-half current_sms_unit" contenteditable="false">{% get_tenant_data data='sms_unit' tenant_id=tenant.id %}</td>
+
+            <td id="sms_unit" title="Edit this value" class="pt-3-half" contenteditable="true"></td>
+            <td>
+              	<button target_url="{% url 'schools_sms_sub_update' %}" target_school="{{ tenant.id }}" type="button"
+                  class="update-unit btn btn-primary btn-rounded btn-sm my-0">
+                  Update Unit
+              	</button>
+            </td>
+          </tr>
+          	{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<!-- Editable table -->
+{% endblock %}
+{% block custom_js %}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha256-KsRuvuRtUVvobe66OFtOQfjP8WA2SzYsmm4VPfMnxms=" crossorigin="anonymous"></script>
+      <script type="text/javascript">
+        function isEmpty(str) {
+            return (!str || 0 === str.length);
+        }
+        function isBlank(str) {
+            return (!str || /^\s*$/.test(str));
+        }
+        $(document).ready(function(){
+          $("tr td button").click(function(){
+          var row = $(this).closest("tr > td");
+          var target_school = $.trim($(row).find(".update-unit").attr('target_school'));
+          var target_url = $.trim($(row).find(".update-unit").attr('target_url'))
+          var sms_unit = $(row).siblings('#sms_unit').text();
+          if (isNaN(sms_unit)){
+            swal("Please enter number of sms units !", {
+              icon: "warning",
+            });
+            return false;
+          }else if(isEmpty(sms_unit) || isBlank(sms_unit)){
+             swal("Please enter number of sms units !", {
+              icon: "warning",
+            });
+            return false;
+          }else{
+            $.ajax({
+              url: target_url,
+              data: {
+                "tenant_id": target_school,
+                "sms_unit": sms_unit,
+              },
+
+              beforeSend: function(){
+                $(row).find(".update-unit").attr('disabled', true);
+                $(row).find(".update-unit").text('Updating...');
+              },
+              complete: function () {
+                $(row).find(".update-unit").text('Updated');
+                $(row).find(".update-unit").removeAttr('disabled');
+                $(row).find(".update-unit").removeClass('btn-primary');
+                $(row).find(".update-unit").addClass('btn-success');
+              },
+
+              success: function (data) {
+                $(row).siblings('.current_sms_unit').text(data);
+                }
+              });
+          }
+       		});
+        });
+      </script>
+{% endblock custom_js %}

@@ -1,0 +1,26 @@
+{% for parent in parents %}
+                  <tr>
+                    <td><a href="{% url 'profile' user_id=parent.id %}">{{ parent.get_full_name }}</td>
+                    <td><img src="{{ parent.get_picture }}" width="50"></td>
+                    <td>{{ parent.email }}</td>
+                    <td>
+                      {% if request.user.is_superuser %}
+                      <div title="if deativated, this parent can no longer have access to this site" class="switch">
+                        <label class="custom-checkbox">
+                          Off
+                          <input deativate-url="{% url 'toggle_user_status' id=parent.id %}" id="user_status" name="user_status" type="checkbox"
+                          {% if parent.is_active %} checked {% endif %}/>
+                          <span class="lever"></span> On
+                        </label>
+                      </div>
+                    </td>
+                    <td>
+                      <a href="{% url 'profile' user_id=parent.id %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
+                      <a href="{% url 'edit_user' id=parent.id %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                      <a target_parent="{% url 'delete_user' id=parent.pk %}" title="delete" href="#" class="red-text del_parent"><i class="fa fa-times"></i></a>
+                    </td>
+                    {% endif %}
+                  </tr>
+                  {% empty %}
+                  <span>No data available</span>
+                  {% endfor %}

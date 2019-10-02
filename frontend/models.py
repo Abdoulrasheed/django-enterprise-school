@@ -1,5 +1,5 @@
 from django.db import models
-from sms.constants import RELIGION, GENDER
+from constants import RELIGION, GENDER
 from sms.models import Session
 
 ADMISSION_STATUS = (

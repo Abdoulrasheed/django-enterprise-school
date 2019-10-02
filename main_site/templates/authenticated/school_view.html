@@ -1,0 +1,140 @@
+{% extends 'authenticated/dashboard.html' %}
+{% load static humanize %}
+{% block title %} Dashboard | Bitpoint Admin {% endblock title %}
+  
+{% block custom_style %}
+<link rel="stylesheet" type="text/css" href="{% static 'main_site/authenticated/css/school_profile.css' %}">
+{% endblock custom_style %}
+{% block main %}
+<!-- Begin Page Content -->
+    <div class="container-fluid">
+    <div class="container">
+    <p class="mb-4"><a href="{% url 'schools_list' %}" class="btn btn-primary btn-icon-split">
+      <span class="icon text-white-50">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span class="text">Go Back</span>
+    </a></p>
+    <!-- ERROR MESSAGE -->
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">{{ setting.school_name }}</h1>
+            <div class="flex-row align-items-center justify-content-between">
+                <!-- Button Edit school -->
+                <a title="Update {{ setting.school_name }}'s Info Now" href="{% url 'school_change' school.id %}" class="d-none d-sm-inline-block btn btn-sm btn-info shadow-sm">
+                <i class="fas fa-pencil-square fa-sm text-white-50">
+                </i> Edit Now </a>
+
+                <!-- Button Backup -->
+                <a title="Take {{ setting.school_name }}'s Backup" href="{% url 'site_backup' tenant_id=school.id %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                <i class="fas fa-download fa-sm text-white-50">
+                </i> Take Backup</a>
+            </div>
+            
+          </div>
+
+          <!-- TOP Content Row -->
+          <div class="row">
+
+            <!-- No Students Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">No. of Students</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{ no_students }}</div>
+                        </div>
+                        <div class="col-auto">
+                      <i class="fas fa-users fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- No Teachers Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">No. of Teachers</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        {{ no_teachers }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-user-tie fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- No Parents Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">No Parents</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{ no_parents }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-comments fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SMS UNIT Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">SMS Unit</div>
+                      <div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ setting.sms_unit }}</div>
+                        </div>
+                        <div class="col">
+                          <div class="progress progress-sm mr-2">
+                            <div class="progress-bar {% if sms_unit >= 50 %} bg-info{% else %} bg-danger {% endif %}" role="progressbar" style="width: {{ setting.sms_unit }}%" aria-valuenow="{{ setting.sms_unit }}" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-phone fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LOW Content Row -->
+          <span class="load"></span>
+        <div class="fb-profile">
+            <img id="img-bg" align="left" target_url="{% static 'main_site/authenticated/img/' %}" class="fb-image-lg" src="" alt="Profile image example"/>
+            <img align="left" class="fb-image-profile thumbnail" src="{{ school.school_admin.get_picture }}" alt="Profile image example"/>
+            <div class="fb-profile-text">
+                <h1>{{ school.school_admin.get_full_name }}</h1>
+                    <p>{{ school.name }} Administrator</p>
+                </div>
+            </div>
+        </div>
+        <!-- /.container-fluid -->
+      </div>
+      {% block custom_js %}
+        <script>
+            $(document).ready(()=>{
+                const target_url = $("#img-bg").attr("target_url");
+                const image = `img-${Math.floor((Math.random() * 3) + 1)}.jpg`;
+                const full_url = `${target_url}${image}`
+                $("#img-bg").attr('src', full_url);
+            });
+        </script>
+      {% endblock %}
+      {% endblock main %}

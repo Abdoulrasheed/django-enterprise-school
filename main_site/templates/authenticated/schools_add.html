@@ -1,0 +1,274 @@
+{% extends 'authenticated/dashboard.html' %}
+{% load static %}
+{% block title %} Add School | Bitpoint Admin {% endblock %}
+{% block custom_style %}
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+{% endblock %}
+{% block main %}
+  <div class="container">
+        <p class="mb-4"><a href="{% url 'schools_list' %}" class="btn btn-primary btn-icon-split">
+      <span class="icon text-white-50">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span class="text">Go Back</span>
+    </a>
+  </p>
+  <div id="form-not-valid-errors">
+    
+  </div>
+    <!-- ERROR MESSAGE -->
+    <div hidden class="alert alert-warning alert-dismissible fade show" role="alert">
+    </div>
+    <!-- ERROR MESSAGE -->
+    <div class="card o-hidden border-0 shadow-lg my-5">
+      <div class="card-body p-0">
+        <!-- Nested Row within Card Body -->
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="p-5">
+              <div class="text-center">
+                <h1 class="h4 text-gray-900 mb-4">Create School!</h1>
+              </div>
+              <form class="user">{% csrf_token %}
+                <div class="form-group row">
+                  <div class="col-sm-6 mb-3 mb-sm-0">
+                    <input max="100" type="text" class="form-control form-control-user" id="school_name" placeholder="School Name">
+                  </div>
+                  <div class="col-sm-6">
+                    <input type="text" class="form-control form-control-user" id="subdomain" onkeypress="return AvoidSpace(event)" placeholder="Subdomain">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <input min="10" max="100" type="text" class="form-control form-control-user" id="description" placeholder="Description">
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6 mb-3 mb-sm-0">
+                    <input min="6" max="55" onkeypress="return AvoidSpace(event)" type="email" class="form-control form-control-user" id="email" placeholder="Admin Email">
+                  </div>
+                  <div class="col-sm-6">
+                    <input max="11" min="11" onkeypress="return AvoidSpace(event)" type="number" class="form-control form-control-user" id="phone" placeholder="Admin Phone">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    <input max="11" min="2" onkeypress="return AvoidSpace(event)" type="text" class="form-control form-control-user" id="username" placeholder="Username">
+                  </div>
+                  <div class="col-sm-6 mb-3 mb-sm-0">
+                    <input max="16" min="4" type="password" class="form-control form-control-user" id="password" placeholder="Password">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6">
+                    Put On Trial
+                    <input type="checkbox" checked data-toggle="toggle" data-size="mini">
+
+                  </div>
+                  <div class="col-sm-6 mb-3 mb-sm-0">
+                    <input type="date" class="form-control form-control-user" id="active_until" placeholder="Active Until">
+                  </div>
+                </div>
+                <a href="#" target_url="{% url 'school_add_save' %}" class="btn btn-primary btn_submit btn-user btn-block">
+                  PROCEED
+                </a>
+                <hr>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock main %}
+{% block custom_js %}
+<script src="{% static 'js/sms/sms_script.js' %}"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha256-KsRuvuRtUVvobe66OFtOQfjP8WA2SzYsmm4VPfMnxms=" crossorigin="anonymous"></script>
+      <script type="text/javascript">
+        // Avoid space in input 
+        const AvoidSpace = (event) => {
+            var k = event ? event.which : window.event.keyCode;
+            if (k == 32) return false;
+        }
+        token = $('input[name=csrfmiddlewaretoken]').val();
+        $(document).ready(()=>{
+        $(".btn_submit").click((e)=>{
+          e.preventDefault();
+          const school_name = $.trim($("#school_name").val());
+          const subdomain = $.trim($("#subdomain").val());
+          const description = $("#description").val();
+          const email = $.trim($("#email").val());
+          const phone = $.trim($("#phone").val());
+          const username = $.trim($("#username").val());
+          const password = $.trim($("#password").val());
+          const ontrial = $("#ontrial").val();
+          const active_until = $.trim($("#active_until").val());
+
+          if(school_name.length == 0 || school_name == ' '){
+            $(".alert-warning").html("\
+              <strong>Value Error !</strong> School Name  \
+              Cannot be left blank.\
+              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
+              <span aria-hidden='true'>&times;</span>\
+              </button>\
+            ");
+            $(".alert-warning").removeAttr('hidden');
+            return false;
+          }else if(school_name.length >  50){
+            $(".alert-warning").html("\
+              <strong>Value Error !</strong> School Name  \
+              Cannot contain more than 50 characters.\
+              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
+              <span aria-hidden='true'>&times;</span>\
+              </button>\
+            ");
+            $(".alert-warning").removeAttr('hidden');
+            return false;
+          }else if(subdomain.length == 0 || subdomain == ' '){
+            $(".alert-warning").html("\
+              <strong>Value Error !</strong> Subdomain  \
+              Cannot be left blank.\
+              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
+              <span aria-hidden='true'>&times;</span>\
+              </button>\
+            ");
+            $(".alert-warning").removeAttr('hidden');
+            return false;
+          }
+          else if(subdomain.length > 50){
+            $(".alert-warning").html("\
+              <strong>Value Error !</strong> Subdomain  \
+              Cannot contain more than 50 characters.\
+              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
+              <span aria-hidden='true'>&times;</span>\
+              </button>\
+            ");
+            $(".alert-warning").removeAttr('hidden');
+            return false;
+          }else if(subdomain.length > 50 || subdomain.length < 2){
+            $(".alert-warning").html("\
+              <strong>Value Error !</strong> Subdomain field \
+              must contain the minimun of 2 and maximum of 50 characters.\
+              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
+              <span aria-hidden='true'>&times;</span>\
+              </button>\
+            ");
+            $(".alert-warning").removeAttr('hidden');
+            return false;
+          }else if(description.length > 100 || description == ' ' || description == ''){
+            $(".alert-warning").html("\
+              <strong>Value Error !</strong> Description field \
+              Cannot be blank and must have the maximum of 100 characters.\
+              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
+              <span aria-hidden='true'>&times;</span>\
+              </button>\
+            ");
+            $(".alert-warning").removeAttr('hidden');
+            return false;
+          }else if(email.length > 50 || email == ' ' || email == ''){
+            $(".alert-warning").html("\
+              <strong>Value Error !</strong> Email field \
+              Cannot be blank.\
+              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
+              <span aria-hidden='true'>&times;</span>\
+              </button>\
+            ");
+            $(".alert-warning").removeAttr('hidden');
+            return false;
+          }else if(phone.length > 11 || phone < 11 || phone == ''){
+            $(".alert-warning").html("\
+              <strong>Value Error !</strong> Phone number field \
+              must contain 11 and 11 characters only !.\
+              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
+              <span aria-hidden='true'>&times;</span>\
+              </button>\
+            ");
+            $(".alert-warning").removeAttr('hidden');
+            return false;
+          }else if(username.length > 30 || username == ' ' || username < 2){
+            $(".alert-warning").html("\
+              <strong>Value Error !</strong> Username field \
+              Cannot be blank and must contain minimun of 2 characters.\
+              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
+              <span aria-hidden='true'>&times;</span>\
+              </button>\
+            ");
+            $(".alert-warning").removeAttr('hidden');
+            return false;
+          }else if(password.length > 16 || password < 4 || password == ''){
+            $(".alert-warning").html("\
+              <strong>Value Error !</strong> Password field \
+              must contain minimun and maximum of 2 and 16 characters respectively.\
+              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
+              <span aria-hidden='true'>&times;</span>\
+              </button>\
+            ");
+            $(".alert-warning").removeAttr('hidden');
+            return false;
+          }else if(active_until == ''){
+            $(".alert-warning").html("\
+              <strong>Value Error !</strong> Please choose active date\
+              <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
+              <span aria-hidden='true'>&times;</span>\
+              </button>\
+            ");
+            $(".alert-warning").removeAttr('hidden');
+            return false;
+          }else{
+
+          target_url = $(".btn_submit").attr('target_url');
+
+
+          $.ajax({
+            url: target_url,
+            method: "POST",
+            data: {
+              "school_name": school_name,
+              "subdomain": subdomain,
+              "description": description,
+              "email": email,
+              "phone": phone,
+              "username": username,
+              "password": password,
+              "ontrial": ontrial,
+              "active_until": active_until,
+              "csrfmiddlewaretoken": token,
+            },
+
+            beforeSend: ()=>{
+              $(".btn_submit").html("\
+                <span class='spinner-grow spinner-grow-sm' role='status' aria-hidden='true'></span>\
+                    CREATING " + school_name + " ...");
+            },
+             
+            complete: ()=>{
+              $(".btn_submit").html('CONTINUE');
+            },
+
+            success: (data) => {
+              if(! isNaN(data)){
+                if (data == 3){ // if 3 client already exist
+                  $(".alert-warning").html("\
+                    <strong>Sorry !</strong> A tenant with this \
+                    subdomain already exist.\
+                    <button type='button' class='close' data-dismiss='alert' aria-label='Close'>\
+                    <span aria-hidden='true'>&times;</span>\
+                    </button>\
+                  ");
+                  $(".alert-warning").removeAttr('hidden');
+                }
+              }else if(data == 'success'){
+                swal(`Successfully Created ${school_name} !`, {
+                icon: "success",
+              });
+            }else if(data == 2){
+              $(".alert-warning").html("Subdomain cannot contain any special character");
+              $(".alert-warning").removeAttr('hidden');
+            }else{
+              $("#form-not-valid-errors").html(data);
+            }
+          }
+        });
+          }
+      });
+    });
+      </script>
+      <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+   {% endblock custom_js %}

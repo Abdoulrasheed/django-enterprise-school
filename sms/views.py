@@ -8,19 +8,31 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Count, Min, Sum, CharField, Value, Q
-from django.http import HttpResponse, JsonResponse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.shortcuts import get_object_or_404, redirect, render, render_to_response
+
+from django.shortcuts import (
+	get_object_or_404, 
+	redirect, 
+	render, 
+	render_to_response
+	)
 
 from django.template import Context
 from django.template.loader import get_template
-from .decorators import teacher_required, student_required, parent_required
+from .decorators import (teacher_required, 
+						student_required, 
+						parent_required,
+						admin_required)
 from .models import *
-from .constants import *
+from constants import *
 from django.db import IntegrityError
 
 from . sms_sender import send_sms
+
+from django.views.decorators.http import require_http_methods
+
+import asyncio
 
 from .remark import getRemark, getGrade
 from frontend.models import OnlineAdmission
@@ -51,7 +63,10 @@ from .forms import (AddStudentForm,
 					EditExpenseForm,
 					EditSessionForm,
 					SetParentForm,
-					ProfilePictureForm,)
+					ProfilePictureForm,
+					EmailMessageForm,)
+
+from django.template.loader import render_to_string
 
 
 INDEX = lambda items, key, item: list(items.values_list(key, flat=True)).index(item)+1
@@ -83,7 +98,7 @@ def get_subject_report_data(grades, subjects, student, student_grades):
 
 
 
-
+@admin_required
 @login_required
 def report_student(request):
 	data = request.POST
@@ -168,7 +183,7 @@ def report_student(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def create_report_student(request):
 	classes = Class.objects.all()
 	context = {"classes": classes}
@@ -176,21 +191,33 @@ def create_report_student(request):
 
 @login_required
 def home(request):
+	context = {}
 	no_classes = Class.objects.all().count()
 	no_subjects = Subject.objects.all().count()
 	no_parents = User.objects.filter(is_parent=True).count()
 	no_students = User.objects.filter(is_student=True).count()
 	no_teachers = User.objects.filter(is_teacher=True).count()
-	context = {
-		"no_students": no_students,
-		"no_parents": no_parents,
-		"no_subjects": no_subjects,
-		"no_classes": no_classes,
-		"no_teachers": no_teachers,
-	}
-	if request.user.is_student:
-		student = Student.objects.get(user__pk=request.user.pk)
-		current_session = Session.objects.get(current_session=True)
+	current_session = Session.objects.get(current_session=True)
+	
+	if request.user.is_superuser:
+		sms_unit = Setting.objects.first().sms_unit
+		target_income = 0
+		classes = Class.objects.all()
+		for clss in classes:
+			if clss.amount_to_pay is not None:
+				target_income += clss.amount_to_pay
+
+		context["no_students"] = no_students
+		context["no_parents"] = no_parents
+		context["no_subjects"] = no_subjects
+		context["no_classes"] = no_classes
+		context["no_teachers"] = no_teachers
+		context["target_income"] = int(target_income)
+		context['sms_unit'] = sms_unit
+		context['colxl'] = 2
+
+	elif request.user.is_student:
+		student = Student.objects.get(user__pk=request.user.pk, session=current_session)
 		p = Payment.objects.filter(student=student, session=current_session)
 		no_students = Student.objects.filter(in_class__pk=student.in_class.pk, session=current_session).count()
 		subjects_q = get_object_or_404(Class, pk=student.in_class.pk).subjects
@@ -205,57 +232,86 @@ def home(request):
 		"subjects": subjects,
 		"student": student,
 		"p":p,
+		"colxl": 3,
 		}
 	elif request.user.is_teacher:
-		subjects = SubjectAssign.objects.filter(teacher__id=request.user.id)
+		# Get all the subjects assigned to the teacher
+		subjects = SubjectAssign.objects.filter(teacher__id=request.user.id, session=current_session, term=get_terms())
+		
+		# show number of those students in any class that
+		# the teacher is being assigned a subject
+
+		# then, count the parents of those students
+		
+		no_students = 0
+		no_parents = 0
+
+		# also skip those students with no parent.
+
+		parent_ids = ()
+		for clss in subjects:
+			no_students += Student.objects.filter(in_class__pk=clss.clss.id, session=current_session).count()
+			
+			if Parent.objects.filter(student__in_class__pk=clss.clss.id).exists():
+				if not Parent.objects.filter(student__in_class__pk=clss.clss.id).first().id in parent_ids:
+					no_parents += Parent.objects.filter(student__in_class__pk=clss.clss.id).count()
+					parent_ids += (Parent.objects.filter(student__in_class__pk=clss.clss.id).first().id,)
+
 		context = {
 		"no_students": no_students,
-		"no_parents": no_parents,
-		"no_subjects": no_subjects,
-		"no_classes": no_classes,
+		"no_parents": len(parent_ids),
+		"no_subjects": subjects.count(),
 		"no_teachers": no_teachers,
-		"subjects": subjects,
+		"allocated_subjects": subjects,
+		"colxl": 3,
 	}
 	elif request.user.is_parent:
-		wards = Parent.objects.filter(parent__pk=request.user.id)
+		no_classes = Class.objects.all().count()
+		no_subjects = Subject.objects.all().count()
+		no_teachers = User.objects.filter(is_teacher=True).count()
+		parent = Parent.objects.get(parent__pk=request.user.id)
 		context = {
-		"no_students": wards.count(),
+		"no_students": parent.student.filter(session=current_session).count(),
 		"no_parents": 1,
 		"no_subjects": no_subjects,
 		"no_classes": no_classes,
 		"no_teachers": no_teachers,
-		"wards": wards,
+		"students": parent.student.filter(session=current_session),
+		"colxl": 3,
 		}
 	return render(request, 'sms/home.html', context)
 
 
 
 @login_required
-@teacher_required
+@admin_required
+@require_http_methods(["GET"])
 def expenditure_graph(request):
-	total_payments = 0
-	total_spendings = 0
-	target = 0
 	current_session = Session.objects.get(current_session=True)
-	expenditures = Expense.objects.filter(session=current_session)
-	for expenditure in expenditures:
-		total_spendings += expenditure.amount
+	
+	expenditures = Expense.objects.filter(session=current_session, term=get_terms())
+	expenditures_by_month = [0] * 12
+	for month in range(1, 13):
+		for expenditure in expenditures.filter(timestamp__month=month):
+			m = expenditure.timestamp.month
+			if expenditures_by_month[m-1] in expenditures_by_month:
+				expenditures_by_month[m-1] += expenditure.amount
+			else:
+				expenditures_by_month[m-1] = expenditure.amount
 
-	payments = Payment.objects.filter(session=current_session)
-	for payment in payments:
-		total_payments += payment.paid_amount
+	payments = Payment.objects.filter(session=current_session, term=get_terms())
+	payments_by_month = [0] * 12
+	for month in range(1, 13):
+		for payment in payments.filter(date_paid__month=month):
+			m = payment.date_paid.month
+			if payments_by_month[m-1] in payments_by_month:
+				payments_by_month[m-1] += payment.paid_amount
+			else:
+				payments_by_month[m-1] = payment.paid_amount
 
-	classes = Class.objects.all()
-	for clss in classes:
-		if not clss.amount_to_pay == None:
-			target += clss.amount_to_pay
-
-	current_session = Session.objects.get(current_session=True)
-	labels = ["Income", "Expensediture", "Target"]
-	data = [total_payments, total_spendings, target]
 	data = {
-		"labels": labels,
-		"data_to_send": data,
+		"expenditure": expenditures_by_month,
+		"income": payments_by_month,
 		"current_session": current_session.name,
 		}
 	return JsonResponse(data)
@@ -266,13 +322,21 @@ def expenditure_graph(request):
 @teacher_required
 def students_view(request):
 	classes = Class.objects.all()
+	# if teacher, then show only classes
+	# that he/she is been assigned a subject in.
+	# for current academic year, and current term
+	if request.user.is_teacher:
+		current_session = Session.objects.get(current_session=True)
+		classes = SubjectAssign.objects.filter(
+			teacher__id=request.user.id, 
+			session=current_session, 
+			term=get_terms())
 	context = {"classes": classes}
 	return render(request, 'sms/student/students.html', context)
 
 
-
 @login_required
-@teacher_required
+@admin_required
 def delete_user(request, id):
 	user = User.objects.get(pk=id)
 	if user:
@@ -282,16 +346,21 @@ def delete_user(request, id):
 		    student = Student.objects.get(user__pk=user.pk, session=current_session)
 		    class_id = student.in_class.pk
 		    student.delete()
-		    messages.success(request, user_name + ' Successfully deleted !')
-		    return HttpResponse('deleted')
+		    new_students_list = Student.objects.filter(in_class__pk=class_id, session=current_session)
+		    context = {'students': new_students_list,}
+		    return render(request, 'sms/student/new_students_list.html', context)
 		elif user.is_teacher:
 			user.delete()
-			messages.success(request, user_name + ' Successfully deleted !')
-			return HttpResponse('deleted')
+			new_teachers_list = User.objects.filter(is_teacher=True)
+			context = {'teachers': new_teachers_list,}
+			return render(request, 'sms/teacher/new_teachers_list.html', context)
 		elif user.is_parent:
 			user.delete()
-			messages.success(request, user_name + ' Successfully deleted !')
-			return HttpResponse('deleted')
+			new_parents_list = User.objects.filter(is_parent=True)
+			context = {
+				'parents': new_parents_list,
+			}
+			return render(request, 'sms/parent/new_parents_list.html', context)
 		else:
 			user.delete()
 			messages.success(request, user_name + ' Successfully deleted !')
@@ -305,10 +374,21 @@ def delete_user(request, id):
 @login_required
 @teacher_required
 def students_list_view(request, id):
-    current_session =Session.objects.get(current_session=True)
+    current_session = Session.objects.get(current_session=True)
     students = Student.objects.filter(in_class__pk=id, session=current_session)
     selected_class = Class.objects.get(pk=id)
     classes = Class.objects.all()
+
+    # if teacher, then show only classes
+	# that he/she is been assigned a subject in.
+	# for current academic year, and current term
+
+    if request.user.is_teacher:
+    	current_session = Session.objects.get(current_session=True)
+    	classes = SubjectAssign.objects.filter(
+    		teacher__id=request.user.id, 
+			session=current_session, 
+			term=get_terms())
     context = {
         "selected_class": selected_class,
         "students": students,
@@ -317,19 +397,20 @@ def students_list_view(request, id):
     return render(request, 'sms/student/students_list.html', context)
 
 @login_required
-@teacher_required
+@admin_required
 def section_view(request):
 	sections = Section.objects.all()
 	context = {"sections": sections}
 	return render(request, 'sms/section/section.html', context)
 
 @login_required
+@admin_required
 def assign_teacher_list(request):
 	return render(request, 'sms/teacher/assign_list.html', {})
 
 
 @login_required
-@teacher_required
+@admin_required
 def assign_teacher_view(request):
 	if not request.GET.get('term') in ['First', 'Second', 'Third']:
 		messages.error(request, ' ERROR: please select a term !')
@@ -348,7 +429,7 @@ def assign_teacher_view(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def add_assign_teacher(request):
 	context = {}
 	classes = Class.objects.all()
@@ -421,7 +502,7 @@ def add_assign_teacher(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def section_allocation(request):
 	sections = SectionAssign.objects.all()
 	subjects = Subject.objects.all()
@@ -433,7 +514,7 @@ def section_allocation(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def add_section_allocation(request):
 	sections = Section.objects.all()
 	teachers = User.objects.filter(is_teacher=True)
@@ -481,7 +562,7 @@ def add_section_allocation(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def add_student(request):
 	classes = Class.objects.all()
 	general_setting = Setting.objects.first()
@@ -570,14 +651,14 @@ def add_student(request):
 					is_parent = True,
 					)
 
-				Parent.objects.create(student=student, parent=parent)
+				par = Parent.objects.create(parent=parent)
+				par.student.add(student)
 				if parent_picture:
 					fs = FileSystemStorage()
 					fs.save(parent_picture.name, parent_picture)
 			else:
-				parent = User.objects.get(username=existing_parent)
-				Parent.objects.create(student=student, parent=parent)
-			print(dir(general_setting))
+				parent = Parent.objects.get(parent__username=existing_parent)
+				parent.student.add(student)
 
 			sms_body = "Hello {0}, \nWelcome to {1}. \
 						Your login details are: \
@@ -614,7 +695,7 @@ def add_student(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def add_parent(request):
 	context = {}
 	if request.method == "POST":
@@ -678,7 +759,7 @@ def add_parent(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def add_teacher(request):
 	context = {}
 	if request.method == "POST":
@@ -739,7 +820,7 @@ def add_teacher(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def add_class(request):
 	if request.method == "POST":
 		sections = Section.objects.all()
@@ -787,23 +868,29 @@ def add_class(request):
 	return render(request, 'sms/class/add_class.html', context)
 
 @login_required
-@teacher_required
+@admin_required
 def delete_class(request, id):
 	selected_class = Class.objects.get(pk=id)
 	class_name = selected_class.name
 	selected_class.delete()
-	messages.success(request, "Successfully deleted "+ class_name)
-	return HttpResponseRedirect(reverse_lazy('class_list'))
+	new_class_list = Class.objects.all()
+	context = {
+		'classes': new_class_list,
+	}
+	return render(request, 'sms/class/new_class_list.html', context)
 
 
 @login_required
-@teacher_required
+@admin_required
 def delete_subject(request, id):
 	selected_subject = Subject.objects.get(pk=id)
 	subject_name = selected_subject.name
 	selected_subject.delete()
-	messages.success(request, "Successfully deleted "+ subject_name)
-	return HttpResponseRedirect(reverse_lazy('subjects_list'))
+	new_subjects_list = Subject.objects.all()
+	context = {
+		'subjects': new_subjects_list,
+	}
+	return render(request, 'sms/subject/new_subjects_list.html', context)
 
 
 @login_required
@@ -812,11 +899,14 @@ def delete_section(request, id):
 	selected_section = Section.objects.get(pk=id)
 	section_name = selected_section.name
 	selected_section.delete()
-	messages.success(request, "Successfully deleted "+ str(selected_section))
-	return HttpResponseRedirect(reverse_lazy('sections_list'))
+	new_section_list = Section.objects.all()
+	context = {
+		'sections': new_section_list,
+	}
+	return render(request, 'sms/section/new_section_list.html', context)
 
 @login_required
-@teacher_required
+@admin_required
 def delete_all_allocated_subjects(request, id):
 	subjects = SubjectAssign.objects.get(pk=id)
 	teacher = subjects.teacher
@@ -828,7 +918,7 @@ def delete_all_allocated_subjects(request, id):
 
 
 @login_required
-@teacher_required
+@admin_required
 def delete_section_allocation(request, id):
 	allocated_section = SectionAssign.objects.get(pk=id)
 	section_name = allocated_section.section
@@ -840,7 +930,7 @@ def delete_section_allocation(request, id):
 
 
 @login_required
-@teacher_required
+@admin_required
 def delete_attendance(request, id):
 	attendance = Attendance.objects.get(pk=id)
 	student = attendance.student
@@ -851,7 +941,7 @@ def delete_attendance(request, id):
 
 
 @login_required
-@teacher_required
+@admin_required
 def add_subject(request):
 	classes = Class.objects.all()
 	context = {"classes": classes}
@@ -872,7 +962,7 @@ def add_subject(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def add_section(request):
 	context = {}
 	if request.method == "POST":
@@ -896,13 +986,13 @@ def add_section(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def system_admin(request):
 	users = User.objects.filter(is_superuser=True)
 	return render(request, 'sms/users/user.html', { "users": users })
 
 @login_required
-@teacher_required
+@admin_required
 def add_system_admin(request):
 	context = {}
 	if request.method == "POST":
@@ -996,7 +1086,7 @@ def profile(request, user_id):
 
 
 @login_required
-@teacher_required
+@admin_required
 def parents_view(request):
 	parents = User.objects.filter(is_parent=True)
 	context = {
@@ -1005,7 +1095,7 @@ def parents_view(request):
 	return render(request, 'sms/parent/parents.html', context)
 
 @login_required
-@teacher_required
+@admin_required
 def class_view(request):
 	classes = Class.objects.all()
 	context = {
@@ -1015,7 +1105,7 @@ def class_view(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def subjects_view(request):
 	subjects = Subject.objects.all()
 	context = {
@@ -1161,7 +1251,7 @@ def save_attendance(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def toggle_session(request, id):
 	selected_session = Session.objects.get(pk=id)
 	current_session = Session.objects.get(current_session=True)
@@ -1185,32 +1275,19 @@ def load_subjects(request):
 			subjects = i.subjects.filter(subjectassign__clss=clss)
 	return render(request, 'sms/mark/subject_dropdown_list_options.html', {'subjects': subjects})
 
-def get_terms():
-	term = 'First'
-	now = tz.now()
-	date = tz.localtime(now).date()
-	setting = Setting.objects.first()
 
-	if setting:
-		st_begins, st_ends = setting.st_begins, setting.st_ends
-		tt_begins, tt_ends = setting.tt_begins, setting.tt_ends
-		if (st_begins and st_begins) and (date >= st_begins) and (date <=st_ends):
-			term = 'Second'
-		if (tt_begins and tt_ends) and (date >= tt_begins) and (date <=tt_ends):
-			term = 'Third'
-	return term
 @login_required
 @teacher_required
 def score_list(request):
-	current_session = Session.objects.filter(current_session=True)
+	current_session = Session.objects.filter(current_session=True).first()
+	term=get_terms()
 	classes = Class.objects.all()
-	context = {"classes": classes, 'term':get_terms()}
+	context = {"classes": classes, 'term': term}
 	if request.user.is_teacher:
-		assigned_subjects = SubjectAssign.objects.filter(teacher__id=request.user.id)
+		assigned_subjects = SubjectAssign.objects.filter(teacher__id=request.user.id, session=current_session, term=term)
 		context.update({"assigned_subjects": assigned_subjects})
 	return render(request, 'sms/mark/get_score_list.html', context)
 
-from django.utils import timezone as tz
 @login_required
 @teacher_required
 def score_entry(request):
@@ -1256,7 +1333,7 @@ def score_entry(request):
 				a.compute_position(term)
 				a.save()
 		messages.success(request, "Score Successfully Recorded !")
-		return redirect('/app/score-entry/')
+		return redirect('score_list')
 
 	selected_class = request.GET.get('class')
 	selected_term = request.GET.get('term')
@@ -1290,33 +1367,34 @@ def score_entry(request):
 				})
 			return render(request, 'sms/mark/load_score_table.html', context)
 	elif request.user.is_teacher:
-	    if not None in [selected_term, selected_subject]:
-	        selected_class_id = request.GET.get('scid')
-	        selected_class = Class.objects.get(id=selected_class_id)
-	        selected_class_name = selected_class.name
-	        current_session = Session.objects.get(current_session=True)
-	        students = Student.objects.filter(in_class__name=selected_class, session=current_session)
-	        subject = request.GET.get('subject')
-	        subject = Subject.objects.get(pk=subject)
-	        student_data = []
-	        for student in students:
-	            term = request.GET.get('term')
-	            grade_obj = Grade.objects.filter(
-	            session=current_session,
-	            term=term,
-	            student=student,
-	            subject=subject).first() or Grade.objects.none()
+		if not None in [selected_term, selected_subject]:
+			selected_class_id = request.GET.get('scid')
+			selected_class = Class.objects.get(id=selected_class_id)
+			selected_class_name = selected_class.name
+			current_session = Session.objects.get(current_session=True)
+			students = Student.objects.filter(in_class__name=selected_class, session=current_session)
 
-	            student_data += [(student, grade_obj)]
-	        context.update({
+			subject = request.GET.get('subject')
+			subject = Subject.objects.get(pk=subject)
+			student_data = []
+			for student in students:
+				term = request.GET.get('term')
+				grade_obj = Grade.objects.filter(
+					session=current_session,
+					term=term,
+					student=student,
+					subject=subject).first() or Grade.objects.none()
+
+				student_data += [(student, grade_obj)]
+
+			context.update({
 				"classes": classes,
 				"selected_subject": selected_subject,
 				"selected_class_name": selected_class_name,
 				"selected_term": selected_term,
 				"students": students,
-				"student_data":student_data
-				})
-	    return render(request, 'sms/mark/load_score_table.html', context)
+				"student_data":student_data})
+		return render(request, 'sms/mark/load_score_table.html', context)
 	return render(request, 'sms/mark/get_score_list.html', context)
 
 
@@ -1324,22 +1402,22 @@ def score_entry(request):
 
 @login_required
 def view_score(request):
+	session = Session.objects.get(current_session=True)
 	if request.user.is_parent:
-		session = Session.objects.get(current_session=True)
-		ids = ()
-		students = Parent.objects.filter(parent__pk=request.user.pk).values('parent', 'student').annotate(Count('student'))
-		for student in students:
-			stud_id = student['student']
-			ids += (stud_id,)
-			grades = Grade.objects.filter(student=stud_id, session=session)
-		list_students = Student.objects.filter(id__in=ids)
+
+		# Get all the current sesssion students related 
+		# to the parent that  fired the request
+		
+		students = Parent.objects.get(
+			parent__pk=request.user.pk).student.filter(
+			session=session)
+		
 		context = {
-			"grades": grades,
-			"students": list_students,
+			"students": students,
+			"term": get_terms(),
 		}
 		return render(request, 'sms/mark/parent_view_scores.html', context)
 	elif request.user.is_student:
-		session = Session.objects.get(current_session=True)
 		student = Student.objects.get(user__pk=request.user.id, session=session)
 		#subjects = student.in_class.subjects.all()
 		scores = Grade.objects.filter(student=student.id, session=session, term=get_terms())
@@ -1349,8 +1427,9 @@ def view_score(request):
 		}
 		return render(request, 'sms/mark/student_view_score.html', context)
 	elif request.user.is_teacher:
-		teacher = get_object_or_404(User, pk=request.user.id)
-		classes = SubjectAssign.objects.filter(teacher=teacher.pk)
+		term = get_terms()
+		teacher = User.objects.get(pk=request.user.id)
+		classes = SubjectAssign.objects.filter(teacher=teacher.pk, session=session, term=term)
 		context = {
 			"classes": classes
 			}
@@ -1365,11 +1444,11 @@ def view_score(request):
 
 @login_required
 def load_score_table(request):
-	if request.is_ajax:
+	if request.is_ajax():
 		if request.user.is_parent:
-			session = Session.objects.get(current_session=True)
+			current_session = Session.objects.get(current_session=True)
 			stud_id = request.GET.get('stud_id')
-			grades = Grade.objects.filter(student__pk=stud_id, session=session)
+			grades = Grade.objects.filter(student__pk=stud_id, session=current_session, term=get_terms())
 			context = {"grades": grades}
 			return render(request, 'sms/mark/load_view_score.html', context)
 		else:
@@ -1389,26 +1468,9 @@ def load_score_table(request):
 				)
 			return render(request, 'sms/mark/load_view_score.html', {'grades': grades})
 
-@login_required
-def get_student_position(request):
-	current_session = Session.objects.get(current_session=True)
-	students = Student.objects.filter(in_class__pk=1, session=current_session)
-	overall_total = []
-	all_ids = []
-	for student in students:
-		total = 0
-		grades = Grade.objects.filter(student__pk=student.id, term="First", session=current_session)
-		for i in grades:
-			total += float(i.total)
-		overall_total.append(total)
-		all_ids.append(student.id)
-	total_scores = sorted(overall_total, reverse=True)
-	#positions = ranking.Ranking(total_scores, start=1)
-	return HttpResponse(total_scores)
-
 
 @login_required
-@teacher_required
+@admin_required
 def add_expenditure(request):
 	if request.method == "POST":
 		form = ExpenseForm(request.POST)
@@ -1435,22 +1497,23 @@ def add_expenditure(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def expenditure(request):
 	expenses = Expense.objects.all().order_by('item')
 	return render(request, 'sms/expenses/expense.html', {"expenses": expenses})
 
 @login_required
-@teacher_required
+@admin_required
 def delete_expenditure(request, id):
 	expense = Expense.objects.get(pk=id)
 	expense.delete()
-	messages.success(request, str(expense.item) + ' was successfully deleted')
-	return HttpResponseRedirect(reverse_lazy('view_expenses'))
+	new_exp_list = Expense.objects.all()
+	context = {'expenses': new_exp_list,}
+	return render(request, 'sms/expenses/new_exp_list.html', context)
 
 
 @login_required
-@teacher_required
+@admin_required
 def add_payment(request):
 	if request.method == "POST":
 		students = Student.objects.all()
@@ -1530,7 +1593,7 @@ def add_payment(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def payment(request):
 	students = Student.objects.all().order_by('name')
 	payments = Payment.objects.all().order_by('student')
@@ -1543,7 +1606,7 @@ def payment(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def set_payment(request):
 	if request.method == "POST":
 	    try:
@@ -1567,7 +1630,7 @@ def set_payment(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def delete_payment(request, id):
 	payment = Payment.objects.get(pk=id)
 	payment.delete()
@@ -1587,24 +1650,31 @@ def load_payment_table(request):
 		session=session)
 	return render(request, 'sms/payments/ajax_load_payment.html', {"payments": payments})
 
-
 @login_required
 @teacher_required
 def load_students_of_class(request):
     current_session = Session.objects.get(current_session=True)
     class_id = request.GET.get('class')
-    students = Student.objects.filter(in_class__pk=class_id, session=current_session).order_by('-id')
+    students = Student.objects.filter(in_class__pk=class_id, session=current_session)
     return render(request, 'sms/payments/ajax_load_students.html', {"students": students})
 
 @login_required
 @teacher_required
+def load_student_users(request):
+    current_session = Session.objects.get(current_session=True)
+    class_id = request.GET.get('class')
+    students = Student.objects.filter(in_class__pk=class_id, session=current_session)
+    return render(request, 'sms/ajax/ajax_load_student_users.html', {"students": students})
+
+@login_required
+@admin_required
 def session_view(request):
 	sessions = Session.objects.all()
 	return render(request, 'sms/academic_year/session.html', {"sessions": sessions})
 
 
 @login_required
-@teacher_required
+@admin_required
 def add_session(request):
 	sessions = Session.objects.all()
 	if request.method == "POST":
@@ -1626,7 +1696,7 @@ def add_session(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def del_session(request, id):
 	session = Session.objects.get(id=id)
 	if session.current_session == True:
@@ -1639,14 +1709,68 @@ def del_session(request, id):
 	return render(request, 'sms/academic_year/session.html', {"sessions":sessions})
 
 @login_required
-@teacher_required
+@admin_required
 def sms_list(request):
 	sms = Sms.objects.all()
-	return render(request, 'sms/mail_and_sms/sms.html', {"sms":sms})
-
+	return render(request, 'sms/sms/sms.html', {"sms":sms})
 
 @login_required
-@teacher_required
+@admin_required
+def mail(request):
+	if request.method == "POST":
+		form = EmailMessageForm(request.POST)
+		if form.is_valid():
+			title = form.cleaned_data.get('title')
+			message = form.cleaned_data.get('message')
+			image = form.cleaned_data.get('image')
+			recipients = form.cleaned_data.get('recipients')
+
+			# get author of the email
+			admin = request.user
+
+			mail = EmailMessage.objects.create(
+				title=title,
+				content=message,
+				admin=admin
+			)
+			mail.save()
+
+			# prepare html templates
+			template = 'email_template.html'
+			setting = Setting.objects.first()
+			context= {
+				'setting': setting,
+				'mail': mail
+				}
+
+			mail_message = render_to_string(template, context)
+			
+			# add recipients one after another
+			for i in recipients:
+				mail.recipients.add(i)
+				
+
+			# send the actual email and redirect
+			asyncio.run(mail.deliver_mail(content=mail_message))
+			messages.success(request, 'Emails Successfully Send !')
+			return redirect('mail')
+		else:
+			form = EmailMessageForm(request.POST)
+			context = {"form": form}
+			template = 'sms/mail/mail_view.html'
+			return render(request, template, context)
+
+	draft_mails = EmailMessage.objects.filter(status=PENDING)
+	delivered_emails = EmailMessage.objects.filter(status=DELIVERED)
+	context = {
+		'draft_mails': draft_mails,
+		'delivered_emails': delivered_emails
+	}
+	template = 'sms/mail/mail_view.html'
+	return render(request, template, context)
+
+@login_required
+@admin_required
 def send_bulk_sms(request):
 	sms = Sms.objects.all()
 	if request.method == "POST":
@@ -1665,7 +1789,7 @@ def send_bulk_sms(request):
 				users = User.objects.filter(is_teacher=True)
 
 			for user in users:
-				send_sms(user.phone, '{}, {}'.format(title, sms_body))
+				asyncio.run(send_sms(user.phone, '{}, {}'.format(title, sms_body)))
 
 			Sms.objects.create(title=title, body=body, to_user=to_user)
 			context = {
@@ -1686,7 +1810,7 @@ def send_bulk_sms(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def general_setting(request):
 	context = {}
 	if request.method == "POST":
@@ -1713,48 +1837,48 @@ def general_setting(request):
 
 			a, created = Setting.objects.get_or_create(id=1)
 			if not created:
-				a = Setting.objects.get(id=1)
+				s = Setting.objects.first()
 				if school_logo == None:
 					school_logo = a.school_logo
-				a = Setting.objects.filter(id=1).update(
-				school_name=school_name,
-				school_address=school_address,
-				school_slogan=school_slogan,
-				school_logo=school_logo,
-				ft_begins=ft_begins,
-				ft_ends=ft_ends,
-				st_begins=st_begins,
-				st_ends=st_ends,
-				tt_begins=tt_begins,
-				tt_ends=tt_ends,
-				business_email=business_email,
-				business_phone1=school_business_phone,
-				business_phone2=alt_business_phone,
-				social_link1=social_link1,
-				social_link2=social_link2,
-				social_link3=social_link3,
-				school_town=school_town)
+				s.school_name=school_name
+				s.school_address=school_address
+				s.school_slogan=school_slogan
+				s.school_logo=school_logo
+				s.ft_begins=ft_begins
+				s.ft_ends=ft_ends
+				s.st_begins=st_begins
+				s.st_ends=st_ends
+				s.tt_begins=tt_begins
+				s.tt_ends=tt_ends
+				s.business_email=business_email
+				s.business_phone1=school_business_phone
+				s.business_phone2=alt_business_phone
+				s.social_link1=social_link1
+				s.social_link2=social_link2
+				s.social_link3=social_link3
+				s.school_town=school_town
+				s.save()
 
 				fs = FileSystemStorage()
 				name = fs.save(school_logo.name, school_logo)
 				context['url'] = fs.url(name)
-				context['s'] = Setting.objects.all()[0]
+				context['s'] = Setting.objects.first()
 			messages.success(request, 'School settings successfully updated !')
 			return redirect('general_setting')
 		else:
-			s = Setting.objects.all()[0]
+			s = Setting.objects.first()
 			form = SettingForm(request.POST)
 			return render(request, 'sms/settings/general_setting.html', {"form":form, "s":s})
 	else:
-		s = Setting.objects.all()[0]
+		s = Setting.objects.first()
 		return render(request, 'sms/settings/general_setting.html', {"s":s})
 
 
 
 @login_required
-@teacher_required
+@admin_required
 def reset_users_password_view(request):
-	if request.is_ajax:
+	if request.is_ajax():
 		if request.method == 'POST':
 			user = request.POST.get('selected_user')
 			new_pass = request.POST.get('new_password')
@@ -1765,7 +1889,7 @@ def reset_users_password_view(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def reset_users_password(request):
 	user_type = request.GET.get('user_type')
 	if user_type == 'admin':
@@ -1783,14 +1907,14 @@ def reset_users_password(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def grade_scale(request):
 	scales = GradeScale.objects.all().order_by('-grade')
 	return render(request, 'sms/mark/grade_scale.html', {'gradeScales': scales})
 
 
 @login_required
-@teacher_required
+@admin_required
 def set_grade_scale(request):
 	if request.method == "POST":
 		grade = request.POST.get('grade') or None
@@ -1833,7 +1957,7 @@ def set_grade_scale(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def promotion(request):
 	classes = Class.objects.all()
 	sessions = Session.objects.all()
@@ -1841,7 +1965,7 @@ def promotion(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def to_class_list(request):
 	if request.is_ajax:
 		from_class = request.GET.get('from_class')
@@ -1851,9 +1975,9 @@ def to_class_list(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def load_promotion_list(request):
-	if request.is_ajax:
+	if request.is_ajax():
 		from_class_id = request.GET.get('from_class_id')
 		to_class_id = request.GET.get('to_class_id')
 		current_session = Session.objects.get(current_session=True)
@@ -1871,23 +1995,30 @@ def load_promotion_list(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def promote(request, stud_id,  to_class_id, to_session_id):
-	session = get_object_or_404(Session, id=to_session_id)
-	clss = get_object_or_404(Class, id=to_class_id)
-	try:
-		student = get_object_or_404(Student, id=stud_id)
-		s = Student.objects.get(user__pk=student.user.pk, session=session.id)
-		s.clss = clss
-		s.session = session
-		s.save()
-		return HttpResponse('Promoted')
-	except Student.DoesNotExist:
-		student = get_object_or_404(Student, id=stud_id)
-		s = Student.objects.create(user=student.user, in_class=clss, session=session)
-		s.save()
-		return HttpResponse('Promoted')
-	return HttpResponse('Error, click again')
+	from_session = Session.objects.get(current_session=True)
+	to_session = Session.objects.get(id=to_session_id)
+	to_class = Class.objects.get(id=to_class_id)
+
+	student = Student.objects.get(
+		id=stud_id, 
+		session=from_session)
+
+	# get the parent of the student if exist
+	parent = student.guardians.first() or student.guardians.none()
+
+	# create copy of the student object 
+	# changing only the session and the class of the student
+	student.pk = None
+	student.session = to_session
+	student.in_class = to_class
+	student.save()
+
+	# connect the copied student with a parent
+	parent.student.add(student)
+
+	return HttpResponse('Promoted')
 
 @login_required
 def change_password(request):
@@ -1934,7 +2065,7 @@ def notice_board(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def create_notice(request):
 	if request.method == "POST":
 		form = NoticeForm(request.POST)
@@ -1959,7 +2090,7 @@ def create_notice(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def delete_notice(request, id):
 	notice  = get_object_or_404(NoticeBoard, id=id)
 	notice.delete()
@@ -1973,7 +2104,7 @@ def handler404(request, exception, template_name="404.html"):
     return response
 
 @login_required
-@teacher_required
+@admin_required
 def update_student(request, id):
 	student = get_object_or_404(Student, id=id)
 	user = get_object_or_404(User, id=student.user.id)
@@ -2020,7 +2151,7 @@ def update_student(request, id):
 
 
 @login_required
-@teacher_required
+@admin_required
 def update_user(request, id):
 	user = get_object_or_404(User, id=id)
 	if user.is_student:
@@ -2059,7 +2190,7 @@ def update_user(request, id):
 
 
 @login_required
-@teacher_required
+@admin_required
 def update_class(request, id):
 	clss = get_object_or_404(Class, id=id)
 	if request.method == "POST":
@@ -2081,7 +2212,7 @@ def update_class(request, id):
 
 
 @login_required
-@teacher_required
+@admin_required
 def update_subject(request, id):
 	subject = get_object_or_404(Subject, id=id)
 	if request.method == "POST":
@@ -2101,7 +2232,7 @@ def update_subject(request, id):
 
 
 @login_required
-@teacher_required
+@admin_required
 def update_section(request, id):
 	section = get_object_or_404(Section, id=id)
 	if request.method == "POST":
@@ -2121,7 +2252,7 @@ def update_section(request, id):
 		return render(request, 'sms/section/edit_section.html', {'form': form})
 
 @login_required
-@teacher_required
+@admin_required
 def online_admission_list(request):
 	current_session = get_object_or_404(Session, current_session=True)
 	applications = OnlineAdmission.objects.filter(session=current_session)
@@ -2132,7 +2263,7 @@ def online_admission_list(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def update_section_allocation(request, id):
 	section_allocation = get_object_or_404(SectionAssign, id=id)
 	if request.method == "POST":
@@ -2158,7 +2289,7 @@ def update_section_allocation(request, id):
 
 
 @login_required
-@teacher_required
+@admin_required
 def update_session(request, id):
 	session = get_object_or_404(Session, id=id)
 	if request.method == "POST":
@@ -2179,7 +2310,7 @@ def update_session(request, id):
 
 
 @login_required
-@teacher_required
+@admin_required
 def toggle_user_status(request, id):
 	user = get_object_or_404(User, id=id)
 	if request.user.id == user.id:
@@ -2195,7 +2326,7 @@ def toggle_user_status(request, id):
 
 
 @login_required
-@teacher_required
+@admin_required
 def update_expense(request, id):
 	expense = get_object_or_404(Expense, id=id)
 	if request.method == "POST":
@@ -2219,16 +2350,18 @@ def update_expense(request, id):
 
 
 @login_required
-@teacher_required
+@admin_required
 def set_parent(request):
 	if request.method == "POST":
 		form = SetParentForm(request.POST)
 		if form.is_valid():
-			student = form.cleaned_data.get('student_id')
-			parent = form.cleaned_data.get('parent_id')
-			parent = get_object_or_404(User, id=parent.id)
-			student = get_object_or_404(Student, id=student.id)
-			Parent.objects.create(student=student, parent=parent).save()
+			student_id = form.cleaned_data.get('student_id')
+			parent_id = form.cleaned_data.get('parent_id')
+
+			student = get_object_or_404(Student, id=student_id)
+			parent = get_object_or_404(Parent, parent__pk=parent_id)
+
+			parent.student.add(student)
 			messages.success(request, "You've successfully set a parent for the selected student")
 			return redirect('set_parent')
 		else:
@@ -2236,9 +2369,15 @@ def set_parent(request):
 			return render(request, 'sms/parent/set_parent.html', {'form': form})
 	else:
 		already_set = Parent.objects.all()
+ 
+		# exclude those students 
+		# who already has parents them in our q
+
 		stud_ids = ()
-		for i in already_set:
-			stud_ids += (i.student.id,)
+		for parent in already_set:
+			for student in parent.student.all():
+				stud_ids += (student.id,)
+		
 		current_session = Session.objects.get(current_session=True)
 		students = Student.objects.filter(session=current_session).exclude(id__in=stud_ids)
 		parents = User.objects.filter(is_parent=True)
@@ -2246,8 +2385,7 @@ def set_parent(request):
 
 @login_required
 def upload_picture(request):
-	if request.is_ajax:
-		update_msg = "Error: sorry there's problem while updating picture"
+	if request.is_ajax():
 		form = ProfilePictureForm(request.POST, request.FILES)
 		if form.is_valid():
 			picture = form.cleaned_data.get('picture')
@@ -2264,7 +2402,7 @@ def upload_picture(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def class_member_report_view(request):
 	classes = Class.objects.all()
 	session = Session.objects.all()
@@ -2276,7 +2414,7 @@ def class_member_report_view(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def class_member_report(request):
 	from weasyprint import HTML, CSS
 	class_id = request.GET.get('class')
@@ -2316,7 +2454,7 @@ def class_member_report(request):
 	return HttpResponse(response.getvalue(), content_type='application/pdf')
 
 @login_required
-@teacher_required
+@admin_required
 def subject_allocation_report_view(request):
 	session = Session.objects.all()
 	classes = Class.objects.all()
@@ -2327,7 +2465,7 @@ def subject_allocation_report_view(request):
 	return render(request, 'sms/reports_view/subject_allocation_report_view.html', context)
 
 @login_required
-@teacher_required
+@admin_required
 def subject_allocation_report(request):
 	from weasyprint import HTML, CSS
 	setting = Setting.objects.first()
@@ -2350,16 +2488,24 @@ def subject_allocation_report(request):
 		if clss == "All":
 			clss = Class.objects.all().order_by('name')
 			for klass in clss:
-				assigned_teachers = SubjectAssign.objects.filter(term=term, session=session.pk, clss=klass)
+				assigned_teachers = SubjectAssign.objects.filter(
+					term=term, 
+					session=session.pk, 
+					clss=klass)
 				default += assigned_teachers
-			assign_teacher_len = len(default)
-			context['assign_teacher_len'] = assign_teacher_len
+			context['assign_teacher_len'] = assign_teacher_len = len(default)
 			context['classes'] = clss
 		else:
 			clss = get_object_or_404(Class, id=clss)
-			default = SubjectAssign.objects.filter(term=term, session=session.pk, clss=clss.id)
+			default = SubjectAssign.objects.filter(
+				term=term, 
+				session=session.pk, 
+				clss=clss.id)
+
 			context['class'] = clss 
-		total_number_of_teachers = User.objects.filter(is_teacher=True).count()
+		total_number_of_teachers = User.objects.filter(
+			is_teacher=True).count()
+
 		context["setting"] = setting
 		context["term"] = term
 		context["session"] = session
@@ -2387,7 +2533,7 @@ def subject_allocation_report(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def subject_report_view(request):
 	classes = Class.objects.all()
 	context = {
@@ -2397,7 +2543,7 @@ def subject_report_view(request):
 
 
 @login_required
-@teacher_required
+@admin_required
 def subject_report(request):
 	from weasyprint import HTML, CSS
 	setting = Setting.objects.first()
@@ -2417,23 +2563,27 @@ def subject_report(request):
 		subject = request.GET.get('subject')
 		subjects = Subject.objects.filter(pk=subject)
 		s = get_object_or_404(Subject, id=subject)
-		subject_teacher = SubjectAssign.objects.filter(clss=class_id, session=session, term=term);
+		subject_teacher = SubjectAssign.objects.filter(
+			clss=class_id, 
+			session=session, 
+			term=term);
 		for i in subject_teacher:
 			for sub in i.subjects.all():
 				if sub == s:
 					subject_teacher = i.teacher
 		clss = get_object_or_404(Class, pk=class_id)
 		current_session = Session.objects.get(current_session=True)
-		students = Student.objects.filter(in_class=clss, session=current_session)
+		students = Student.objects.filter(in_class=clss, 
+			session=current_session)
 		if not students.exists():
-			messages.success(request, 'No students exists for class {} in term {} '.format(clss, term))
+			messages.success(request, 'No students exists for class {} in {} term'.format(clss, term))
 			return redirect('subject_report_view')
 
 		grades = Grade.objects.filter(term=term, student__in_class=clss,session=current_session).order_by('-total')
 		class_avg = grades.filter(subject=subject)
 		class_avg = class_avg.aggregate(class_avg=Sum('total')).get('class_avg') / class_avg.count()
 		if not grades.exists():
-			messages.success(request, 'No grades exists for class {} in term {} '.format(clss, term))
+			messages.success(request, 'No grades exists for class {} in {} term'.format(clss, term))
 			return redirect('subject_report_view')
 
 		records = ()
@@ -2477,7 +2627,7 @@ def subject_report(request):
 		return HttpResponse(response.getvalue(), content_type='application/pdf')
 
 @login_required
-@teacher_required
+@admin_required
 def broadsheet_report_view(request):
 	classes = Class.objects.all()
 	session = Session.objects.all()
@@ -2488,7 +2638,7 @@ def broadsheet_report_view(request):
 	return render(request, 'sms/reports_view/broadsheet_report_view.html', context)
 
 @login_required
-@teacher_required
+@admin_required
 def broadsheet_report(request):
 	from weasyprint import HTML, CSS
 	setting = Setting.objects.first()
@@ -2572,7 +2722,7 @@ def broadsheet_report(request):
 		return HttpResponse(response.getvalue(), content_type='application/pdf')
 
 @login_required
-@teacher_required
+@admin_required
 def view_detail_applicant(request, pk):
 	applicant = get_object_or_404(OnlineAdmission, pk=pk)
 	return render(
@@ -2580,3 +2730,31 @@ def view_detail_applicant(request, pk):
 		'sms/online_admission/online_admission_detail_view.html', 
 		{"applicant": applicant}
 	)
+
+@login_required
+@admin_required
+def ajax_get_all_classes(request):
+	if request.is_ajax():
+		classes = Class.objects.all()
+		template = 'sms/ajax/get_all_classes.html'
+		context = {'classes': classes}
+		return render(request, template, context)
+	return HttpResponse('error')
+
+
+@login_required
+@admin_required
+def ajax_get_users_list(request):
+	if request.is_ajax():
+		template = 'sms/ajax/get_filtered_user_list.html'
+		user_type = request.GET.get('user_type')
+		print(user_type)
+		if user_type == 'parents':
+			users = User.objects.filter(is_parent=True)
+		elif user_type == 'admins':
+			users = User.objects.filter(is_superuser=True)
+		elif user_type == 'teachers':
+			users = User.objects.filter(is_teacher=True)
+		context = {'users': users}
+		return render(request, template, context)
+	return HttpResponse('error')
