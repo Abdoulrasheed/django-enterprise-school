@@ -55,7 +55,7 @@
     <div class="row">
       <div class="col-md-4">
         <span>School Display Name:</span>
-        <input value="{{ school_name }}" name="school_name" type="text" class="form-control mb-4" placeholder="School name">
+        <input value="{{ s.school_name }}" name="school_name" type="text" class="form-control mb-4" placeholder="School name">
        
         <span>School Logo:</span>
         <div class="input-group">
@@ -63,14 +63,14 @@
             <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
           </div>
           <div class="custom-file">
-            <input value="{{ s.school_logo.url }}" name="school_logo" type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
+            <input value="{{ s.get_logo }}" name="school_logo" type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
             <label class="custom-file-label" for="inputGroupFile01">School logo</label>
           </div>
         </div><br>
         {% if url %}
         Uploaded logo: <img src="{{ url }}" width="65" class="rounded-circle">
         {% endif %}
-        current logo: <img src="{{ s.school_logo.url }}" width="65" class="rounded-circle">
+        current logo: <img src="{{ s.get_logo }}" width="65" class="rounded-circle">
         <br>
         <br>
         <span>Facebook Link:</span>
@@ -82,9 +82,9 @@
       </div>
       <div class="col-md-4">
         <span>School Physical Address:</span>
-        <input value="{{ s.school_address }}" name="school_address" type="text" class="form-control mb-4" placeholder="School address">
+        <input value="{{ s.school_address|default_if_none:'' }}" name="school_address" type="text" class="form-control mb-4" placeholder="School address">
         <span>Motto:</span>
-        <input value="{{ s.school_slogan }}" name="school_slogan" type="text" class="form-control mb-4" placeholder="School slogan">
+        <input value="{{ s.school_slogan|default_if_none:'' }}" name="school_slogan" type="text" class="form-control mb-4" placeholder="School slogan">
          <span>Business Phone:</span>
         <input value="{{ s.business_phone1|default_if_none:'' }}" name="business_phone1" type="number" class="form-control mb-4" maxlength="11" minlength="11" placeholder="Business Phone">
          <span>Twitter handler:</span>
@@ -112,5 +112,178 @@
 </div>
 <input type="submit" name="submit" value="Save" style="margin-bottom: 27px;" class="btn btn-primary">
 </form>
+<h2 class="font-weight-bold my-5 text-left">THEMES</h2>
+
+<!--First row-->
+<div class="row">
+
+  <!--First column-->
+  <div class="col-md-12">
+    <!--Full width lightbox-->
+    <div class="mdb-lightbox">
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/skin-beauty.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-dark btn-dark-skin w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/skin-default.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-default-skin btn-white black-text w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/indigo-skin.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-indigo-skin btn-indigo w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <!--Full width lightbox-->
+    <div class="mdb-lightbox">
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/pink-skin.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-pink-skin btn-pink w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/skin-cyan.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-cyan-skin btn-cyan w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/skin-black.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-black-skin btn-black white-text w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <!--Full width lightbox-->
+    <div class="mdb-lightbox">
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/grey-skin.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-grey-skin btn-grey w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/light-blue-skin.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-blue-skin btn-primary w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/navy-blue-skin.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-n-blue-skin btn-dark w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <!--Full width lightbox-->
+    <div class="mdb-lightbox">
+
+      <figure class="col-md-4">
+        <a data-size="1600x1067">
+          <img src="{% static 'img/deep-purple-skin.png' %}" class="img-fluid z-depth-1">
+        </a>
+        <button type="button" class="btn btn-purple-skin btn-purple w-responsive text-center mx-auto w-100 p-2 mt-2">Apply</button>
+      </figure>
+    </div>
+  </div>
+
+    </div>
+    <!--/Full width lightbox-->
+
+  </div>
+  <!--/First column-->
+
 </div>
+<!--First row-->
+</div>
+  {% block script %}
+  <script>
+    var themeSelector = (theme, bars_color=null)=> {
+      var lastClass = $('.body').attr('class').split(' ').pop();
+      $(".body").removeClass(lastClass).addClass(theme);
+      window.localStorage.setItem('theme', theme);
+
+      // change text color of bars (collabse) to black
+      bars_color = bars_color ? bars_color : 'white'
+      var lastClass = $('.button-collapse').attr('class').split(' ').pop();
+      $(".button-collapse").removeClass(lastClass).addClass(`${bars_color}-text`);
+      window.localStorage.setItem('bars_color', bars_color);
+    }
+
+    $(document).ready(()=>{
+      $(".btn-default-skin").on("click", ()=>{
+        var theme = "white-skin";
+        themeSelector(theme, 'black');
+      });
+
+      $(".btn-dark-skin").on("click", ()=>{
+        var theme = "mdb-skin";
+        themeSelector(theme);
+      });
+
+      $(".btn-indigo-skin").on("click", ()=>{
+        var theme = "indigo-skin";
+        themeSelector(theme);
+      });
+
+      $(".btn-pink-skin").on("click", ()=>{
+        var theme = "pink-skin";
+        themeSelector(theme);
+      });
+
+      $(".btn-cyan-skin").on("click", ()=>{
+        var theme = "cyan-skin";
+        themeSelector(theme);
+      });
+
+      $(".btn-black-skin").on("click", ()=>{
+        var theme = "black-skin";
+        themeSelector(theme);
+      });
+
+      $(".btn-grey-skin").on("click", ()=>{
+        var theme = "grey-skin";
+        themeSelector(theme);
+      });
+
+      $(".btn-blue-skin").on("click", ()=>{
+        var theme = "light-blue-skin";
+        themeSelector(theme);
+      });
+
+      $(".btn-n-blue-skin").on("click", ()=>{
+        var theme = "navy-blue-skin";
+        themeSelector(theme);
+      });
+
+      $(".btn-purple-skin").on("click", ()=>{
+        var theme = "deep-purple-skin";
+        themeSelector(theme);
+      });
+
+    });
+  </script>
+  {% endblock script %}
 {% endblock %}

@@ -1,0 +1,13 @@
+{% for subject in subjects %}
+                  <tr>
+                    <td>{{ subject.name }}</td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                      <a href="{% url 'edit_subject' id=subject.pk %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                      <a id="del_subject" target_subject="{% url 'delete_subject' id=subject.pk %}" title="delete" class="del_subject red-text"><i class="fa fa-times"></i></a>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <span>No data available</span>
+                  {% endfor %}

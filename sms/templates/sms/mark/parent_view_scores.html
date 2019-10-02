@@ -32,7 +32,7 @@
               <select id="student" name="student" class="mdb-select colorful-select dropdown-primary mx-2 md-form mt-3 md-dropdown">
                 <option value="" disabled selected>Select a student</option>
                 {% for student in students %}
-                <option value="{{ student.id }}">{{ student.user.get_full_name }}</option>
+                <option value="{{ student.id }}">{{ student.user.get_full_name }} ({{ student.in_class }})</option>
                 {% empty %}
                 <option value="" disabled selected>No student is available</option>
                 {% endfor %}
@@ -42,11 +42,11 @@
         <!--Top Table UI-->
         <div class="card card-cascade narrower z-depth-1">
 
-          <!--Card image-->
+          <!--Card-->
           <div class="view view-cascade gradient-card-header mdb-color darken-3 narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center">
 
 
-            <a href="" class="white-text mx-3">First - Third Term</a>
+            <a href="#" class="white-text mx-3">{{ term }} Term</a>
 
 
 

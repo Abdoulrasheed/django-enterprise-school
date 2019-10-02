@@ -1,0 +1,37 @@
+{% for teacher in teachers %}
+                  <tr>
+                    <td><a href="{% url 'profile' user_id=teacher.id %}">{{ teacher.get_full_name }}</a></td>
+                    <td><img src="{{ teacher.get_picture }}" class="rounded-circle" width="50"></td>
+                    <td>{{ teacher.email }}</td>
+                    <td>
+                        {% if request.user.is_superuser %}
+                     <div title="if deativated, this teacher can no longer have access to this site" class="switch">
+                        <label class="custom-checkbox">
+                          Off
+                          <input deativate-url="{% url 'toggle_user_status' id=teacher.id %}" id="user_status" name="user_status" type="checkbox"
+                          {% if teacher.is_active %} checked {% endif %}/>
+                          <span class="lever"></span> On
+                        </label>
+                      </div>
+                      {% else %}
+                       <div title="if deativated, this teacher can no longer have access to this site" class="switch">
+                        <label class="custom-checkbox">
+                          Off
+                          <input disabled name="user_status" type="checkbox"
+                          {% if teacher.is_active %} checked {% endif %}/>
+                          <span class="lever"></span> On
+                        </label>
+                      </div>
+                      {% endif %}
+                    <td>
+
+                      {% if request.user.is_superuser %}
+                      <a href="{% url 'profile' user_id=teacher.id %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
+                      <a href="{% url 'edit_user' id=teacher.id %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                      <a href="{% url 'delete_user' id=teacher.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <span>No data available</span>
+                  {% endfor %}

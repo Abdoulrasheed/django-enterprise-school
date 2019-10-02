@@ -1,0 +1,7 @@
+<option disabled selected>---</option>
+              {% for class in classes %}
+              <option value="{{ class.id }}">{{ class.name }}</option>
+              {% empty %}
+              <option disabled selected>No Class Available</option>
+              {% endfor %}
+            

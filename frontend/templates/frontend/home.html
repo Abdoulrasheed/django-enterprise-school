@@ -28,7 +28,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#"><img class="logo-custom" src="{{ setting.school_logo.url }}" alt="logo" /><text style="color:white;"> {{ setting.school_name|title }}</text></a>
+      <a class="navbar-brand" href="#"><img class="logo-custom" src="{{ setting.get_logo }}" alt="logo" /><text style="color:white;"> {{ setting.school_name|title }}</text></a>
     </div>
     <div class="navbar-collapse collapse move-me">
       <ul class="nav navbar-nav navbar-right">
@@ -110,10 +110,7 @@
    <div class="col-lg-8 col-lg-offset-2 col-md-8 col-sm-8 col-md-offset-2 col-sm-offset-2">
      <h1 data-scroll-reveal="enter from the bottom after 0.2s"  class="header-line"> THE VISIONAR </h1>
      <p data-scroll-reveal="enter from the bottom after 0.3s" >
-
-       SPIRITLIFE GROUP OF SCHOOLS CURRENTLY MADE UP OF SPIRITLIFE MODEL SCHOOL INTERNATIONAL (SMSI) AND INTEGRITY COLLEGE YOLA (ICY) IS BORN OUT OF A DIVINE INSTRUCTION- “RAISE ME A NATION OF INTEGRITY”- 1 SAMUEL 2:34-35, 1SAMUEL 3:10-14. BASICALLY THEREFORE, MY PRINCIPAL ASSIGNMENT IS TO RAISE THE YOUNG ONES INTO MEN AND WOMEN OF INTEGRITY THAT WILL LIVE DOING ONLY THAT WHICH IS IN ACCORDANCE WITH THE HEART OF GOD. THIS IS AN ASSIGNMENT THAT IS BEYOUND NIGERIA AND THE AFRICAN CONTINENT. WE ARE WORKING HARD AS A TEAM DEPENDING AND TRUSTING IN THE DIRECTION AND INSTRUCTIONS OF GOD TOWARDS ACHIEVING THIS. THEREFORE, I USE THIS MEDIUM TO ENCOURAGE THE GENERAL PUBLIC TO JOIN ME IN ORDER TO BE ACQUINTED WITH OUR ACHIEVEMENTS AS WE WALK TOGETHER IN THE PURSUIT OF THIS NOBLE ASSIGNMENT.
-
-
+      Welcome to bitpoint inc.
      </p>
    </div>
 
@@ -267,7 +264,7 @@
                   <div id="collapse2" class="panel-collapse collapse" style="height: 0px;">
                     <div class="panel-body">
                       <p>
-                        Hello hello hello hello 
+                        Great Authority requires tremendous sacrifice
                       </p>
                     </div>
                   </div>
@@ -276,14 +273,14 @@
                   <div class="panel-heading">
                     <h4 class="panel-title">
                       <a data-toggle="collapse" data-parent="#accordion" href="#collapse3" class="collapsed">
-                        <strong></strong>TESTIMONY THREE
+                        <strong></strong>Keep Pushing Up...
                       </a>
                     </h4>
                   </div>
                   <div id="collapse3" class="panel-collapse collapse"  style="height: 0px;">
                     <div class="panel-body">
                       <p>
-                        Hello hello hello hello
+                        An automated school system
                       </p>
                     </div>
                   </div>
@@ -291,9 +288,9 @@
               </div>
               <div class="alert alert-info" data-scroll-reveal="enter from the bottom after 1.1s" >
                <span style="font-size:40px;">
-                <strong>So much more</strong> 
+                <strong>Enroll NOw</strong> 
                 <hr />
-                TESTIMONIES
+                Apply admission for your awesome child !
               </span>
             </div>
           </div>
@@ -505,8 +502,26 @@
       <h4>{{ setting.school_address|default_if_none:'' }}</h4>
 
       <h4>{{ setting.school_town|default_if_none:'' }}</h4>
-      <h4><strong>Call:</strong> <a href="tel:{{ setting.business_phone1|default_if_none:'' }}">{{ setting.business_phone1|default_if_none:'' }}</a>, <a href="tel: {{ setting.business_phone2|default_if_none:'' }}">{{ setting.business_phone2 }}</a></h4>
-      <h4><strong>Email: </strong><a href="mailto: {{ setting.business_email|default_if_none:'' }}">{{ setting.business_email|default_if_none:'' }}</a></h4>
+      {% if setting.business_phone1 or setting.business_phone2 %}
+      <h4><strong>Call:</strong> 
+        <a href="tel:
+          {{ setting.business_phone1|default_if_none:'' }}">
+          {{ setting.business_phone1|default_if_none:'' }}
+        </a> 
+        <a href="tel: 
+          {{ setting.business_phone2|default_if_none:'' }}">
+          {{ setting.business_phone2|default_if_none:'' }}
+        </a>
+      </h4>
+      {% endif %}
+      {% if setting.business_email %}
+      <h4><strong>Email: </strong>
+        <a href="mailto: 
+          {{ setting.business_email|default_if_none:'' }}">
+          {{ setting.business_email|default_if_none:'' }}
+        </a>
+      </h4>
+      {% endif %}
     </div>
 
 
@@ -530,7 +545,7 @@
   </div>
 </div>
 </div>
-  &copy 2018 All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Powered by : Cosmotech</a>
+  &copy 2019 All Rights Reserved |  <a href="http://www.bitsmss.com" style="color: #fff" target="_blank">Bitpoint Inc.</a>
 </div>
 <!-- FOOTER SECTION END-->
 
@@ -547,10 +562,7 @@
 <!--  Custom Scripts -->  
 <script src="{% static 'assets/js/custom.js' %}"></script>
 <script type="text/javascript">
-  $(document).ready(function(){
-    $(document).on("contextmenu",function(){
-       return false;
-    }); 
+  $(document).ready(function(){ 
     $("#section").change(function(){
       var section = $(this).val();
       var target = $(this).attr('url');

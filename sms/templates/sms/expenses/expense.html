@@ -91,7 +91,7 @@
                 <!--Table head-->
 
                 <!--Table body-->
-                <tbody>
+                <tbody class="exp_body">
                 	{% for expense in expenses %}
                   <tr>
                     <td>{{ expense.item }}</td>
@@ -99,7 +99,7 @@
                     <td>{{ expense.description }}</td>
                     <td>
                       <a href="{% url 'edit_expense' id=expense.pk %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
-                      <a href="{% url 'delete_expense' id=expense.pk %}" title="delete" class="red-text"><i class="fa fa-times"></i></a>
+                      <a id="del_exp" target_exp="{% url 'delete_expense' id=expense.pk %}" title="delete" class="del_exp red-text"><i class="fa fa-times"></i></a>
                     </td>
                   </tr>
                   {% empty %}
@@ -148,4 +148,60 @@
   {% endblock main %}
   {% block script %}
   <script src="{% static 'js/sms/sms_script.js' %}"></script>
-  {% endblock script %}
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha256-KsRuvuRtUVvobe66OFtOQfjP8WA2SzYsmm4VPfMnxms=" crossorigin="anonymous"></script>
+      <script type="text/javascript">
+        $(document).ready(function(){
+
+          $(".del_exp").click(function(){
+          var row = $(this).closest("tr > td");
+          var target_exp = $(row).find(".del_exp").attr('target_exp')
+          swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this user!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+              $.ajax({
+              url: target_exp,
+              beforeSend: function(){
+                $("#loader").removeAttr('hidden');
+              },
+              
+              complete: function(){
+                $("#loader").attr('hidden', 'hidden');
+              },
+
+              success: function (data) {
+                  $(".exp_body").html(data);
+                  toastr.info('Successfully deleted');
+                  swal("Successfully Deleted!", {
+                    icon: "success",
+                  });
+                }
+              });
+            }
+          });
+        });
+
+
+          $(".custom-checkbox").change(function(){
+            var row = $(this).closest("tr > td");
+            var url = $(row).find("#user_status").attr('deativate-url');
+
+            $.ajax({
+              url: url,
+                success: function (data) {
+                 if (data == 'activated') {
+                    toastr.success('Successfully '+data);
+                  }else{
+                    toastr.info('Successfully '+data);
+                  }
+                }
+              });
+            });
+        });
+      </script>
+   {% endblock script %}

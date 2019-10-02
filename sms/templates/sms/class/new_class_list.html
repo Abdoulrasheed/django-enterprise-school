@@ -1,0 +1,14 @@
+{% for class in classes %}
+                  <tr>
+                    <td>{{ class.name }}</td>
+                    <td>{{ class.section }}</td>
+                    <td>{{ class.subjects.all|length }}</td>
+                    <td><span style="text-decoration: line-through; color: indigo">N</span> {{ class.amount_to_pay|default_if_none:'0' }}</td>
+                    <td>
+                      <a href="{% url 'edit_class' id=class.id %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                      <a id="del_class" target_class="{% url 'delete_class' id=class.pk %}" title="delete" class="del_class red-text"><i class="fa fa-times"></i></a>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>No data available</tr>
+                  {% endfor %}

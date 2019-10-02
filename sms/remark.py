@@ -1,4 +1,4 @@
-from .constants import *
+from constants import *
 from .models import GradeScale
 
 def getRemark(total):

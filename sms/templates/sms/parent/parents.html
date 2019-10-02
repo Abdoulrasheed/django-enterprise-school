@@ -4,19 +4,23 @@
 {% block title %} parents {% endblock title %}
 
 {% block main %}
-    <div class="container-fluid">
+  <div class="container-fluid">
              <!-- Heading -->
    <div class="card mb-4 wow fadeIn">
       <!--Card content-->
       <div class="card-body d-sm-flex justify-content-between">
          <h6 class="mb-2 mb-sm-0 pt-1">
-            <a href="/">Home Page</a>
+            <a href="{% url 'home_page' %}">Home Page</a>
             <span>/</span>
             <a>Parents</a>
          </h6>
       </div>
    </div>
    <!-- Heading -->
+    <div hidden id="loader" class="progress md-progress primary-color-dark">
+       <div class="indeterminate">
+        </div>
+      </div>
           {% if messages %}
         {% for message in messages %}
           <div class="alert alert-success alert-dismissable">
@@ -101,7 +105,7 @@
                 <!--Table head-->
 
                 <!--Table body-->
-                <tbody>
+                <tbody class="parent_body">
                 	{% for parent in parents %}
                   <tr>
                     <td><a href="{% url 'profile' user_id=parent.id %}">{{ parent.get_full_name }}</td>
@@ -121,7 +125,7 @@
                     <td>
                       <a href="{% url 'profile' user_id=parent.id %}" title="view" class="blue-text"><i class="fa fa-user"></i></a>
                       <a href="{% url 'edit_user' id=parent.id %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
-                      <a target_parent="{% url 'delete_user' id=parent.pk %}" title="delete" href="#" class="red-text del_parent"><i class="fa fa-times"></i></a>
+                      <a id="del_parent" target_parent="{% url 'delete_user' id=parent.pk %}" title="delete" href="#" class="del_parent red-text"><i class="fa fa-times"></i></a>
                     </td>
                     {% endif %}
                   </tr>
@@ -165,10 +169,9 @@
 
       </section>
       <!--Section: Basic examples-->
-
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha256-KsRuvuRtUVvobe66OFtOQfjP8WA2SzYsmm4VPfMnxms=" crossorigin="anonymous"></script>
    {% block script %}
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha256-KsRuvuRtUVvobe66OFtOQfjP8WA2SzYsmm4VPfMnxms=" crossorigin="anonymous"></script>
       <script type="text/javascript">
         $(document).ready(function(){
 
@@ -195,8 +198,8 @@
               },
 
               success: function (data) {
-                  window.location.reload();
-                  toastr.info('Successfully '+data);
+                  $(".parent_body").html(data);
+                  toastr.info('Successfully deleted');
                   swal("Successfully Deleted!", {
                     icon: "success",
                   });

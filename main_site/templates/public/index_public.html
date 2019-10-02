@@ -1,0 +1,850 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="{% static 'main_site/img/favicon.png' %}" type="image/png">
+    <title>Bitsmss | Bitpoint School Management System Solution</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'main_site/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'main_site/vendors/linericon/style.css' %}">
+    <link rel="stylesheet" href="{% static 'main_site/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'main_site/vendors/owl-carousel/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'main_site/vendors/lightbox/simpleLightbox.css' %}">
+    <link rel="stylesheet" href="{% static 'main_site/vendors/nice-select/css/nice-select.css' %}">
+    <link rel="stylesheet" href="{% static 'main_site/vendors/animate-css/animate.css' %}">
+    <link rel="stylesheet" href="{% static 'main_site/vendors/popup/magnific-popup.css' %}">
+    <!-- main css -->
+    <link rel="stylesheet" href="{% static 'main_site/css/mdb/all.css' %}">
+    <link rel="stylesheet" href="{% static 'main_site/css/mdb/mdb.min.css' %}">
+    <link rel="stylesheet" href="{% static 'main_site/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'main_site/css/responsive.css' %}">
+
+    <!-- Start slider section -->
+    <link rel="stylesheet" type="text/css" href="{% static 'main_site/engine/style.css' %}" />
+    <script type="text/javascript" src="{% static 'main_site/engine/jquery.js' %}"></script>
+    <!-- End slider section -->
+    <!-- Font awesome section-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- End font awesome section -->
+</head>
+
+<body data-spy="scroll" data-target="#mainNav" data-offset="70">
+
+    <!--================Header Menu Area =================-->
+    <header class="header_area">
+        <div class="main_menu" id="mainNav">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <div class="container">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <a class="navbar-brand logo_h" href="index.html"><img src="img/logo.png" alt=""></a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav menu_nav ml-auto">
+                            <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#feature">FEATURES</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#demo">REQUEST DEMO</a>
+                                <li class="nav-item"><a class="nav-link" href="#price">PRICING</a>
+                                    <li class="nav-item"><a class="nav-link" href="#screen">SCREENS SHOTS</a>
+                                        <li class="nav-item submenu dropdown">
+                                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Career</a>
+                                            <ul class="dropdown-menu">
+                                                <li class="nav-item"><a class="nav-link" href="#">Internship</a></li>
+                                                <li class="nav-item"><a class="nav-link" href="#">Courses</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <!--================Header Menu Area =================-->
+
+    <!--================Home Banner Area =================-->
+    <section class="home_banner_area" id="home">
+        <div class="banner_inner">
+            <div class="container">
+                <div class="row banner_content">
+                    <div class="col-lg-9">
+                        <h2 class="tick"><small>A school <span class="fff">Management </span>System <br />That is made <span class="fff">simple </span><br /> And Affordable </small></h2>
+                        <p style="color: red;">Managing schools, Bringing the future</p>
+                        <a class="banner_btn" href="#">Explore Now</a>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="banner_map_img">
+                            <img class="img-fluid" src="{% static 'main_site/img/banner/right-mobile.png' %}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--================End Home Banner Area =================-->
+
+    <!--================Feature Area =================-->
+    <section class="feature_area p_120" id="feature">
+        <div class="container">
+            <div class="main_title">
+                <h2>Unique Features</h2>
+                <p>Bitsmss offers you with the following unique features</p>
+            </div>
+            <h3 class="text-heading title_color">Teacher Panel</h3>
+            <div class="feature_inner row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Score Entry</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Attendance Management</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Report Card Sheet</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Notice Board</h5>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <h3 class="text-heading title_color">Parent Panel</h3>
+            <div class="feature_inner row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>View Children's Performance</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Collaborate With Teachers</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>View Payment Information</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>SMS Updates</h5>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <h3 class="text-heading title_color">Administrator Panel</h3>
+            <div class="feature_inner row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Manage Students</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Manage Staff</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Student ID Card</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Class Management</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Exams Scheduling</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>SMS / Mailing System</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Marking Permission</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="main_site/img/icon/f-icon-1.png" alt="">
+                        <h5>Reports</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Landing page customization</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Calender / Events Scheduling</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Library Management</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Purchase / Expenses</h5>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <h3 class="text-heading title_color">Student Panel</h3>
+            <div class="feature_inner row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5 align="left|right|middle|top|bottom">View Results</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Generate Term Report Sheet</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>View Payment Information</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Access to library resources</h5>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <h3 class="text-heading title_color">Bursery Panel</h3>
+            <div class="feature_inner row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/mg/icon/f-icon-1.png' %}" alt="">
+                        <h5>Receive Payments</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Generate Invoice</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Handle partial payements</h5>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature_item">
+                        <img src="{% static 'main_site/img/icon/f-icon-1.png' %}" alt="">
+                        <h5>Maintenance</h5>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--================End Feature Area =================-->
+
+    <!--================Interior Area =================-->
+    <section class="interior_area interior_two">
+        <div class="container">
+            <div class="interior_inner row">
+                <div class="col-lg-5 offset-lg-1">
+                    <div class="interior_text">
+                        <h5>Extended Mobile Responsive Dashborad</p>
+                            <a class="main_btn" href="#">See Details</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <img class="img-fluid" src="{% static 'main_site/img/interior-2.png' %}" alt="">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--================End Interior Area =================-->
+        <section class="price_area p_120" id="demo">
+            <div class="container">
+                <div class="main_title">
+                    <h2>Request Demo</h2>
+                    <p>Please fill out the form below and we will send you the demo link</p>
+                </div>
+                <div class="price_item_inner row">
+                    <div class="col-lg-3">
+                    </div>
+                    <div class="col-lg-6">
+                        <!-- Default form register -->
+                        <form class="text-center border border-light p-5" method="post">{% csrf_token %}
+
+                            <p class="h4 mb-4">Demo</p>
+
+                            <div class="form-row mb-4">
+                                <div class="col">
+                                    <!-- First name -->
+                                    <input type="text" id="defaultRegisterFormFirstName" class="form-control" placeholder="First name">
+                                </div>
+                                <div class="col">
+                                    <!-- Last name -->
+                                    <input type="text" id="defaultRegisterFormLastName" class="form-control" placeholder="Last name">
+                                </div>
+                            </div>
+
+                            <!-- E-mail -->
+                            <input type="email" id="defaultRegisterFormEmail" class="form-control mb-4" placeholder="E-mail">
+
+                            <!-- Phone number -->
+                            <input type="number" id="defaultRegisterPhonePassword" class="form-control" placeholder="Phone number" aria-describedby="defaultRegisterFormPhoneHelpBlock">
+                            <small id="defaultRegisterFormPhoneHelpBlock" class="form-text text-muted mb-4">
+                                We may contact you through this number
+                            </small>
+                                <div class="form-row mb-4">
+                                <div class="col">
+                                    <!-- First name -->
+                                    <input type="text" id="defaultRegisterFormFirstName" class="form-control" placeholder="School name">
+                                </div>
+                                <div class="col">
+                                    <!-- Last name -->
+                                       <select name="deo_role" class="mdb-select">
+                                        <option value="" disabled selected>Select your Role</option>
+                                        <option value="First">Proprietor / Director</option>
+                                        <option value="First">Principal</option>
+                                        <option value="Second">Teacher</option>
+                                        <option value="Third">Advisor</option>
+                                        <option value="Third">Other</option>
+                                      </select>
+                                </div>
+                            </div>
+
+                            <!-- send button -->
+                            <button class="btn btn-info my-4 btn-block" type="submit">Send</button>
+                        </form>
+                    </div>
+                    <div class="col-lg-3">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--================Price Area =================-->
+        <section class="price_area p_120" id="price">
+            <div class="container">
+                <div class="main_title">
+                    <h2>Pricing Table</h2>
+                    <p>We offer best services with cheaper prices compared compared to other school management softwares </p>
+                </div>
+                <div class="price_item_inner row">
+                    <div class="col-lg-4">
+                        <div class="price_item">
+                            <div class="price_head">
+                                <div class="float-left">
+                                    <h3>Beinner</h3>
+                                    <p>Single branch school</p>
+                                </div>
+                                <div class="float-right">
+                                    <h3> N700</h3><small class="pull-right">per head</small>
+                                </div>
+                            </div>
+                            <div class="price_body">
+                                <ul class="list">
+                                    <li><a href="#">One Branch Only</a></li>
+                                    <li><a href="#">Student Panel</a></li>
+                                    <li><a href="#">Teacher Panel</a></li>
+                                    <li><a href="#">Administrator Panel</a></li>
+                                    <li><a href="#">User Role And Permission</a></li>
+                                    <li><a href="#">Different Styles for interface</a></li>
+                                    <li><a href="#">Reliable Customer Service</a></li>
+                                    <li><a href="#">Backup Provided</a></li>
+                                    <li><a href="#">And many more ... </a></li>
+                                </ul>
+                            </div>
+                            <div class="price_footer">
+                                <a class="main_btn2" data-toggle="modal" data-target="#modalPoll-1" href="#">Subscribe</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="price_item">
+                            <div class="price_head">
+                                <div class="float-left">
+                                    <h3>Standard</h3>
+                                    <small>Multi-Branch School</small>
+                                </div>
+                                <div class="float-right">
+                                    <h3> N600</h3><small class="pull-right">per head</small>
+                                </div>
+                            </div>
+                            <div class="price_body">
+                                <ul class="list">
+                                    <li><a href="#">Two - Three Schools</a></li>
+                                    <li><a href="#">Student Panel</a></li>
+                                    <li><a href="#">Teacher Panel</a></li>
+                                    <li><a href="#">Administrator Panel</a></li>
+                                    <li><a href="#">User Role And Permission</a></li>
+                                    <li><a href="#">Different Styles for interface</a></li>
+                                    <li><a href="#">Reliable Customer Service</a></li>
+                                    <li><a href="#">Backup Provided</a></li>
+                                    <li><a href="#">And many more ... </a></li>
+                                </ul>
+                            </div>
+                            <div class="price_footer">
+                                <a class="main_btn2" data-toggle="modal" data-target="#modalPoll-1" href="#">Subscribe</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="price_item">
+                            <div class="price_head">
+                                <div class="float-left">
+                                    <h3>Ultimate</h3>
+                                    <small>Multi-Branch School</small>
+                                </div>
+                                <div class="float-right">
+                                    <h3> N500</h3><small class="pull-right">per head</small>
+                                </div>
+                            </div>
+                            <div class="price_body">
+                                <ul class="list">
+                                    <li><a href="#">Three And Above School Branches</a></li>
+                                    <li><a href="#">Student Panel</a></li>
+                                    <li><a href="#">Teacher Panel</a></li>
+                                    <li><a href="#">Administrator Panel</a></li>
+                                    <li><a href="#">User Role And Permission</a></li>
+                                    <li><a href="#">Different Styles for interface</a></li>
+                                    <li><a href="#">Reliable Customer Service</a></li>
+                                    <li><a href="#">Backup Provided</a></li>
+                                    <li><a href="#">And many more ... </a></li>
+                                </ul>
+                            </div>
+                            <div class="price_footer">
+                                <a class="main_btn2" data-toggle="modal" data-target="#modalPoll-1" href="">Subscribe</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--================End Price Area =================-->
+
+        <!--=============== Slideshow Area ================-->
+        <section class="screenshot_area" id="screen">
+            <div class="container">
+                <div class="main_title">
+                    <h2>Screenshots</h2>
+                    <p>Get Access to every information required to run your school for good</p>
+                </div>
+            <!-- Start WOWSlider.com BODY section --> <!-- add to the <body> of your page -->
+                <div id="wowslider-container0">
+                <div class="ws_images"><ul>
+                    <li>
+                        <img src="{% static 'main_site/data/images/1.png' %}" title="Easy access to informations, right from our extended dashboard" id="wows0_0"/>
+                    </li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/2.png'%}" title="Manage Students Payment Information" id="wows0_1"/></li>
+                    <li>
+                    <li>
+                    <li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/3.png' %}" title="Assign a class teacher" class teacher" id="wows0_2"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/4.png' %}" title="Add detailed comments on students report sheet" id="wows0_3"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/5.png' %}" title="View Attendance information and account summary of the year" id="wows0_4"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/6.jpg' %}" title="Manage Student information" id="wows0_5"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/7.png' %}" title="Manage parents information" id="wows0_6"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/8.png' %}" title="Manage subjects" id="wows0_7"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/9.png' %}" title="Do Subject allocation with ease.png' %}" id="wows0_8"/></li>
+                        <img src="{% static 'main_site/data/images/12.png' %}" title="Students home work and Assignments" id="wows0_11"/></li>
+                        <img src="{% static 'main_site/data/images/10.png' %}" title="Segment a class into batches" id="wows0_9"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/11.png' %}" title="Manage School Syllables" id="wows0_10"/></li>
+                        <img src="{% static 'main_site/data/images/13.png' %}" title="Manage Class information" id="wows0_12"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/14.png' %}" title="Do Section Allocation" id="wows0_13"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/15.png' %}" title="Manage Attendance information" id="wows0_14"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/16.png" title="Attendance" id="wows0_15"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/17.png' %}" id="wows0_16"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/18.png' %}" title="Allows for creating an Examination Timetable" id="wows0_17"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/19.png' %}" title="Exam timetable" id="wows0_18"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/20.png' %}" title="Flexible Grade Scale" id="wows0_19"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/21.png' %}" title="An easy to use score entry form" id="wows0_20"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/22.png' %}" title="Basic and advance promotion module" id="wows0_21"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/23.png' %}" title="School Notice" id="wows0_22"/>
+                    </li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/24.png' %}" title="School Events" id="wows0_23"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/25.png' %}" title="School Holiday" id="wows0_24"/></li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/26.png' %}" title="Auto generate Students ID CARD" id="wows0_25"/>
+                    </li>
+                    <li>
+                        <img src="{% static 'main_site/data/images/27.png' %}" title="And so much More" id="wows0_26"/>
+                    </li>
+                </ul>
+            </div>
+                </div>
+               
+                </div>  
+                <script type="text/javascript" src="{% static 'main_site/engine/wowslider.js' %}"></script>
+                <script type="text/javascript" src="{% static 'main_site/engine/script.js' %}"></script>
+            </div>
+        </section>
+        <!--================End Slideshow Area =================-->
+
+        <!--================ Testimonials Area =================
+        <section class="testimonials_area p_120">
+            <div class="container">
+                <div class="main_title">
+                    <h2>Testimonials</h2>
+                    <p>See what our amazing clients say about us !</p>
+                </div>
+                <div class="testi_slider owl-carousel">
+                    <div class="item">
+                        <div class="testi_item">
+                            <div class="media">
+                                <div class="d-flex">
+                                    <img src="img/testimonials/testi-1.png" alt="">
+                                </div>
+                                <div class="media-body">
+                                    <p>Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker, projector, hardware.</p>
+                                    <h5>Mark Alviro Wiens</h5>
+                        <h5>CEO at Google</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <div class="testi_item">
+                <div class="media">
+                    <div class="d-flex">
+                        <img src="img/testimonials/testi-2.png" alt="">
+                    </div>
+                    <div class="media-body">
+                        <p>Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker, projector, hardware.</p>
+                        <h5>Mark Alviro Wiens</h5>
+                        <h5>CEO at Google</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+    </section>
+    ================End Testimonials Area =================--> -->
+
+    <!--================Download App Area =================-->
+    <section class="download_app_area p_120">
+        <div class="container">
+            <div class="app_inner">
+                <h2>Bitsmss works on all major browsers!</h2>
+                <p>Our system works on all mojor browers and it also fits well on both android, iOS and Blackbery mobile phones. Bitsmss loves all browsers, all browsers loves Bitsmss.
+                </p>
+                <p>
+                    We also provide schools with a mobile app for all platforms.
+                </p>
+                <div class="app_btn_area">
+                    <div class="app_btn">
+                        <div class="media">
+                            <div class="d-flex">
+                                <i class="fa fa-chrome" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="app_btn">
+                        <div class="media">
+                            <div class="d-flex">
+                                <i class="fa fa-firefox" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="app_btn">
+                        <div class="media">
+                            <div class="d-flex">
+                                <i class="fa fa-apple" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="app_btn">
+                        <div class="media">
+                            <div class="d-flex">
+                                <i class="fa fa-android" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="app_btn">
+                        <div class="media">
+                            <div class="d-flex">
+                                <i class="fa fa-edge" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--================End Download App Area =================-->
+<!-- Modal: modalPoll -->
+<div class="modal fade right" id="modalPoll-1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true" data-backdrop="false">
+  <div class="modal-dialog modal-full-height modal-right modal-notify modal-info" role="document">
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header">
+        <p class="heading lead ">Subscribe
+        </p>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">×</span>
+        </button>
+      </div>
+
+      <!--Subscribe modal-->
+      <div class="modal-body">
+        <div class="text-center">
+          <i class="far mb-3 animated">Bitsmss</i>
+          <p>
+            <strong>Get Started with Our School Management Software!</strong>
+          </p>
+          <p>Bitsmss automates your entire school 
+            <strong>operation.</strong>
+          </p>
+        </div>
+
+        <hr>
+
+        <!-- Radio -->
+        <div class="form-check mb-4">
+            <input name="school_name" class="form-control form-control-sm" type="text" placeholder="School name">
+        </div>
+
+        <div class="form-check mb-4">
+            <input name="school_address" class="form-control form-control-sm" type="text" placeholder="School Address">
+        </div>
+        <div class="form-check mb-4">
+            <input name="visitor_name" class="form-control form-control-sm" type="text" placeholder="Your name">
+        </div>
+        <div class="form-check mb-4">
+            <input name="visitor_role" class="form-control form-control-sm" type="text" placeholder="Role, e.g Proprietor, Principal, Teacher etc">
+        </div>
+        <div class="form-check mb-4">
+            <input name="visitor_email" class="form-control form-control-sm" type="email" placeholder="Email">
+        </div>
+        <div class="form-check mb-4">
+            <input name="visitor_phone" class="form-control form-control-sm" type="number" placeholder="Phone number">
+        </div>
+        <label>Choose subscription plan</label>
+        <div class="form-check mb-4">
+          <input type="radio" class="form-check-input" id="beginner" name="subscription">
+          <label class="form-check-label" for="beginner">Beginner</label>
+        </div>
+
+        <!-- Group of material radios - option 2 -->
+        <div class="form-check mb-4">
+          <input type="radio" class="form-check-input" id="standard" name="subscription" checked>
+          <label class="form-check-label" for="standard">Standard</label>
+        </div>
+
+        <!-- Group of material radios - option 3 -->
+        <div class="form-check mb-4">
+          <input type="radio" class="form-check-input" id="utlimate" name="subscription">
+          <label class="form-check-label" for="utlimate">Ultimate</label>
+        </div>
+      </div>
+      <!--End of Subscribe modal-->
+
+
+      <!--Footer-->
+      <div class="modal-footer justify-content-center">
+        <a type="button" class="btn btn-primary waves-effect waves-light">Subscribe
+          <i class="fa fa-paper-plane ml-1"></i>
+        </a>
+        <a type="button" class="btn btn-outline-primary waves-effect" data-dismiss="modal">Cancel</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal: modalPoll -->
+
+    <!--================ start footer Area  =================-->
+    <footer class="footer-area p_120">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3  col-md-6 col-sm-6">
+                    <div class="single-footer-widget tp_widgets">
+                        <h6 class="footer_title">About</h6>
+                        <ul class="list">
+                            <li><a href="#price">Pricing</a></li>
+                            <li><a href="#screen">Sccreenshots</a></li>
+                            <li><a href="#app">Mobile App</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Other Services</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3  col-md-6 col-sm-6">
+                    <div class="single-footer-widget tp_widgets">
+                        <h6 class="footer_title">Useful Links</h6>
+                        <ul class="list">
+                            <li><a href="#demo">Request Demo</a></li>
+                            <li><a href="#earn">Earn With Referral</a></li>
+                            <li><a href="#footer">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3  col-md-6 col-sm-6">
+                    <div class="single-footer-widget tp_widgets">
+                        <h6 class="footer_title">Get in Touch</h6>
+                        <ul class="list">
+                            <li><a target="_blank" href="https://bitpointng.blogspot.com">Blog</a></li>
+                            <li><a href="mailto:info@bitsmss.com">Mail us</a></li>
+                            <li><a href="https://fb.com/bitpointng">Facebook</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3  col-md-6 col-sm-6">
+                    <div class="single-footer-widget tp_widgets">
+                        <h6 class="footer_title">Address</h6> Shop 12. Second Floor, No 1 Zaranda Street, Behind Jimeta Modern Market, Yola Adamawa State, Nigeria
+                        <ul class="list">
+                            <li><a href="tel:+2347033389645">Call us on: +234-7033389645</a></li>
+                            <li><a href="tel:+2348035163811">Call us on: +234-8035163811</a></li>
+                            <li><a href="tel:+2348035126805">Call us on: +234-8035126805</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row footer-bottom d-flex justify-content-between align-items-center">
+                <p class="col-lg-8 col-md-8 footer-text m-0">
+                    Copyright &copy; Bitpoint limited.
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script> All rights reserved
+                </p>
+                <div class="col-lg-4 col-md-4 footer-social">
+                    <a href="https://fb.com/bitpoint.ng"><i class="fa fa-facebook"></i></a>
+                    <a href="https://twitter.com/bitpointng"><i class="fa fa-twitter"></i></a>
+                    <a href="https://linkedin.com/bitpointng"><i class="fa fa-linkedin"></i></a>
+                    <a href="mailto:info@bitsmss.com"><i class="fa fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!--================ End footer Area  =================-->
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="{% static 'main_site/js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'main_site/js/popper.js' %}"></script>
+    <script src="{% static 'main_site/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'main_site/js/stellar.js' %}"></script>
+    <script src="{% static 'main_site/vendors/lightbox/simpleLightbox.min.js' %}"></script>
+    <script src="{% static 'main_site/vendors/nice-select/js/jquery.nice-select.min.js' %}"></script>
+    <script src="{% static 'main_site/vendors/isotope/imagesloaded.pkgd.min.js' %}"></script>
+    <script src="{% static 'main_site/vendors/isotope/isotope-min.js' %}"></script>
+    <script src="{% static 'main_site/vendors/owl-carousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'main_site/js/jquery.ajaxchimp.min.js' %}"></script>
+    <script src="{% static 'main_site/vendors/counter-up/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'main_site/vendors/counter-up/jquery.counterup.js' %}"></script>
+    <script src="{% static 'main_site/js/mail-script.js' %}"></script>
+    <script src="{% static 'main_site/vendors/popup/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'main_site/js/theme.js' %}"></script>
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {},
+            Tawk_LoadStart = new Date();
+        (function() {
+            var s1 = document.createElement("script"),
+                s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/5c112c657a79fc1bddf0a3fc/default';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
+    </script>
+</body>
+
+</html>

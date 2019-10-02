@@ -1,0 +1,198 @@
+{% extends 'authenticated/dashboard.html' %}
+{% load static tags %}
+{% block custom_style %}
+  <!-- Custom styles for this page -->
+  <link href="{% static 'main_site/authenticated/vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+  {% endblock custom_style %}
+{% block title %} Manage Schools | Bitpoint  Admin {% endblock %}
+{% block main %}
+  <!-- Begin Page Content -->
+  <div class="container-fluid">
+     <!-- MESSAGE -->
+     <div hidden id="incorrect-password" class="alert alert-warning alert-dismissible fade show">
+        <h4 class="alert-heading"><i class="fa fa-warning"></i> Warning!</h4>
+        <p id="incorrect-password-data"></p>
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      <!-- MESSAGE -->
+
+   <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Manage Schools</h1>
+      <p class="mb-4"><a href="{% url 'school_add' %}" class="btn btn-primary btn-icon-split">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-arrow-right"></i>
+                    </span>
+                    <span class="text">Add School</span>
+                  </a></p>
+
+      <!-- DataTales Example -->
+      <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Schools (Tenants)</h6>
+          </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>School Name</th>
+                      <th>School Admin</th>
+                      <th>Created on</th>
+                      <th>On Trial</th>
+                      <th>Domain</th>
+                      <th>Active Until</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tfoot>
+                    <tr>
+                      <th>School Name</th>
+                      <th>School Admin</th>
+                      <th>Created on</th>
+                      <th>On Trial</th>
+                      <th>Domain</th>
+                      <th>Active Until</th>
+                      <th>Action</th>
+                    </tr>
+                  </tfoot>
+                  <tbody id="t_tenants">
+                    {% for tenant in tenants_list %}
+                    <tr>
+                      <td>{{ tenant.name }}</td>
+                      <td>{{ tenant.school_admin }}</td>
+                      <td>{{ tenant.created_on }}</td>
+                      <td>{{ tenant.on_trial }}</td>
+                      <td>{% get_tenant_domain tenant.pk %}</td>
+                      <td>{{ tenant.active_until }}</td>
+                      <td style="display: flex; justify-content: space-around; color: #fff">
+                          <a href="{% url 'school_change' tenant_id=tenant.id %}" class="btn btn-primary btn-xs">
+                          <i class="fas fa-pencil-alt"></i>
+                         </a>
+                          <a href="{% url 'school_view' tenant_id=tenant.id %}" class="btn btn-info btn-xs">
+                          <i class="fas fa-binoculars"></i>
+                         </a>
+
+                          <a class="btn btn-danger del_tenant btn-xs" target_tenant="{{ tenant.id }}">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                         </a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                    <span id="target_url" target_url="{% url 'school_del' %}"></span>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      <!-- /.container-fluid -->
+<!-- Modal -->
+<div id="modal-p" class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title red-text" id="exampleModalLongTitle">Confirm Action</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+        <div class="md-form">
+          <i class="fas fa-lock prefix red-text"></i>
+          <input autocomplete="new-password" type="password" id="password" class="form-control red-text validate">
+          <label for="password" data-error="wrong" data-success="right">Re-enter your password
+          </label>
+        </div>
+      </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        <button id="btn-modal-submit" type="button" class="btn btn-danger">Delete Now</button>
+      </div>
+    </div>
+  </div>
+</div>
+    </div>
+  <!-- End of Main Content -->
+{% endblock main %}
+
+{% block custom_js %}
+
+<!-- Page level plugins -->
+  <script src="{% static 'main_site/authenticated/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'main_site/authenticated/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="{% static 'main_site/authenticated/js/demo/datatables-demo.js' %}"></script>
+  <!-- Sweet Alert -->
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha256-KsRuvuRtUVvobe66OFtOQfjP8WA2SzYsmm4VPfMnxms=" crossorigin="anonymous"></script>
+ <script src="https://terrylinooo.github.io/jquery.disableAutoFill/assets/js/jquery.disableAutoFill.min.js"></script>
+  <script>
+    window.addEventListener('load', (event)=> {
+      $(".del_tenant").click(function(){
+          const row = $(this).closest("tr > td");
+          const target_url = $('#target_url').attr('target_url')
+          const target_tenant = $(row).find(".del_tenant").attr('target_tenant')
+          swal({
+            title: `Are you sure ?`,
+            text: "You are about to wipe an entire school with all it's belongings. Do you really wants to do this ?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+              $("#modal-p").modal();
+              $("#btn-modal-submit").click(()=>{
+                const password = $.trim($("#password").val());
+                $.ajax({
+                  url: target_url,
+                  data: {
+                    "password": password,
+                    "school_id": target_tenant,
+                  },
+
+                  beforeSend: function(){
+                    $("#btn-modal-submit").text('Deleting...');
+                    $("#btn-modal-submit").attr("disabled", true);
+                  },
+                  
+                  complete: function(data){
+                    $("#btn-modal-submit").text('Delete Now');
+                  },
+
+                  success: function (data) {
+                    if(data == 'incorrect_password'){
+                        $("#incorrect-password").removeAttr('hidden');
+                        $("#incorrect-password-data").text("The Password you provided does not match !")
+                        $("#btn-modal-submit").removeAttr("disabled");
+                        $('#modal-p').modal('hide');
+                        $("html, body").animate({ scrollTop: 0 }, "slow");
+                      }else{
+                        $("#t_tenants").html(data);
+                        swal("Successfully Deleted!", {
+                          icon: "success",
+                        });
+                        $('#modal-p').modal('toggle');
+                        $("#btn-modal-submit").removeAttr("disabled");
+                      }
+                    }
+                  });
+              });
+            }
+          });
+        });
+    });
+    $('form').disableAutoFill();
+  </script>
+ {% endblock custom_js %}
