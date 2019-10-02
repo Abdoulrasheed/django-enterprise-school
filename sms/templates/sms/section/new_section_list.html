@@ -1,0 +1,13 @@
+{% for section in sections %}
+                  <tr>
+                    <td>{{ section.name }} Section</td>
+                    <td>{{ section.note }}</td>
+                    <td></td>
+                   <td>
+                      <a href="{% url 'edit_section' id=section.pk %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                      <a id="del_section" target_section="{% url 'delete_section' id=section.pk %}" title="delete" class="del_section red-text"><i class="fa fa-times"></i></a>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <span>No data available</span>
+                  {% endfor %}

@@ -1,0 +1,13 @@
+{% for expense in expenses %}
+                  <tr>
+                    <td>{{ expense.item }}</td>
+                    <td>{{ expense.amount }}</td>
+                    <td>{{ expense.description }}</td>
+                    <td>
+                      <a href="{% url 'edit_expense' id=expense.pk %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                      <a id="del_exp" target_exp="{% url 'delete_expense' id=expense.pk %}" title="delete" class="del_exp red-text"><i class="fa fa-times"></i></a>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <span>No data available</span>
+                  {% endfor %}

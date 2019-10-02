@@ -85,8 +85,6 @@ def get_subject_avg(subject_id, session, clss, no_of_students, term):
 
 @register.simple_tag
 def check_if_promoted(student, session):
-	print(student)
-	print(session)
 	if Student.objects.filter(user__pk=student.user.pk, session=session).exists():
 		return 1
 	else:

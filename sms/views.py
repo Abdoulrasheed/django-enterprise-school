@@ -17,7 +17,7 @@ from django.template import Context
 from django.template.loader import get_template
 from .decorators import teacher_required, student_required, parent_required
 from .models import *
-from .constants import *
+from constants import *
 from django.db import IntegrityError
 
 from . sms_sender import send_sms
@@ -282,16 +282,21 @@ def delete_user(request, id):
 		    student = Student.objects.get(user__pk=user.pk, session=current_session)
 		    class_id = student.in_class.pk
 		    student.delete()
-		    messages.success(request, user_name + ' Successfully deleted !')
-		    return HttpResponse('deleted')
+		    new_students_list = Student.objects.filter(in_class__pk=class_id, session=current_session)
+		    context = {'students': new_students_list,}
+		    return render(request, 'sms/student/new_students_list.html', context)
 		elif user.is_teacher:
 			user.delete()
-			messages.success(request, user_name + ' Successfully deleted !')
-			return HttpResponse('deleted')
+			new_teachers_list = User.objects.filter(is_teacher=True)
+			context = {'teachers': new_teachers_list,}
+			return render(request, 'sms/teacher/new_teachers_list.html', context)
 		elif user.is_parent:
 			user.delete()
-			messages.success(request, user_name + ' Successfully deleted !')
-			return HttpResponse('deleted')
+			new_parents_list = User.objects.filter(is_parent=True)
+			context = {
+				'parents': new_parents_list,
+			}
+			return render(request, 'sms/parent/new_parents_list.html', context)
 		else:
 			user.delete()
 			messages.success(request, user_name + ' Successfully deleted !')
@@ -792,8 +797,11 @@ def delete_class(request, id):
 	selected_class = Class.objects.get(pk=id)
 	class_name = selected_class.name
 	selected_class.delete()
-	messages.success(request, "Successfully deleted "+ class_name)
-	return HttpResponseRedirect(reverse_lazy('class_list'))
+	new_class_list = Class.objects.all()
+	context = {
+		'classes': new_class_list,
+	}
+	return render(request, 'sms/class/new_class_list.html', context)
 
 
 @login_required
@@ -802,8 +810,11 @@ def delete_subject(request, id):
 	selected_subject = Subject.objects.get(pk=id)
 	subject_name = selected_subject.name
 	selected_subject.delete()
-	messages.success(request, "Successfully deleted "+ subject_name)
-	return HttpResponseRedirect(reverse_lazy('subjects_list'))
+	new_subjects_list = Subject.objects.all()
+	context = {
+		'subjects': new_subjects_list,
+	}
+	return render(request, 'sms/subject/new_subjects_list.html', context)
 
 
 @login_required
@@ -812,8 +823,11 @@ def delete_section(request, id):
 	selected_section = Section.objects.get(pk=id)
 	section_name = selected_section.name
 	selected_section.delete()
-	messages.success(request, "Successfully deleted "+ str(selected_section))
-	return HttpResponseRedirect(reverse_lazy('sections_list'))
+	new_section_list = Section.objects.all()
+	context = {
+		'sections': new_section_list,
+	}
+	return render(request, 'sms/section/new_section_list.html', context)
 
 @login_required
 @teacher_required
@@ -1445,8 +1459,9 @@ def expenditure(request):
 def delete_expenditure(request, id):
 	expense = Expense.objects.get(pk=id)
 	expense.delete()
-	messages.success(request, str(expense.item) + ' was successfully deleted')
-	return HttpResponseRedirect(reverse_lazy('view_expenses'))
+	new_exp_list = Expense.objects.all()
+	context = {'expenses': new_exp_list,}
+	return render(request, 'sms/expenses/new_exp_list.html', context)
 
 
 @login_required
