@@ -20,14 +20,6 @@
               <a href="" class="btn btn-info" data-toggle="modal" data-target="#modalSubscription">Send new sms</a>
             </div>
           </div>
-             {% if messages %}
-        {% for message in messages %}
-          <div class="alert alert-info alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{ message }}
-          </div>
-        {% endfor %}
-      {% endif %}
       {% if form %}
    <div class="alert alert-info alert-dismissible fade show" role="alert">
         <strong>Please correct the errors below</strong>

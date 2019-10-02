@@ -531,4 +531,4 @@ class EmailMessage(models.Model):
     		messages.success(request, 'Emails Successfully Send !')
     	except urllib.error.URLError:
     		self.status = PENDING
-    		messages.warning(request, 'Emails not send, check your internet connection !')
+    		messages.warning(request, 'Emails not send and saved in draft, check your internet connection !')
