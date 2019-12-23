@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Students {% endblock title %}
+{% block main %}
+<a href="{% url 'ajax_load_students' %}" id="load_students_url" hidden></a>
+   <div class="container-fluid">
+   <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="{% url 'home_page' %}">Home Page</a>
+            <span>/</span>
+            <span>Syllabus</span>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
+   <!-- Editable table -->
+   <div class="card">
+      <h6 class="mdb-color darken-3 card-header text-center white-text text-uppercase py-2">Syllabus</h6>
+      <div class="container">
+
+         <div class="row">
+
+               <div class="col-md-5">
+                  {% if request.user.is_superuser %}
+                  <a href="{% url 'add_student' %}" class="btn btn-info">Add Subject Syllabus</a>
+               {% endif %}
+               </div>
+
+               <div class="col-md-3">
+               	<div class="dropdown">
+                  <button class="btn btn-info dropdown-toggle float-right" type="button" id="dropdownMenu3" data-toggle="dropdown"
+                     aria-haspopup="true" aria-expanded="false">
+                  Select Class
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
+                    <h6  class="dropdown-header">Select Class</h6>
+                     {% for class in classes %}
+                      <a id="class" data-toggle="tooltip" title="{{ class }}" class="dropdown-item" href="#">
+                     	{{ class }}
+                      </a>
+                     {% endfor %}
+                  </div>
+               </div>
+            </div>
+            <div class="col-md-3">
+               <div class="dropdown">
+                  <button class="btn btn-info dropdown-toggle float-right" type="button" id="dropdownMenu3" data-toggle="dropdown"
+                     aria-haspopup="true" aria-expanded="false">
+                  Select Subject
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
+                     <select class="browser-default custom-select">
+                     	{% for class in classes %}
+						  <option disabled selected>Select class</option>
+						  <option value="1">{{ class }}</option>
+						  {% endfor %}
+						</select>     
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+    <div class="card-body">
+    	<div hidden id="loader" class="progress md-progress primary-color-dark">
+      	<div class="indeterminate"></div>
+  	</div>
+         <object width="1130" height="1000" data="http://www.africau.edu/images/default/sample.pdf" type="application/pdf">
+    		<iframe src="http://www.africau.edu/images/default/sample.pdf"></iframe>
+		</object>
+      </div>
+   </div>
+</div>
+{% block script %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#class").change(function(){
+    	alert(66);
+    });
+  });
+</script>
+{% endblock script %}
+{% endblock main %}

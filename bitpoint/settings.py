@@ -189,7 +189,7 @@ INSTALLED_APPS = list(set(SHARED_APPS + TENANT_APPS))
 
 # session conf
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_SECURITY_WARN_AFTER = 300
+SESSION_SECURITY_WARN_AFTER = 50
 
 # Time before the user should be logged out if inactive
 SESSION_SECURITY_EXPIRE_AFTER = 600
@@ -233,6 +233,8 @@ PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'sms/static/js', 'serviceworker
 
 # Mail CONF
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 
 with open(BASE_DIR + '/key/sendgrid_api_key.txt') as f:
     SENDGRID_API_KEY = f.read().strip()

@@ -16,6 +16,7 @@
 {% block main %}
 <!--Main layout-->
 <div style="margin-bottom: 50px;" class="container-fluid">
+
       {% if form %}
    <div class="alert alert-info alert-dismissible fade show" role="alert">
         <strong>Please correct the errors below</strong>
@@ -60,7 +61,7 @@
           {% csrf_token %}
           <div class="form-group">
             <label for="title">Send To</label>
-            <select name="user_type" class="browser-default custom-select user-type">
+            <select required name="user_type" class="browser-default custom-select user-type">
               <option disabled selected>-----</option>
               <option value="students">Students</option>
               <option value="teachers">Teachers</option>
@@ -70,21 +71,20 @@
           </div>
           <div hidden url="{% url 'get_classes' %}" class="form-group select_class_div">
             <label for="title">Select Class</label>
-            <select class="browser-default custom-select select_class" url="{% url 'ajax_load_student_users' %}">
+            <select required class="browser-default custom-select select_class" url="{% url 'ajax_load_student_users' %}">
             </select>
           </div>
           <div hidden class="form-group select_user_div" url="{% url 'get_users_list' %}">
             <label for="title">Select <span class="user_label"></span> <kbd>Hold CTRL to select multiple<kbd></label>
 
-            <select name="recipients" class="browser-default custom-select select_user" multiple>
+            <select id="recipients" required name="recipients" class="browser-default custom-select select_user" multiple>
               
             </select>
           </div>
           <div class="form-group">
             <label for="title">Title</label>
-            <input type="text" name="title" class="form-control" id="title" placeholder="Title">
+            <input required type="text" name="title" class="form-control" id="title" placeholder="Title">
           </div>
-
           <div class="form-group">
             <p>
               <a onclick="appendTag('==fullname==');" class="badge badge-default default-tag" hidden>Full Name</a>
@@ -116,9 +116,13 @@
               {% trans 'Publish' %}
             </button>
 
-            <button type="button" class="btn btn-default draft">
+            <button id="save_draft" url="{% url 'save_draft' %}" type="button" class="btn btn-default draft">
 
               {% trans 'Save Draft' %}
+               <div hidden id="draft_loader" class="progress md-progress primary-color-dark">
+                <div class="indeterminate">
+              </div>
+          </div>
             </button>
             <a href="" class="btn btn-default">
               {% trans 'Cancel' %}
@@ -129,7 +133,7 @@
         <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
           <!-- delivered here -->
         <div style="height: 65vh; overflow-y: auto;" class="card draft">
-          <h4 style="background-color: #2BBBAD" class="card-header text-center font-weight-bold text-uppercase py-1 white-text">Delivered <i class="fas fa-check"></i></h4>
+          <h6 style="background-color: #2BBBAD;" class="card-header text-center font-weight-bold text-uppercase py-1 white-text">Delivered Emails<i class="fas fa-check"></i></h6>
           <div class="card-body">
             <div id="table" class="table-editable">
               <table class="table table-bordered table-responsive-md table-striped text-center">
@@ -155,7 +159,7 @@
                       <span class="table-remove">
                         <button type="button"
                           class="btn btn-danger btn-rounded btn-sm my-0">
-                          Deliver
+                          Delete
                         </button>
                         </span>
                     </td>
@@ -172,13 +176,14 @@
             </div>
           </div>
         </div>
+  </div>
+  <!-- delivered Ends Here -->
 
-          <!-- delivered Ends Here -->
-        </div>
+  <!-- draft Here -->
   <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
               <!-- Draft Stars here -->
         <div style="height: 65vh; overflow-y: auto;" class="card draft scrollbar scrollbar-primary">
-          <h4 class="card-header text-center font-weight-bold text-uppercase py-1 white-text">Draft</h4>
+          <h6 class="card-header text-center font-weight-bold text-uppercase py-1 white-text">Draft Emails</h6>
           <div class="card-body">
             <div id="table" class="table-editable">
               <table class="table table-bordered table-responsive-md table-striped text-center">
@@ -203,8 +208,8 @@
                     <td>
                       <span class="table-remove">
                         <button type="button"
-                          class="btn btn-danger btn-rounded btn-sm my-0">
-                          Deliver
+                          class="btn btn-info btn-rounded btn-sm my-0">
+                          Send
                         </button>
                         </span>
                     </td>
@@ -215,8 +220,8 @@
             </div>
           </div>
         </div>
-
-          <!-- Draft Ends Here -->
+        
+        <!-- Draft Ends Here -->
   </div>
   <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
     </div>
@@ -225,6 +230,7 @@
 </div>
 {% endblock main %}
 {% block script %}
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha256-KsRuvuRtUVvobe66OFtOQfjP8WA2SzYsmm4VPfMnxms=" crossorigin="anonymous"></script>
 <script>
   const appendTag = (text) =>{
     const pos = simplemde.codemirror.getCursor();
@@ -344,6 +350,44 @@ const handleUsers = (user_type) => {
           }
         });
       });
-  });  
+
+    $("#save_draft").on('click', function(){
+      var url = $(this).attr('url');
+      var mail_body = simplemde.value()
+      var mail_title = $("#title").val();
+      var recipients = $("#recipients").val();
+
+      $.ajax({
+        url: url,
+        data: {
+          'title': mail_title,
+          'body': mail_body,
+          'recipients': recipients
+        },
+
+        beforeSend: () =>{
+            $("#draft_loader").removeAttr('hidden');
+            $("#draft_loader").attr('disabled', true);
+          },
+
+          complete: () => {
+            $("#draft_loader").attr('hidden', true);
+            $("#draft_loader").removeAttr('disabled');
+          },
+
+          success: (data) => {
+            if (data === 'success'){
+              swal("Successfully Saved as Draft !", {
+                icon: "success",
+              });
+            } else {
+              swal("There is an error while trying to save as draft", {
+                icon: "error",
+              });
+            }
+          }
+      });
+    });
+  });
 </script>
  {% endblock script %}

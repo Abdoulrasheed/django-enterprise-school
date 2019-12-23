@@ -18,4 +18,4 @@ class OnlineAdmissionForm(forms.ModelForm):
 
 	class Meta:
 		model = OnlineAdmission
-		exclude = ('admission_id', 'date_of_application', 'session')
+		exclude = ('admission_id', 'date_of_application', 'session', 'status')

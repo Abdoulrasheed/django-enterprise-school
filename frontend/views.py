@@ -84,7 +84,11 @@ def process_online_admission(request):
 				 			student_lname,
 				 			admission_no
 			)
-			send_sms(applicant_phone_no, sms_body)
+			send_sms(
+				phone_number=applicant_phone_no, 
+				request=request,
+				msg_body=sms_body)
+			
 			messages.success(
 				request, 
 				'Thank you for applying, we will get back to you soon'

@@ -462,7 +462,10 @@ def add_assign_teacher(request):
 							the school administrator just updated \
 							the list of subjects allocated to you. \
 							! Login now for details".format(teacher.get_full_name())
-				send_sms(teacher.phone, sms_body)
+				send_sms(
+					phone_number=teacher.phone, 
+					request=request , 
+					msg_body=sms_body)
 				
 				messages.success(request, 'Subjects were successfully updated')
 				return HttpResponseRedirect(reverse_lazy('assign_teacher_list'))
@@ -478,7 +481,8 @@ def add_assign_teacher(request):
 				sms_body = "An admin just updated \
 							the subjects allocated \
 							to you !".format(teacher.get_full_name())
-				send_sms(teacher.phone, sms_body)
+				send_sms(
+					phone_number=teacher.phone, request=request , msg_body=sms_body)
 				
 				messages.success(request, 'Subjects were successfully allocated')
 				return HttpResponseRedirect(reverse_lazy('assign_teacher_list'))
@@ -672,7 +676,10 @@ def add_student(request):
 							request.META['HTTP_HOST']
 							)
 
-			send_sms(parent_phone_number, sms_body)
+			send_sms(
+				phone_number=parent_phone_number, 
+				request=request,
+				msg_body=sms_body)
 
 			if stud_picture:
 				fs = FileSystemStorage()
@@ -747,7 +754,7 @@ def add_parent(request):
 						request.META['HTTP_HOST']
 						)
 
-			send_sms(phone, sms_body)
+			send_sms(phone_number=phone, request=request, msg_body=sms_body)
 
 			return HttpResponseRedirect(reverse_lazy('add_parent'))
 		else:
@@ -808,7 +815,7 @@ def add_teacher(request):
 						password, 
 						request.META['HTTP_HOST']
 					)
-			send_sms(phone, sms_body)
+			send_sms(phone_number=phone, request=request, msg_body=sms_body)
 			return HttpResponseRedirect(reverse_lazy('add_teacher'))
 		else:
 			form = AddParentForm(request.POST, request.FILES)
@@ -1760,13 +1767,40 @@ def mail(request):
 			return render(request, template, context)
 
 	draft_mails = EmailMessage.objects.filter(status=PENDING)
-	delivered_emails = EmailMessage.objects.filter(status=DELIVERED)
+	delivered_mails = EmailMessage.objects.filter(status=DELIVERED)
 	context = {
 		'draft_mails': draft_mails,
-		'delivered_emails': delivered_emails
+		'delivered_mails': delivered_mails
 	}
 	template = 'sms/mail/mail_view.html'
 	return render(request, template, context)
+
+
+@login_required
+@admin_required
+def save_draft_mail(request):
+	if request.is_ajax():
+		data = request.GET
+		title = data.get('title')
+		body = data.get('body')
+		recipients = data.getlist('recipients[]')
+		mails = EmailMessage.objects.create(
+			admin=request.user,
+			title=title,
+			content=body,
+		)
+
+		mails.recipients.set(recipients)
+		mails.save()
+		return HttpResponse('success')
+
+@login_required
+@admin_required
+def subject_syllabus(request):
+	classes = Class.objects.all()
+	print(classes)
+	template = 'sms/syllabus/syllabus_list.html'
+	return render(request, template, {'classes': classes})
 
 @login_required
 @admin_required
@@ -1777,35 +1811,46 @@ def send_bulk_sms(request):
 		if form.is_valid():
 			title = form.cleaned_data.get('title')
 			sms_body = form.cleaned_data.get('body')
-			to_user = form.cleaned_data.get('to_user')
-			if to_user == "Admin":
+			recipients = form.cleaned_data.get('to_user')
+			current_session = Session.objects.get(current_session=True)
+
+
+			if recipients == "Admin":
 				users = User.objects.filter(is_superuser=True)
-			elif to_user == "Student":
-				users = User.objects.filter(is_student=True)
-			elif to_user == "Parent":
+			elif recipients == "Student":
+				users = Student.objects.filter(session=current_session)
+			elif recipients == "Parent":
 				users = User.objects.filter(is_parent=True)
-			elif to_user == "Teacher":
+			elif recipients == "Teacher":
 				users = User.objects.filter(is_teacher=True)
 
 			for user in users:
-				asyncio.run(send_sms(user.phone, '{}, {}'.format(title, sms_body)))
-
-			Sms.objects.create(title=title, body=body, to_user=to_user)
+				asyncio.run(send_sms(
+					phone_number = user.user.phone, 
+					request = request,
+					msg_body = '{}, {}'.format(title, sms_body)
+					)
+				)
+			sms = Sms.objects.create(
+				title=title, 
+				body=sms_body, 
+				to_user=recipients,
+				status=DELIVERED).save()
+			messages.success(request, ' Messages delivered successfully')
 			context = {
 				"sms": sms,
 				"title": title,
-				"body": body,
-				"to_user": to_user
+				"body": sms_body,
+				"to_user": recipients
 			}
-			messages.success(request, ' Messages delivered successfully')
-			return render(request, 'sms/mail_and_sms/sms.html', context)
+			return render(request, 'sms/sms/sms.html', context)
 		else:
 			form = SmsForm(request.POST)
 			context = {"form": form}
-			return render(request, 'sms/mail_and_sms/sms.html', context)
+			return render(request, 'sms/sms/sms.html', context)
 	else:
 		context = {"sms":sms}
-		return render(request, 'sms/mail_and_sms/sms.html', context)
+		return render(request, 'sms/sms/sms.html', context)
 
 
 @login_required
@@ -2360,7 +2405,7 @@ def set_parent(request):
 		form = SetParentForm(request.POST)
 		if form.is_valid():
 			student_id = form.cleaned_data.get('student_id')
-			parent_id = form.cleaned_data.get('parent_id')
+			parent_id = 1
 
 			student = get_object_or_404(Student, id=student_id)
 			parent = get_object_or_404(Parent, parent__pk=parent_id)

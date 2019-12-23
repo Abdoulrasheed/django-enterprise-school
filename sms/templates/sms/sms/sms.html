@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static humanize %}
 
 {% block title %} SMS {% endblock title %}
 {% block main %}
@@ -55,7 +55,7 @@
                   <th>Title</th>
                   <th>Body</th>
                   <th>Delivery Status</th>
-                  <th>To</th>
+                  <th>Recipients</th>
                   <th>Date Send</th>
                   <th>Action</th>
                 </tr>
@@ -68,7 +68,7 @@
                   <td>{{ sms.body|truncatechars:20 }}</td>
                   <td>Delivered</td>
                   <td>{{ sms.to_user }}</td>
-                  <td>{{ sms.date_send }}</td>
+                  <td title="{{ sms.date_send }}">{{ sms.date_send|naturaltime }}</td>
                   <td>
                     <a data-toggle="tooltip" title="Edit" class="teal-text"><i class="fa fa-pen"></i></a>
                   </td>

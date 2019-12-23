@@ -287,7 +287,7 @@ class EmailMessage(models.Model):
         User, null=True, related_name="author",
         on_delete=models.SET_NULL)
     image = models.ImageField(
-        _('Featured image'), null=True, upload_to='articles_pictures/%Y/%m/%d/')
+        _('Featured image'), null=True, upload_to='email_pictures/%Y/%m/%d/')
     timestamp = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=255, null=False)
     slug = models.SlugField(max_length=80, null=True, blank=True)
@@ -306,7 +306,7 @@ class EmailMessage(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(f"{self.admin.username}-{self.title}")
+            self.slug = slugify(f"{self.admin}-{self.title}")
 
         super().save(*args, **kwargs)
 
@@ -528,7 +528,11 @@ class EmailMessage(models.Model):
     	try:
     		msg.send()
     		self.status = DELIVERED
+    		self.save()
     		messages.success(request, 'Emails Successfully Send !')
+    		print(self.status)
     	except urllib.error.URLError:
     		self.status = PENDING
-    		messages.warning(request, 'Emails not send and saved in draft, check your internet connection !')
+    		self.save()
+    		messages.error(request, 'Emails not send and saved in draft, check your internet connection !')
+    		print('Emails not send and saved in draft, check your internet connection !')

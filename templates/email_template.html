@@ -239,9 +239,9 @@
         <br>
         <p></p>
         <p style="line-height: 24px">
-            From:</br></br>
-            {{ mail.admin.get_full_name }}<br></br><p></p>
-            {{ setiing.school_name }}<br></br><p></p>
+            -{{ mail.admin.get_full_name }}<br></br><p></p>
+
+            {{ setting.school_name }}<br></br><p></p>
             {% now "jS F" %},
         </p>
     </td>

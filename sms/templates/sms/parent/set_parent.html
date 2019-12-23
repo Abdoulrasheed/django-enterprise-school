@@ -28,27 +28,26 @@
 		<!--Card-->
 				<form method="post">{% csrf_token %}
 					<div class="card">
+<select name="student_id" class="browser-default custom-select custom-select-sm">
+		<option disabled selected="" value="1">Select student</option>
+		{% for student in students %}
+		<option data-icon="{{ student.user.get_picture }}" class="rounded-circle" value="{{ student.id }}">{{ student.user.get_full_name }} ({{student.in_class}})</option>
+		{% empty %}
+		<option disabled selected value="#">No student available</option>
+		{% endfor %}
+	</select>
 
-						<select name="student_id" class="browser-default custom-select custom-select-sm">
-								<option disabled selected="" value="1">Select student</option>
-								{% for student in students %}
-								<option data-icon="{{ student.user.get_picture }}" class="rounded-circle" value="{{ student.id }}">{{ student.user.get_full_name }} ({{student.in_class}})</option>
-								{% empty %}
-								<option disabled selected value="#">No student available</option>
-								{% endfor %}
-							</select>
+<br>
+<hr />
 
-						<br>
-						<hr />
-
-							<select name="parent_id" class="browser-default custom-select custom-select-sm">
-								<option disabled selected value="1">Select parent</option>
-								{% for parent in parents %}
-								<option data-icon="{{ parent.get_picture }}" class="rounded-circle" value="{{ parent.id }}">{{ parent.get_full_name }}</option>
-								{% empty %}
-								<option disabled selected value="#">No parent available</option>
-								{% endfor %}
-							</select>
+		<select name="parent_id" class="browser-default custom-select custom-select-sm">
+			<option disabled selected value="1">Select parent</option>
+			{% for parent in parents %}
+			<option data-icon="{{ parent.get_picture }}" class="rounded-circle" value="{{ parent.id }}">{{ parent.get_full_name }}</option>
+			{% empty %}
+			<option disabled selected value="#">No parent available</option>
+			{% endfor %}
+		</select>
 
 					</div>
 					<input class="mx-auto btn btn-primary" type="submit" name="submit" value="Save"/>

@@ -28,4 +28,5 @@ admin.site.register(Setting)
 admin.site.register(GradeScale)
 admin.site.register(Sms)
 admin.site.register(Ranking)
+admin.site.register(EmailMessage)
 # Register your models here.

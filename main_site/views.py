@@ -113,7 +113,12 @@ def school_add_save(request):
                                     please login to http://{}/app\
                                     using username: {} and password: {}\
                                     '.format(school_name, domain.domain, username, password)
-                        send_sms(phone=phone, msg=message)
+
+                        send_sms(
+                            phone_number=phone, 
+                            request=request, 
+                            msg_body=message)
+                        
                     tenant.school_admin=admin
                     tenant.save()
                     return HttpResponse('success')
