@@ -1,0 +1,132 @@
+{% load static tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'pdf/terminalreport.css' %}">
+</head>
+<body>
+    {% for index, result in results.items %}
+    <div class="mainterminalreport">
+        <div class="terminal-headers">
+            <div class="terminal-logo">
+                <img src="{{setting.school_logo}}" alt="school logo">
+            </div>
+            <div class="school-name">
+                <h2>{{setting.school_name}}</h2>
+            </div>
+        </div>
+        <div class="terminal-infos">
+            <div class="school-address">
+                <h4><b>{{setting.school_name}}</b></h4>
+                <p>{{setting.school_address}}</p>
+                <p>Phone : 07033389645</p>
+                <p>Email: mail@bitpoint.com</p>
+            </div>
+            <div class="student-profile">
+                <h4><b>{{result.0.user.get_full_name|title}}</b></h4>
+                <p>Session: <b>{{result.0.year_of_admission}}</b>
+                <p>Position :  <b>{% get_rank result.0.student_rank %}</b></p>
+                <p>Roll No. : <b>{{result.0.roll_number}}</b>, Class: <b>{{result.0.in_class}}</b></p>
+                <p>Reg. No. : <b>{{result.0.roll_number}}</b></p>  
+                <p>Out Of: <b>{{number_of_student}}</b></p>
+                <p>Term : <b>{{term}}</b></p>
+
+            </div>
+            <div class="student-profile-img">
+                <img class="profileimg" src="{{ result.0.user.get_picture }}" alt="">
+            </div>
+        </div>
+        <div class="terminal-contents">
+            <h4>Terminal Report</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Subjects</th>
+                        <th>CA 1</th>
+                        <th>CA 2</th>
+                        <th>EXAM</th>
+                        <th>Total</th>
+                        <th>Position</th>
+                        <th>Grade</th>
+                        <th>Remark</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in result.1 %}
+                    <tr>
+                        <td>{% get_subject item.subject_id %}</td>
+                        <td>{{item.fca}}</td>
+                        <td>{{item.sca}}</td>
+                        <td>{{item.exam}}</td>
+                        <td>{{item.total|default_if_none:''}}</td>
+                        <td>{% get_rank item.rank %}</td>
+                        <td>{{item.grade|default_if_none:''}}</td>
+                        <td>{{item.remark|default_if_none:''}}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td>Total</td>
+                        <td>{{result.0.total_mark }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="col-4)">Average : 34.07</td>
+                        <td colspan="4"><b>Class Average : 43.43</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Promoted To</td>
+                        <td colspan="col-2"></td>
+                    </tr>
+                     <tr>
+                        <td colspan="2">Highest In class</td>
+                        <td colspan="col-2">{{highest}}</td>
+                    </tr>
+                     <tr>
+                        <td colspan="2">Lowest In class</td>
+                        <td colspan="col-2">{{lowest}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Attendance</td>
+                        <td colspan="col-2">0</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Form Teacher Remarks</td>
+                        <td colspan="col-2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">House Teacher's Remark</td>
+                        <td colspan="col-2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Principal's Remark</td>
+                        <td colspan="col-2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="col">Results Intepretation : 
+                            <b>
+                                {% for scale in gradeScale %}
+                                    {{ scale.grade }} = 
+                                    {{ scale.mark_from }} - 
+                                    {{ scale.mark_upto }} |
+                                {% endfor %}
+                            </b>
+                        </td>
+                    </tr> 
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <p style="page-break-after: always;">&nbsp;</p>
+    {% empty %}
+    <div class="notfound">
+        No Student Found
+    </div>
+    {% endfor %}
+</body>
+</html>

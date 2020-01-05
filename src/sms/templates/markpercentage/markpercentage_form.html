@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block main %}
+<div class="container-fluid">
+
+<form method="post">{% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit">
+</form>
+
+<div class="container-fluid">
+{% endblock main %}

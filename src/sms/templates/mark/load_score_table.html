@@ -1,0 +1,106 @@
+{% load humanize %}
+<form method="post" action="{% url 'score_entry' %}">{% csrf_token %}
+   <input type="hidden" name="subject" id="sel_subject" value="">
+   <input type="hidden" name="term" id="sel_term" value="">
+      {% with score_permission.end_time as set_date %}
+     {% if set_date >  today %}
+       <small style="color: {% if set_date < 5 %} red {% else %} blue {% endif %}">
+         Entry closes in {{ set_date|timeuntil }} from now
+      </small>
+   <table class="table table-bordered table-responsive-md table-striped text-center">
+      <tr>
+         {% for student, gr in gr %}
+         {% endfor %}
+         <th class="text-center">Student</th>
+         <th class="text-center">Picture</th>
+         <th class="text-center">Roll</th>
+         {% for markpercent in mark_percentages %}
+            <th class="text-center">
+               {{ markpercent.name }}
+               ({{ markpercent.percentage }}%)
+            </th>
+         {% endfor %}
+         <th class="text-center">Total</th>
+         <th class="text-center">Grade</th>
+      </tr>
+         {% for student in students %}
+      <tr>
+         <td class="pt-3-half text-left" contenteditable="false">
+            <input type="hidden" name="student_id" value="{{ each.id }}">
+               {{ student.user.get_full_name }}
+         </td>
+         <td class="pt-3-half" contenteditable="false">
+            <img src="{{ student.user.get_picture }}" class="rounded-circle" width="50">
+         </td>
+         <td class="pt-3-half" contenteditable="false">
+            {{ student.roll_number }}
+         </td>
+            {% for markpercent in mark_percentages %}
+         <td class="pt-3-half" contenteditable="false">
+            <input max="{{ markpercent.percentage }}" value="{{ grade.fca }}"  style="border-style: inset; width: 50px;" max="30" type="number" name="{{ markpercent.name }}" class="form from-group score">
+         </td>
+            {% endfor %}
+         <td class="pt-3-half text-center total" contenteditable="false"></td>
+
+          <td class="pt-3-half text-center grade" contenteditable="false"></td>
+      </tr>
+      {% endfor %}
+   </table>
+   <input type="submit" name="submit" value="Save" class="btn btn-primary">
+   {% else %}
+   <small style="color: red">Score entry closed since {{ set_date|timesince }} ago</small>
+   {% endif %}
+   {% endwith %}
+</form>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha256-KsRuvuRtUVvobe66OFtOQfjP8WA2SzYsmm4VPfMnxms=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+   jQuery.extend(jQuery.expr[':'], {
+       focusable: function (el, index, selector) {
+           return $(el).is('a, button, :input,[tabindex]');
+       }
+   });
+
+   function between(x) {
+      {% for g in grade_scale %}
+         if(x >= {{ g.mark_from }} && x <= {{ g.mark_upto }}){
+            return "{{g.grade}}";
+         }
+      {% endfor %}
+   }
+
+   $("tr input").keyup(function(e){
+      e.preventDefault();
+      var maximum_value = $(this).attr('max');
+      var score_name = $(this).attr('name');
+      var score = $(this).val();
+      if (parseFloat(score) > parseFloat(maximum_value)){
+         $(this).val("");
+         toastr.error(`${score_name} must be less than or equal to ${maximum_value}`);
+      }else{
+
+         //Select all inputs in row of input that is changed and self (this or changed input)
+         var inputs = $(this).parent('td').siblings('td').addBack().find('input');
+
+         //Use map to return array of only values on inputs in row that is changed
+         var values = inputs.map(function() { return parseFloat($(this).val())}).get();
+
+         //Use reduce to sum array of values 
+         var total = values.reduce((a, b) => { return (a || 0) + (b || 0)});
+
+         //Find total cell in row that is changed
+         $(this).parent().siblings('.total').text(total);
+
+         var grade = between(total);
+
+         //Find grade cell in row that is changed
+         $(this).parent().siblings('.grade').text(grade);
+
+         var $canfocus = $(':focusable');
+         var index = $canfocus.index(document.activeElement) + 1;
+         if (index >= $canfocus.length) index = 0;
+         if(score.length==2){
+            $canfocus.eq(index).focus();
+         }
+      }
+   });
+</script>

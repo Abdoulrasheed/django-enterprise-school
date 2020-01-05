@@ -1,0 +1,475 @@
+{% load static humanize tags %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <title>{{ school_setting.school_name }} |{% block title %} Home{% endblock title %}</title>
+  <!-- Font Awesome -->
+  
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="{% static 'css/mdb/bootstrap.min.css' %}">
+  <!-- Material Design Bootstrap -->
+  <link rel="stylesheet" href="{% static 'css/mdb/mdb.min.css' %}">
+  <link href="https://fonts.googleapis.com/css?family=Coiny|Open+Sans|Open+Sans+Condensed:300|Roboto" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+  <!-- Your custom styles (optional) -->
+  {% block custom_style %}
+
+  {% endblock %}
+<style type="text/css">/* Chart.js */
+@import "~perfect-scrollbar/dist/css/perfect-scrollbar.css";
+@-webkit-keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}@keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}</style>
+</head>
+
+<body class="fixed-sn body">
+
+  <!--Main Navigation-->
+  <header>
+
+    <!-- Sidebar navigation -->
+    <div id="slide-out" class="side-nav sn-bg-4 fixed" style="transform: translateX(-100%);">
+      <ul class="custom-scrollbar ps ps--theme_default" data-ps-id="abfb04e0-478a-fdaf-ec37-be23fad8b5b4">
+        <!-- Logo -->
+        <li class="logo-sn waves-effect">
+          <div style="margin-bottom: 15px;" class="text-center">
+            <a href="{% url 'home_page' %}" class="pl-0">
+              <img width="80px" src="{{ school_setting.get_logo }}" class="rounded-circle"></a>
+          </div>
+        </li>
+        <!--/. Logo -->
+
+        <!--Search Form-->
+        <li>
+          <form class="search-form" role="search">
+            <div class="form-group md-form mt-0 pt-1">
+              <input type="text" class="form-control" style="color: brown !important" placeholder="Search">
+            </div>
+          </form>
+        </li>
+        <!--/.Search Form-->
+
+        <!-- Side navigation links -->
+        <li>
+          <ul class="collapsible collapsible-accordion">
+            <li><a href="{% url 'home_page' %}" class="collapsible-header waves-effect"><i class=" far fas fa-tachometer-alt"></i>
+                Dashboard</a>
+              </li>
+              {% if request.user|in_group:'admin' %}
+                {# {% if request.user.is_superuser or request.user.is_teacher %} #}
+            <li><a href="{% url 'students_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-user-graduate"></i>
+                Student</a></li>
+                {# {% endif %} #}
+                {% endif %}
+                 {# {% if request.user.is_superuser %} #}
+            <li><a href="{% url 'parents_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-user"></i>
+                Parent</a></li>
+                {# {% endif %} #}
+               {# {% if request.user.is_superuser or request.user.is_teacher %} #}
+              <li><a href="{% url 'teachers_list' %}" class="collapsible-header waves-effect"><i class=" far fa-user"></i>
+                Teacher</a></li>
+                {# {% endif %} #}
+                {# {% if request.user.is_superuser %} #}
+              <li><a class="collapsible-header waves-effect arrow-r"><i class="fa fa-school"></i><span style="margin-left: 11px !important">Academic</span><i class="fas fa-angle-down rotate-icon"></i></a>
+              <div class="collapsible-body">
+                <ul>
+                   <li>
+                    <a href="{% url 'class_list' %}" class="waves-effect">Class</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'subjects_list' %}" class="waves-effect">Subject</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'batch_list' %}" class="waves-effect">Batch</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'sections_list' %}" class="waves-effect">Section</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'subject_allocation_list' %}" class="waves-effect">Subject Allocation</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'section_allocation' %}" class="waves-effect">Section Allocation</a>
+                  </li>
+                   <li>
+                    <a href="{% url 'subject_syllabus' %}" class="waves-effect">
+                      Subject Syllabus
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+           {# {% endif %} #}
+            {% if request.user.is_superuser  or request.user.is_teacher %}
+            <li><a href="{% url 'attendance_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-user"></i>
+                Attendance</a></li>
+                {% endif %}
+          {% if request.user.is_superuser %}
+            <li><a href="{% url 'sms_list' %}" class="collapsible-header waves-effect"><i class=" far fas fa-envelope"></i>
+                SMS</a></li>
+                 <li><a href="{% url 'mail' %}" class="collapsible-header waves-effect"><i class=" far fas fa-mail-bulk"></i>
+                 
+                MAIL</a></li>
+                {% endif %}
+            <li><a class="collapsible-header waves-effect arrow-r"><i class="fab fa-css3"></i> Exam<i class="fas fa-angle-down rotate-icon"></i></a>
+              <div class="collapsible-body">
+                <ul>
+                  {% if request.user|in_group:'teacher' and perms.sms.view_score %}
+                  <li><a href="{% url 'view_score_list' %}" class="waves-effect">View Score</a>
+                  </li>
+                  {% endif %}
+                  {% if perms.sms.add_score %}
+                  <li><a href="{% url 'score_list' %}" class="waves-effect">Input Score</a>
+                  </li>
+                   {% endif %}
+                   {% if request.user|in_group:'student' or request.user|in_group:'parent' and perms.sms.view_score %}
+                   <li><a href="{% url 'view_score_list' %}" class="waves-effect">View Results</a>
+                  </li>
+                   {% endif %}
+                   {% if perms.sms.view_gradescale %}
+                  <li><a href="{% url 'grade_scale' %}" class="waves-effect">Grade Scale</a>
+                  </li>
+                  {% endif %}
+                   {% if perms.sms.view_markpercentage %}
+                  <li><a href="{% url 'mark_percentage' %}" class="waves-effect">Mark Percentage</a>
+                  </li>
+                  {% endif %}
+                   {% if perms.sms.view_scorepermission %}
+                  <li><a href="{% url 'mark_permission' %}" class="waves-effect">Mark Permission</a>
+                  </li>
+                  {% endif %}
+                  {% if perms.sms.view_promotion %}
+                  <li><a href="{% url 'promotion_list' %}" class="waves-effect">Promotion</a>
+                  </li>
+                  {% endif %}
+                  {% if perms.sms.view_promotion %}
+                  <li><a href="{% url 'promotion_list' %}" class="waves-effect">Promotion Criteria</a>
+                  </li>
+                  {% endif %}
+                </ul>
+              </div>
+            </li>
+             {% if request.user.is_superuser %}
+            <li><a class="collapsible-header waves-effect arrow-r"><i class="fas fa-th"></i> Account<i class="fas fa-angle-down rotate-icon"></i></a>
+              <div class="collapsible-body">
+                <ul>
+                  <li><a href="{% url 'set_payment' %}" class="waves-effect">Set Payment</a>
+                  </li>
+                  <li><a href="{% url 'view_payments' %}" class="waves-effect">Payment</a>
+                  </li>
+                  <li><a href="{% url 'view_expenses' %}" class="waves-effect">Expense</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li><a href="{% url 'online_admission_list' %}" class="collapsible-header waves-effect"><i class="fas fa-user-graduate"></i>
+                Online Admission</a></li>
+            <li><a href="{% url 'sms_permissions_view' %}" class="collapsible-header waves-effect"><i class="fas fa-user-graduate"></i>
+                Permissions</a></li>
+                <li><a href="{% url 'sms_roles_view' %}" class="collapsible-header waves-effect"><i class="fas fa-user-graduate"></i>
+                Roles</a></li>
+                <li><a href="" class="collapsible-header waves-effect"><i class="fas fa-user-graduate"></i>
+                User</a></li>
+            <li><a href="{% url 'notice_board' %}" class="collapsible-header waves-effect"><i class="fas fa-bullhorn"></i>
+                Notice</a></li>
+            <li><a class="collapsible-header waves-effect arrow-r"><i class="far fa-check-square"></i> Report<i class="fas fa-angle-down rotate-icon"></i></a>
+              <div class="collapsible-body">
+                <ul>
+                  <li><a href="{% url 'subject_report_view' %}" class="waves-effect">Subject Report</a>
+                  </li>
+                  <li><a href="{% url 'broadsheet_report_view' %}" class="waves-effect">Broadsheet Report</a>
+                  </li>
+                  <li><a href="{% url 'create_report_student' %}" class="waves-effect">Report Card Sheet</a>
+                  </li>
+                  <li><a href="{% url 'class_members_report_view' %}" class="waves-effect">Class Members Report</a>
+                  </li>
+                  <li><a href="{% url 'subject_allocation_report_view' %}" class="waves-effect">Subject Allocation Report</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li><a class="collapsible-header waves-effect arrow-r"><i class="far fa fa-braille"></i> Frontend<i class="fas fa-angle-down rotate-icon"></i></a>
+              <div class="collapsible-body">
+                <ul>
+                  <li><a href="" class="waves-effect">Page Setting</a>
+                  </li>
+                  <li><a href="" class="waves-effect">Page Template</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li>
+              <a class="collapsible-header waves-effect arrow-r"><i class="fas fa-user-cog"></i></i>Administrator<i class="fas fa-angle-down rotate-icon"></i></a>
+              <div class="collapsible-body">
+                <ul>
+                  <li><a href="{% url 'session_list' %}" class="waves-effect">Academic Year</a>
+                  </li>
+                  <li><a href="{% url 'system_admin' %}" class="waves-effect">System Admin</a>
+                  </li>
+                  <li><a href="{% url 'reset_users_password_view' %}" class="waves-effect">Reset Password</a>
+                  </li>
+                  <li><a href="{% url 'general_setting' %}" class="waves-effect">General Settings</a>
+                  </li>
+                   <li><a href="{% url 'set_parent' %}" class="waves-effect">Set Parent</a>
+                  </li>
+                   </li>
+                   <li><a href="{% url 'import_users' %}" class="waves-effect">Import Users</a>
+                  </li>
+                   <li><a href="{% url 'import_scores' %}" class="waves-effect">Import Score</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            {% endif %}
+        <!--/. Side navigation links -->
+      <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__scrollbar-y-rail" style="top: 0px; right: 0px;"><div class="ps__scrollbar-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></ul>
+      <div class="sidenav-bg mask-strong"></div>
+    </div>
+    <!--/. Sidebar navigation -->
+
+    <!-- Navbar -->
+    <nav class="navbar fixed-top navbar-expand-lg scrolling-navbar double-nav">
+      <!-- SideNav slide-out button -->
+      <div class="float-left">
+        <a href="#" data-activates="slide-out" class="button-collapse"><i class="fas fa-bars"></i></a>
+      </div>
+      <!-- Breadcrumb-->
+      <div class="breadcrumb-dn mr-auto">
+        <p>
+          <a href="{% url 'home_page' %}">{{ school_setting.school_name }}</a>
+        </p>
+      </div>
+
+      <!--Navbar links-->
+      <ul class="nav navbar-nav nav-flex-icons ml-auto">
+
+        <!-- Dropdown -->
+                <li class="nav-item dropdown notifications-nav"></li>
+          <a href="/" class="nav-link waves-effect">
+            <span class="badge red"></span> <i class="fas fa-globe"></i>
+            <span class="d-none d-md-inline-block">View Site</span>
+          </a>
+          </div>
+        </li>
+        <li class="nav-item dropdown notifications-nav">
+          <a class="nav-link dropdown-toggle waves-effect" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="badge blue">{{ all_sessions.count }}</span> <i class="fas fa-layer-group"></i>
+            <span class="d-none d-md-inline-block">Academic Year</span>
+          </a>
+          <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+            {% for session in all_sessions %}
+            <a class="dropdown-item waves-effect waves-light" href="{% if not request.user.is_superuser or session.current_session %}#{% else %}{% url 'toggle_session' id=session.pk %}{% endif %}">
+              <i class="fas fa-money mr-2" aria-hidden="true"></i>
+              <span>{{ session.name }} {% if session.current_session %} - <span class="blue-text">current</span> {% endif %}</span>
+              <span class="float-right"><i class="far fa-clock" aria-hidden="true">
+                created {{ session.created_on|naturaltime }}
+              </i></span>
+            </a>
+            {% endfor %}
+          </div>
+        </li>
+        <!-- Dropdown -->
+        <li class="nav-item dropdown notifications-nav">
+          <a class="nav-link dropdown-toggle waves-effect" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span {% if notifications %} class="badge red" {% endif %}>{{ notifications.count }}</span> <i class="fas fa-bell"></i>
+            <span class="d-none d-md-inline-block">Notifications</span>
+          </a>
+          <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item waves-effect waves-light" href="#">
+              {% for notification in notifications %}
+              <i class="fas fa-money mr-2" aria-hidden="true"></i>
+              <span data-toggle="tooltip" title="{{ notification.body }} - {{ notification.time }}" class="indigo-text">
+                  {{ notification.title }}
+                </span><br>
+                  <span class="text-sm-left indigo-text">
+                    {{ notification.body|truncatechars:42 }}
+                  </span>
+              <small class="float-left">
+                <i class="far fa-clock" aria-hidden="true"></i>
+                {{ notification.time }}
+              </small>
+              <br><br>
+              {% empty %}
+              <span><i class="far fa-bell" aria-hidden="true"></i> You have no notification
+              </span>
+              {% endfor %}
+            </a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle waves-effect" href="#" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-user"></i> <span class="clearfix d-none d-sm-inline-block">Profile</span></a>
+
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+            <a class="dropdown-item waves-effect waves-light" href="{% url 'logout' %}">Log Out</a>
+            <a class="dropdown-item waves-effect waves-light" href="{% url 'profile' pk=request.user.id %}">My account</a>
+             <a class="dropdown-item waves-effect waves-light" href="{% url 'change_password' %}">Change Password</a>
+          </div>
+        </li>
+
+      </ul>
+      <!--/Navbar links-->
+    </nav>
+    <!-- /.Navbar -->
+
+  </header>
+  <!--Main Navigation-->
+    <main style="margin-bottom: 80px !important;">
+    {% if school_setting.sms_unit < 50 and school_setting.sms_unit > 0 %}
+      <h2 style="margin-left: 0.8vw;" class="section-heading pb-3">
+        <a target="_blank" class="btn btn-info btn-sm waves-effect waves-light" role="button">You have {{ school_setting.sms_unit }} SMS units remaining, please consider contact an agent for renewal !.
+        <i class="fas fa-bullhorn"></i>
+    </a>
+  </h2>
+  {% elif school_setting.sms_unit == 0 %}
+  <h2 style="margin-left: 0.8vw;" class="section-heading pb-3">
+      <a target="_blank" class="btn btn-danger btn-sm waves-effect waves-light" role="button">You can no longer send an sms until you renew your sms subscription !.
+      <i class="fas fa-bullhorn"></i>
+    </a>
+  </h2>
+  {% endif %}
+  {% for message in messages %}
+  <h2 style="margin-left: 0.8vw;" class="section-heading pb-3">
+      <a target="_blank" class="btn btn-{{ message.tags }} btn-sm waves-effect waves-light" role="button">
+        {{ message }}
+      <i class="fas fa-bullhorn"></i>
+    </a>
+  </h2>
+<!--Modal: Expire-->
+<div class="modal fade top" id="modalCookie1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true" data-backdrop="true">
+  <div class="modal-dialog modal-frame modal-top modal-notify modal-info" role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Body-->
+      <div class="modal-body">
+        <div class="row d-flex justify-content-center align-items-center">
+          <p class="pt-3 pr-2 red-text">{{ message }}</p>
+          <a type="button" url="{% url 'seek_renewal' %}" class="btn btn-info btn-renewal">Request Renewal <i class="fas fa-money-check-alt"></i></a>
+          <a type="button" class="btn btn-outline-info btn-cancel waves-effect" data-dismiss="modal">Cancel</a>
+        </div>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+{% endfor %}
+<!--Modal: Expire-->
+{% block main %}
+
+{% endblock %}
+  </main>
+
+<!--Footer-->
+  <footer class="page-footer center-on-small-only pt-0 mt-5 fixed-bottom">
+
+    <!--Copyright-->
+    <div class="footer-copyright py-3 text-center">
+      <div class="container-fluid">
+          <small>
+        <span id="copy"></span> Copyright: &copy;
+        <a href="#">Bitpoint inc.</a>
+        </small>
+      </div>
+    </div>
+    <!--/.Copyright-->
+
+  </footer>
+  <!--/.Footer-->
+  
+    <!-- loader -->
+  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+
+
+  <!-- SCRIPTS -->
+  <!-- JQuery -->
+  <script src="{% static 'js/mdb/jquery-3.3.1.min.js' %}"></script>
+  {% include 'session_security/all.html' %}
+  <!-- Bootstrap tooltips -->
+  <script type="text/javascript" src="{% static 'js/mdb/popper.min.js' %}"></script>
+  <!-- Bootstrap core JavaScript -->
+  <script type="text/javascript" src="{% static 'js/mdb/bootstrap.js' %}"></script>
+  <!-- MDB core JavaScript -->
+  <script type="text/javascript" src="{% static 'js/mdb/mdb.min.js' %}"></script><div class="hiddendiv common"></div>
+  <!--Initializations-->
+  <script>
+    // SideNav Initialization
+    $(".button-collapse").sideNav();
+
+    var container = document.querySelector('.custom-scrollbar');
+    Ps.initialize(container, {
+      wheelSpeed: 2,
+      wheelPropagation: true,
+      minScrollbarLength: 20
+    });
+
+    // Data Picker Initialization
+    $('.datepicker').pickadate();
+
+    // Material Select Initialization
+    $(document).ready(function () {
+        $("img").on("contextmenu", function(){
+          // uncomment the line below to disable mouse right click button
+          return false;
+        }); 
+        $("img").on("mousedown", function(e){
+            e.preventDefault();
+        });
+        
+        $('.mdb-select').material_select();
+    });
+
+    // Tooltips Initialization
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+
+			var d = new Date();
+			var n = d.getFullYear();
+			document.getElementById("copy").innerHTML = n
+      if (window.localStorage.getItem("theme") === null) {
+        var theme = 'grey-skin'
+        $('body').addClass(theme);
+        $('.button-collapse').addClass('white-text');
+      }else{
+        var theme = window.localStorage.getItem('theme');
+        $('body').addClass(theme);
+
+        // change text color of bars (collabse)
+        var bars_color = window.localStorage.getItem('bars_color');
+        $('.button-collapse').addClass(`${bars_color}-text`);
+      }
+      if (window.localStorage.getItem("rr") === null) {
+        $('.modal').modal('show');
+      }
+
+      $('.btn-renewal').click(()=>{
+        const url = $('.btn-renewal').attr('url');
+        $.ajax({
+          url: url,
+          beforeSend: ()=>{
+            $('.btn-renewal').attr('disabled', true);
+            $('.btn-cancel').attr('disabled', true);
+            $('.btn-renewal').text('Notifying Agent...');
+          },
+
+          complete: ()=>{
+            $('.modal').modal('hide');
+          },
+          success: (data)=>{
+            alert('An Agent will contact you soon');
+            if (data == 'success'){
+              window.localStorage.setItem('rr', 'true'); // requested renewal
+            }
+          },
+        });
+      });
+  </script>
+  {% block script %}
+
+  {% endblock script %}
+</body></html>

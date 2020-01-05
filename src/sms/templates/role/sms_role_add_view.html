@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<br>
+<br>
+<br>
+<form method="post" action="{% url 'sms_roles_view' %}">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save">
+</form>
+
+{% endblock main %}

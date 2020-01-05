@@ -1,0 +1,9 @@
+#loading {
+  display: none;
+  position: fixed;
+  z-index: 100000000;
+  top:40%;
+  left:40%;
+  background-color:transparent;
+  opacity: .3;
+}

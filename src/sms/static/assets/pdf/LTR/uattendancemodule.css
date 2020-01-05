@@ -1,0 +1,191 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    font-family: Helvetica;
+}
+
+body {
+	font-family: 'helvetica';
+	color:#707478;
+	background: #fff
+}
+
+address {
+    font-size: 17px;
+    font-style: normal;
+}
+
+.profileArea {
+    border: 2px solid #ddd;
+    padding-bottom: 50px;
+    height: 85%;
+    border-bottom: none;
+}
+
+.headerArea {
+    padding: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.siteLogo {
+    float: left;
+    width: 25%;
+    padding-top: 10px;
+    padding-left: 10px
+}
+
+.siteTile {
+    float: right;
+    width: 75%;
+}
+
+.siteTitle h2 {
+    font-size: 30px;
+    margin: 0px;
+    padding-top: 5px;
+    line-height: 25px;
+    font-family: Helvetica;
+}
+
+.siteTitle p {
+    margin: 0px;
+    padding: 0px;
+    font-size: 17px;
+    font-family: Helvetica;
+}
+
+.siteLogoimg {
+    width: 120px;
+    height: 120px;
+}
+
+
+.areaTop {
+    font-family: Helvetica;
+}
+
+.studentImage {
+    width: 25%;
+    float: left;
+    text-align: center;
+}
+
+.studentProfile {
+    width: 75%;
+    float: right;
+}
+
+.studentImg {
+    width: 100px;
+    height: 120px;
+    border: 5px solid #ddd;
+    padding: 5px;
+    border-radius: 10%;
+    overflow: hidden;
+}
+
+.singleItem {
+    width: 100%;
+    line-height: 30px;
+    font-size: 16px;
+    font-family: Helvetica;
+}
+
+.single_label {
+    width: 25%;
+    float: left;
+    font-weight: bold;
+}
+
+.single_value {
+    width: 75%;
+    float: left;
+}
+
+.label {
+    width: 40%;
+    float: left;
+    font-weight: bold;
+}
+
+.value {
+    width: 58%;
+    float: left;
+}
+
+
+.footerArea {
+    text-align: center;
+    border: 2px solid #ddd;
+    border-top: none;
+    padding-bottom: 10px;
+}
+
+.flogo {
+    width: 40px;
+    height: 40px;
+}
+
+.copyright {
+    margin: 0px;
+    font-size: 14px;
+}
+
+.sattendanceArea {
+    padding: 0px 20px;
+}
+
+.sattendanceArea h4 {
+  font-size: 16px;
+}
+
+.ini-bg-success {
+  background: #5eb171!important;
+  color:#232a2f !important;
+}
+
+.ini-bg-primary {
+  background: #6a94c1!important;
+  color:#232a2f !important;
+}
+
+.ini-bg-danger {
+  background: #e8737e!important;
+  color:#232a2f !important;
+}
+
+.ini-bg-warning {
+  background: #ffc107!important;
+  color:#232a2f !important;
+}
+
+.ini-bg-info {
+  background: #5fbfce!important;
+  color:#232a2f !important;
+}
+
+.ini-bg-secondary {
+  background: #8cb0d0!important;
+  color:#232a2f !important;
+}
+
+.attendance_table {
+  width:100%;
+  border-collapse: collapse !important;
+}
+
+.attendance_table tr td{
+  text-align: center;
+  border:0.1px solid #ddd;
+  padding: 4px 0px; 
+  color: #232a2f !important;
+} 
+
+.attendance_table tr th{
+  text-align: center;
+  border:0.1px solid #ddd;
+  color: #232a2f;
+  font-weight: 400;
+  padding: 4px 0px; 
+} 

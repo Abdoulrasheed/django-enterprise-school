@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} classes {% endblock title %}
+
+{% block main %}
+    <div class="container-fluid">
+               <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="{% url 'home_page' %}">Home Page</a>
+            <span>/</span>
+            <span>Class</span>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
+    <div hidden id="loader" class="progress md-progress primary-color-dark">
+              <div class="indeterminate">
+              </div>
+          </div>
+      {% if form %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+
+      <!--Section: Basic examples-->
+      <section>
+        <!--Top Table UI-->
+        <div class="card p-2 mb-5">
+
+          <!--Grid row-->
+          <div class="row">
+
+            <!--Grid column-->
+            <div class="col-lg-3 col-md-12">
+            	<a class="btn btn-primary" href="{% url 'add_class' %}">
+            		Add class
+            	</a>
+            </div>
+        </div>
+        <!--Top Table UI-->
+
+        <div class="card card-cascade narrower z-depth-1">
+
+          <!--Card image-->
+          <div class="view view-cascade gradient-card-header mdb-color darken-3 narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center">
+            <a href="" class="white-text mx-3">Class</a>
+
+          </div>
+          <!--/Card image-->
+
+          <div class="px-4">
+
+            <div class="table-responsive">
+              <!--Table-->
+              <table id="table" class="table table-hover mb-0">
+
+                <!--Table head-->
+                <thead>
+                  <tr>
+                    <th class="th-lg"><a href="">#<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a href="">Section<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a>Class Name <i class="fas fa-sort ml-1"></i></a></th>
+
+                    <th class="th-lg"><a href="">Teacher<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a href="">Action<i class="fas fa-sort ml-1"></i></a></th>
+                  </tr>
+                </thead>
+                <!--Table head-->
+
+                <!--Table body-->
+                <tbody class="class_body">
+                	{% for class in object_list %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ class.section }}</td>
+                    <td>{{ class.name }}</td>
+                    <td>{{ '' }}</td>
+                    <td>
+                      <a href="{% url 'edit_class' id=class.id %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+                      <a id="del_class" target_class="{% url 'delete_class' id=class.pk %}" title="delete" class="del_class red-text"><i class="fa fa-times"></i></a>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>No data available</tr>
+                  {% endfor %}
+                </tbody>
+                <!--Table body-->
+              </table>
+              <!--Table-->
+            </div>
+
+            <hr class="my-0">
+
+            <!--Bottom Table UI-->
+            <div class="d-flex justify-content-between">
+              <!--Pagination -->
+              <nav class="my-4">
+                <ul class="pagination pagination-circle pg-blue mb-0">
+                  <!--Arrow left-->
+                  <li class="page-item disabled">
+                    <a class="page-link" aria-label="Previous">
+                      <span aria-hidden="true">&laquo; Previous</span>
+                    </a>
+                  </li>
+                  <!--Arrow right-->
+                  <li class="page-item disabled">
+                    <a class="page-link" aria-label="Next">
+                      <span aria-hidden="true">&raquo; Next</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+              <!--/Pagination -->
+
+            </div>
+            <!--Bottom Table UI-->
+
+          </div>
+        </div>
+
+      </section>
+      <!--Section: Basic examples-->
+
+    </div>
+
+  {% endblock main %}
+  {% block script %}
+  <script src="{% static 'js/sms/sms_script.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha256-KsRuvuRtUVvobe66OFtOQfjP8WA2SzYsmm4VPfMnxms=" crossorigin="anonymous"></script>
+      <script type="text/javascript">
+        $(document).ready(function(){
+        $(".del_class").click(function(){
+          var row = $(this).closest("tr > td");
+          var target_class = $(row).find("#del_class").attr('target_class')
+          swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this section!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+              $.ajax({
+              url: target_class,
+              beforeSend: function(){
+                $("#loader").removeAttr('hidden');
+              },
+              
+              complete: function(){
+                $("#loader").attr('hidden', 'hidden');
+              },
+
+              success: function (data) {
+                  $(".class_body").html(data);
+                  toastr.info('Successfully deleted');
+                  swal("Successfully Deleted!", {
+                    icon: "success",
+                  });
+                }
+              });
+            }
+          });
+        });
+      });
+      </script>
+  {% endblock script %}

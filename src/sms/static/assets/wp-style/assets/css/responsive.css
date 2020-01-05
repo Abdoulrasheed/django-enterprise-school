@@ -1,0 +1,148 @@
+/* Normal desktop :992px. */
+@media (min-width: 992px) and (max-width: 1169px) {
+	.media-library-left {
+	    width: 65%;
+	}
+	.media-library-right {
+	    width: 35%;
+	}
+}
+
+ 
+/* Tablet desktop :768px. */
+@media (min-width: 768px) and (max-width: 991px) {
+	.media-sidebar {
+		width: 100%;
+	}
+	.attached-form .form-group {
+	    margin-bottom: 8px;
+	}
+	.attached-form label {
+	    width: 30%;
+	}
+	.media-library-left {
+	    width: 65%;
+	}
+	.media-library-right {
+	    width: 35%;
+	    overflow-y: scroll;
+	}
+	.media-sidebar-content h2 {
+	    font-size: 15px;
+	}
+	.attached-form input, .attached-form textarea {
+	    width: 100%;
+	}
+	.select--item-left {
+	    width: 55%;
+	}
+	.search-box-right {
+	    width: 45%;
+	}
+	.select--item-left select {
+		margin-bottom: 5px;
+	}
+
+	.drop--files, .media-library-right, .attached-preview {
+		height: 475px;
+		max-height: 475px;
+	}
+
+	.attached-preview ul li {
+		width: calc(89% / 3);
+    	height: 120px;
+	}
+}
+
+ 
+/* small mobile :320px. */
+@media (max-width: 767px) {
+	.drop--files {
+	    height: 295px;
+	    max-height: 295px;
+	    padding-top: 95px;
+	}
+	.media-library-right {
+		display: none;
+		height: 295px;
+		max-height: 295px;
+		width: 30%;
+		overflow-y: scroll;
+	}
+
+	.attached-preview ul li {
+	   width: 100%;
+	   height: 145px;
+	   margin-right: 0;
+	}
+
+	.media-sidebar-content .nav-tabs-custom > .nav-tabs > li.active > a {
+		padding: 5px
+	}
+	.header--select {
+		left: auto;
+	    right: 0px;
+	    width: 100%;
+	}
+	.search-box-right {
+	    padding-right: 0px;
+	}
+
+	.drop--files {
+	    height: 250px;
+	    max-height: 250px;
+	    padding-top: 90px;
+	}
+	.drop--files h3, .media-sidebar-content h2 {
+		font-size: 18px;
+	}
+
+	.search-box-right.pull-right {
+    	float: none !important;
+	}
+
+	.media-library-left {
+	   height: 245px;
+	   width: 100%;
+
+	}
+	.media-sidebar-content .nav > li > a {
+	  padding: 10px 6px;
+	}
+
+	.media-sidebar .media-sidebar-nav-tabs {
+	    width: 25%;
+	}
+
+	.media-sidebar-content {
+	    width: 75%;
+	}
+
+	.nav-tabs-custom > .tab-content {
+	    padding: 0px;
+	}
+
+	.attached-preview ul li {
+		width: calc(75%);
+	    height: 115px;
+	}
+
+ 
+}
+ 
+/* Large Mobile :480px. */
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+	.media-library-right {
+		display: none;
+	}
+	.container {
+		width:450px;
+	}	
+
+	.attached-preview ul li {
+	    width: calc(88% / 2);
+	    height: 112px;
+	} 
+}
+
+ 

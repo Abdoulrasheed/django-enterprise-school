@@ -1,0 +1,136 @@
+body {
+    font-family: 'helvetica';
+    font-size:16px;
+    color:#707478;
+    overflow: hidden;
+}
+
+table {
+    width:100%; 
+    border-spacing:0px;
+    font-size: 12px;
+    padding: 0px;
+    border: 0.1px solid #ddd;
+}
+
+th {
+    font-weight: bold;
+}
+
+td, th {
+    border: 0.1px solid #ddd;
+    padding: 3px;
+    text-align: center;
+}
+
+
+p {
+    margin: 2px;
+    font-size: 16px;
+    line-height: 16px;
+}
+
+
+.mainmeritstagereport{
+    margin: 0px;
+    overflow: hidden;
+    max-width:auto;
+    margin: 0px auto;
+    margin-bottom: 0px;
+    background-size: 100% 100%;
+}
+
+.meritstage_headers{
+    border-bottom: 1px solid #ddd;
+    overflow: hidden;
+    padding-bottom: 0px;
+    vertical-align: middle;
+    margin-bottom: 4px;
+}
+
+.meritstage_logo {
+    float: left;
+    display: inline;
+    width:50px;
+}
+
+.logo{
+    width: 60px;
+    height: 60px;
+}
+
+.school_name {
+    float: left;
+}
+
+.school_name h2{
+    padding-left: 20px;
+    padding-top: 15px;
+    font-weight: bold;
+    font-size: 30px;
+    line-height: 30px;
+}
+
+.meritstage_infos {
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 15px;
+    padding-top: 6px;
+}
+
+.meritatage-infos h5 {
+    font-weight: bold;
+}
+
+.school_address {
+    width: 35%;
+    float: left;
+}
+
+.mandatory_subjects{
+    width: 30%;
+    float: left;
+    padding-left:15px;
+}
+
+.optinal_subjects{
+    width: 30%;
+    float: left;
+    padding-left: 15px;
+}
+
+.school_info p {
+    margin: 1px;
+}
+
+.merit_info{ 
+    margin-top: 15px;
+}
+
+.merit_info p{
+    margin: 1px;
+}
+
+.school_info h3, .merit_info h3, .caption_table{
+    font-weight: bold;
+    line-height: 18px;
+    margin: 5px 0px;
+    font-size: 18px;
+}
+
+.meritstage_contents {
+    width: 100%;
+    overflow: hidden;
+    margin-top: 15px
+}
+
+.meritstage_contents table {
+    width: 100%;
+}
+
+.meritstage_contents tr, .meritstage_contents td, .meritstage_contents th {
+    border: 0.1px solid #ddd;
+    text-align: center;
+    padding: 8px !important;
+    font-size: 14px;
+}

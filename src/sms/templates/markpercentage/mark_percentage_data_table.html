@@ -1,0 +1,15 @@
+{% csrf_token %}
+{% for mark_percent in mark_percentages %}
+<tr>
+  <td>{{ forloop.counter }}</td>
+  <td>{{ mark_percent.section }}</td>
+  <td>{{ mark_percent.name }}</td>
+  <td>{{ mark_percent.percentage }}</td>
+  <td>
+    <a href="{% url 'update_mark_percentage' pk=mark_percent.id %}" title="edit" class="teal-text"><i class="fa fa-pen"></i></a>
+    <a id="del_markpercent" target_class="{% url 'delele_mark_percentage' pk=mark_percent.pk %}" title="delete" class="del_markpercent red-text"><i class="fa fa-times"></i></a>
+  </td>
+</tr>
+{% empty %}
+<tr>No mark percent available</tr>
+{% endfor %}

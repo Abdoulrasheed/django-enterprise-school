@@ -1,0 +1,563 @@
+{% load static tags %}
+<!DOCTYPE html>
+<html class="fa-events-icons-ready" dir="ltr" style="min-height: 4729px;">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style data-merge-styles="true"></style>
+
+    <title>{% block title %} Permission {% endblock %}</title>
+
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <link rel="SHORTCUT ICON" href="{{ school_setting.get_logo }}">
+
+    <link rel="stylesheet" href="{% static 'new/css/pace.css' %}">
+
+    <script type="text/javascript" src="{% static 'new/js/jquery.min.js' %}"></script>
+
+    <script type="text/javascript" src="{% static 'new/js/toastr.min.js' %}"></script>
+
+    <script src="{% static 'new/js/c0dd08fd51.js' %}"></script>
+    <link href="{% static 'new/css/c0dd08fd51.css' %}" media="all" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/icomoon@1/style.min.css">
+
+    <link href="{% static 'new/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'new/css/bootstrap-multiselect.css' %}" rel="stylesheet">
+    <link href="{% static 'new/css/font-awesome.css' %}" rel="stylesheet">
+
+    <link href="{% static 'new/icomoon.css' %}" rel="stylesheet">
+
+    <link href="{% static 'new/css/dataTables.bootstrap.css' %}" rel="stylesheet">
+
+    <link id="headStyleCSSLink" href="{% static 'new/css/style.css' %}" rel="stylesheet">
+
+    <link href="{% static 'new/css/hidetable.css' %}" rel="stylesheet">
+
+    <link id="headInilabsCSSLink" href="{% static 'new/css/inilabs.css' %}" rel="stylesheet">
+
+    <link href="{% static 'new/css/responsive.css' %}" rel="stylesheet">
+
+    <link href="{% static 'new/css/toastr.min.css' %}" rel="stylesheet">
+
+    <link href="{% static 'new/css/mailandmedia.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'new/css/buttons.dataTables.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'new/css/combined.css' %}">
+
+    <script type="text/javascript">
+        $(window).load(function() {
+            $(".se-pre-con").fadeOut("slow");
+        });
+    </script>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'new/css/sweetalert.min.css' %}">
+
+</head>
+
+<body class="skin-blue fuelux  pace-done" style="min-height: 4729px;" cz-shortcut-listen="true">
+    <div class="pace  pace-inactive">
+        <div class="pace-progress" data-progress-text="100%" data-progress="99" style="width: 100%;">
+            <div class="pace-progress-inner"></div>
+        </div>
+        <div class="pace-activity"></div>
+    </div>
+    <div class="se-pre-con" style="display: none;"></div>
+    <!-- header logo: style can be found in header.less -->
+    <header class="header">
+
+        <a href="{% url 'home_page' %}" class="logo icon">
+            <!-- Add the class icon to your logo image or logo icon to add the margining -->
+            {{ school_setting.school_name }}
+        </a>
+
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" role="navigation">
+            <!-- Sidebar toggle button-->
+            <a href="{% url 'home_page' %}" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+
+            <div class="navbar-right">
+                <ul class="nav navbar-nav">
+                    <!-- Site Start -->
+                    <li class="dropdown notifications-menu">
+                        <a target="_blank" href="/" class="dropdown-toggle" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Visit Site">
+                            <i class="fa fa-globe"></i>
+                        </a>
+                    </li>
+                    <!-- Site Close -->
+
+                    <!-- School Year: style can be found in dropdown.less-->
+                    <li class="dropdown messages-menu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-calendar-plus-o"></i><span class="label label-success"><lable class="alert-image">2</lable></span></a>
+                        <ul class="dropdown-menu">
+                            <li class="header">You have 2 years</li>
+                            <li>
+                                <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 200px;">
+                                    <ul class="menu" style="overflow: hidden; width: 100%; height: 200px;">
+                                        <li><a href="#"><h4>2016/2017</h4></a></li>
+                                        <li><a href="#"><h4>2015/2016 - (Default) <i class="glyphicon glyphicon-ok"></i></h4></a></li>
+                                    </ul>
+                                    <div class="slimScrollBar" style="background: rgb(0, 0, 0); width: 3px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 0px; z-index: 99; right: 1px;"></div>
+                                    <div class="slimScrollRail" style="width: 3px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 0px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- Messages: style can be found in dropdown.less-->
+                    <li class="dropdown messages-menu">
+                        <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-bell-o"></i>
+
+                        </a>
+                    </li>
+                    <!-- Notifications: style can be found in dropdown.less -->
+                    <li class="dropdown notifications-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img class="language-img" src="{% static 'new/img/english.png' %}">
+                            <span class="label label-warning">15</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="header"> Language</li>
+                            <li>
+                                <!-- inner menu: contains the actual data -->
+                                <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 200px;">
+                                    <ul class="menu" style="overflow: hidden; width: 100%; height: 200px;">
+                                        <li class="language" id="arabic">
+                                            <a href="#">
+                                                <div class="pull-left">
+                                                    <img src="{% static 'new/img/arabic.png' %}">
+                                                </div>
+                                                <h4>
+                                                    Arabic
+                                                <h4>
+                                            </a>
+                                        </li>
+
+                                        <li class="language" id="bengali">
+                                            <a href="#">
+                                                <div class="pull-left">
+                                                    <img src="{% static 'new/css/bengali.png' %}">
+                                                </div>
+                                                <h4>
+                                                    Bengali
+                                                </h4>
+                                            </a>
+                                        </li>
+
+                                        <li class="language" id="chinese">
+                                            <a href="#">
+                                                <div class="pull-left">
+                                                    <img src="{% static 'new/css/chinese.png' %}">
+                                                </div>
+                                                <h4>Chinese</h4>
+                                            </a>
+                                        </li>
+
+                                        <li class="language" id="english">
+                                            <a href="#">
+                                                <div class="pull-left">
+                                                    <img src="{% static 'new/img/english.png">
+                                                </div>
+                                                <h4>
+                                                    English<i class="glyphicon glyphicon-ok"></i>                                                </h4>
+                                            </a>
+                                        </li>
+
+                                        <li class="language" id="french">
+                                            <a href="#">
+                                                <div class="pull-left">
+                                                    <img src="{% static 'new/img/french.png' %}">
+                                                </div>
+                                                <h4>
+                                                    French
+                                                                                                    </h4>
+                                            </a>
+                                        </li>
+
+                                        <li class="language" id="german">
+                                            <a href="#">
+                                                <div class="pull-left">
+                                                    <img src="{% static 'new/css/german.png' %}">
+                                                </div>
+                                                <h4>
+                                                    German
+                                                                                                    </h4>
+                                            </a>
+                                        </li>
+
+                                        <li class="language" id="hindi">
+                                            <a href="#">
+                                                <div class="pull-left">
+                                                    <img src="{% static 'new/css/hindi.png' %}">
+                                                </div>
+                                                <h4>
+                                                    Hindi
+                                                                                                    </h4>
+                                            </a>
+                                        </li>
+
+                                        <li class="language" id="indonesian">
+                                            <a href="#">
+                                                <div class="pull-left">
+                                                    <img src="{% static 'new/css/indonesian.png' %}">
+                                                </div>
+                                                <h4>
+                                                    Indonesian
+                                                                                                    </h4>
+                                            </a>
+                                        </li>
+
+                                        <li class="language" id="italian">
+                                            <a href="#">
+                                                <div class="pull-left">
+                                                    <img src="{% static 'new/img/italian.png' %}">
+                                                </div>
+                                                <h4>
+                                                    Italian
+                                                                                                    </h4>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div class="slimScrollBar" style="background: rgb(0, 0, 0); width: 3px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 0px; z-index: 99; right: 1px;"></div>
+                                    <div class="slimScrollRail" style="width: 3px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 0px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div>
+                                </div>
+                            </li>
+                            <li class="footer"></li>
+                        </ul>
+                    </li>
+                    <!-- User Account: style can be found in dropdown.less -->
+
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="#" class="user-logo" alt="">
+
+                            <span>
+                {{ school_setting.school_name|truncatechars:10 }}
+                                                                      <i class="caret"></i>
+                                </span>
+                        </a>
+
+                        <ul class="dropdown-menu">
+
+                            <!-- Menu Body -->
+
+                            <li class="user-body">
+                                <div class="col-xs-6 text-center">
+                                    <a href="{% url 'profile' user.id %}">
+                                        <div><i class="fa fa-briefcase"></i></div>
+                                        Profile
+                                    </a>
+
+                                </div>
+                                <div class="col-xs-6 text-center">
+                                    <a href="{% url 'change_password' %}">
+                                        <div><i class="fa fa-lock"></i></div>
+                                        Password
+                                    </a>
+                                </div>
+                            </li>
+
+                            <!-- Menu Footer-->
+                            <li class="user-footer">
+
+                                <div class="text-center">
+                                    <a href="{% url 'logout' %}">
+                                        <div><i class="fa fa-power-off"></i></div>
+                                        Log out
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="wrapper row-offcanvas row-offcanvas-left" style="min-height: 589px;">
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="left-side sidebar-offcanvas" style="min-height: 4729px;">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- Sidebar user panel -->
+                <div class="user-panel">
+                    <div class="pull-left image">
+                        <img style="display:block" src="{{ user.get_picture }}" class="img-circle" alt="">
+                    </div>
+
+                    <div class="pull-left info">
+                        <p>{{ school_setting.school_name }}</p>
+                        <a href="#">
+                            <i class="fa fa-hand-o-right color-green"></i> Admin </a>
+                    </div>
+                </div>
+
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu">
+                    <li class="">
+                        <a href="{% url 'home_page' %}"><i class="fa fa-laptop"></i><span>Dashboard</span> </a></li>
+                    <li class=""><a href="{% url 'students_list' %}"><i class="fa icon-student"></i><span>Student</span> </a></li>
+                    <li class=""><a href="#"><i class="fa fa-user"></i><span>Parents</span> </a></li>
+                    <li class=""><a href="#"><i class="fa icon-teacher"></i><span>Teacher</span> </a></li>
+                    <li class=""><a href="#"><i class="fa fa-users"></i><span>User</span> </a></li>
+                    <li class="treeview ">
+                        <a href="#"><i class="fa icon-academicmain"></i>
+                            <span>Academic</span> <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="treeview-menu">
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-sitemap"></i><span>Class</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa icon-subject"></i><span>Subject</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-star"></i><span>Batch</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa icon-syllabus"></i><span>Syllabus</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa icon-assignment"></i><span>Assignment</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa icon-routine"></i><span>Routine</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-handshake-o"></i><span>Subject Allocation</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-leaf"></i><span>Sections</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-home"></i><span>Approve Results</span> </a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview "><a href="#"><i class="fa icon-attendance"></i><span>Attendance</span> <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="treeview-menu">
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa icon-sattendance"></i><span>Student Attendance</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa icon-tattendance"></i><span>Teacher Attendance</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-user-secret"></i><span>User Attendance</span> </a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview "><a href="#"><i class="fa icon-exam"></i><span>Exam</span> <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="treeview-menu">
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-pencil"></i><span>Exam</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-puzzle-piece"></i><span>Exam Schedule</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-signal"></i><span>Grade Scale</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa icon-eattendance"></i><span>Exam Attendance</span> </a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview "><a href="#"><i class="fa icon-markmain"></i><span>Mark</span> <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="treeview-menu">
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-flask"></i><span>Input Score</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa icon-markpercentage"></i><span>Mark Percentage</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa icon-promotion"></i><span>Promotion</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-pencil-square"></i><span>Comments</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-bar-chart "></i><span>Psychomotor</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-window-close"></i><span>Mark Permission</span> </a></li>
+                        </ul>
+                    </li>
+                    <li class=""><a href="#"><i class="fa fa-film"></i><span>Media</span> </a></li>
+                    <li class=""><a href="#"><i class="fa icon-mailandsms"></i><span>Mail / SMS</span> </a></li>
+                    <li class="treeview "><a href=#"><i class="fa fa-graduation-cap"></i><span>Online Exam</span> <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="treeview-menu">
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-question-circle"></i><span>Question Group</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-level-up"></i><span>Question Level</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-qrcode"></i><span>Question Bank</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-slideshare"></i><span>Online Exam</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-map-signs"></i><span>Instruction</span> </a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview "><a href="#"><i class="fa fa-pencil-square"></i><span>Leave Application</span> <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="treeview-menu">
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-sliders"></i><span>leavecategory</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-sliders"></i><span>leaveassign</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-file-image-o"></i><span>leaveapply</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-pencil-square-o"></i><span>leaveapplication</span> </a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview "><a href="#"><i class="fa icon-hhostel"></i><span>Hostel</span> <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="treeview-menu">
+                            <li class=""><a href="#><span>Hostel</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-leaf"></i><span>Category</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa icon-member"></i><span>Member</span> </a></li>
+                        </ul>
+                    </li>
+                    <li class=""><a href="#"><i class="fa fa-user-circle"></i><span>Online Admission</span> </a></li>
+                    <li class="treeview "><a href="#"><i class="fa fa-usd"></i><span>Payroll</span> <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="treeview-menu">
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-calculator"></i><span>Salary Template</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa fa-clock-o"></i><span>Hourly Template</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-beer"></i><span>Manage Salary</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa fa-money"></i><span>Make Payment</span> </a></li>
+                        </ul>
+                    </li>
+                    <li class="active"><a href="#"><i class="fa fa-home"></i><span>Permission</span> </a></li>
+                    <li class="treeview "><a href="#"><i class="fa icon-library"></i><span>Library</span> <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="treeview-menu">
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa icon-member"></i><span>Member</span> </a></li>
+                            <li class=""><a href="#" style="margin-left: 0px;"><i class="fa icon-lbooks"></i><span>Books</span> </a></li>
+                            <li class=""><a href="#issue" style="margin-left: 0px;"><i class="fa icon-issue"></i><span>Issue</span> </a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview "><a href="##"><i class="fa icon-account"></i><span>Account</span> <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="treeview-menu">
+                            <li class=""><a href="#feetypes" style="margin-left: 0px;"><i class="fa icon-feetypes"></i><span>Fee Types</span> </a></li>
+                            <li class=""><a href="#global_payment" style="margin-left: 0px;"><i class="fa fa-balance-scale"></i><span>global_payment</span> </a></li>
+                            <li class=""><a href="#invoice" style="margin-left: 0px;"><i class="fa icon-invoice"></i><span>Payment</span> </a></li>
+                            <li class=""><a href="#paymenthistory" style="margin-left: 0px;"><i class="fa icon-payment"></i><span>Payment History</span> </a></li>
+                            <li class=""><a href="#expense" style="margin-left: 0px;"><i class="fa icon-expense"></i><span>Expense</span> </a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview "><a href="##"><i class="fa icon-noticemain"></i><span>Announcement</span> <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="treeview-menu">
+                            <li class=""><a href="#notice" style="margin-left: 0px;"><i class="fa fa-calendar"></i><span>Notice</span> </a></li>
+                            <li class=""><a href="#event" style="margin-left: 0px;"><i class="fa fa-calendar-check-o"></i><span>Event</span> </a></li>
+                            <li class=""><a href="#holiday" style="margin-left: 0px;"><i class="fa icon-holiday"></i><span>Holiday</span> </a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview "><a href="##"><i class="fa fa-clipboard"></i><span>Report</span> <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="treeview-menu">
+                            <li class=""><a href="#report/idcardreport" style="margin-left: 0px;"><i class="fa fa-id-card"></i><span>Generate ID Card</span> </a></li>
+                            <li class=""><a href="#report/reportcard" style="margin-left: 0px;"><i class="fa fa-list-alt"></i><span>Report Card Sheet</span> </a></li>
+                            <li class=""><a href="#report/studentFeesPayment" style="margin-left: 0px;"><i class="fa fa-home"></i><span>Student  Fees  Payment Report</span> </a></li>
+                            <li class=""><a href="#report/SchoolFeesPayment" style="margin-left: 0px;"><i class="fa fa-home"></i><span>School Fees Payments Report</span> </a></li>
+                            <li class=""><a href="#report/EmptyScore" style="margin-left: 0px;"><i class="fa fa-home"></i><span>Empty Score</span> </a></li>
+                            <li class=""><a href="#report/SubjectReport" style="margin-left: 0px;"><i class="fa fa-home"></i><span>SubjectReport</span> </a></li>
+                            <li class=""><a href="#report/BroadSheetReport" style="margin-left: 0px;"><i class="fa fa-home"></i><span>BROAD SHEET REPORT</span> </a></li>
+                            <li class=""><a href="#report/CumulativeBroadSheetReport" style="margin-left: 0px;"><i class="fa fa-home"></i><span>CUMULATIVE BROAD SHEET REPORT</span> </a></li>
+                            <li class=""><a href="#report/logindetail" style="margin-left: 0px;"><i class="fa fa-home"></i><span>Login Detail</span> </a></li>
+                            <li class=""><a href="#studentreport" style="margin-left: 0px;"><i class="fa fa-child"></i><span>Student Report</span> </a></li>
+                            <li class=""><a href="#routinereport" style="margin-left: 0px;"><i class="fa fa-calendar"></i><span>Routine Report</span> </a></li>
+                            <li class=""><a href="#terminalreport" style="margin-left: 0px;"><i class="fa fa-calendar"></i><span>Terminal Report</span> </a></li>
+                            <li class=""><a href="#attendanceoverviewreport" style="margin-left: 0px;"><i class="fa icon-attendancereport"></i><span>Attendance Overview Report</span> </a></li>
+                            <li class=""><a href="#librarybooksreport" style="margin-left: 0px;"><i class="fa fa-book"></i><span>Library Books Report</span> </a></li>
+                            <li class=""><a href="#onlineexamreport" style="margin-left: 0px;"><i class="fa fa-file-text"></i><span>Online Exam Report</span> </a></li>
+                            <li class=""><a href="#onlineexamquestionreport" style="margin-left: 0px;"><i class="fa fa-file-text"></i><span>Online Exam Question Report</span> </a></li>
+                            <li class=""><a href="#onlineadmissionreport" style="margin-left: 0px;"><i class="fa fa-user-circle"></i><span>Online Admission Report</span> </a></li>
+                            <li class=""><a href="#certificatereport" style="margin-left: 0px;"><i class="fa fa-diamond"></i><span>Certificate Report</span> </a></li>
+                            <li class=""><a href="#leaveapplicationreport" style="margin-left: 0px;"><i class="fa fa-save"></i><span>Leave Application Report</span> </a></li>
+                            <li class=""><a href="#searchpaymentfeesreport" style="margin-left: 0px;"><i class="fa fa-money"></i><span>Search Payment Fees Report</span> </a></li>
+                            <li class=""><a href="#salaryreport" style="margin-left: 0px;"><i class="fa fa-inr"></i><span>Salary Report</span> </a></li>
+                            <li class=""><a href="#feesreport" style="margin-left: 0px;"><i class="fa fa-usd"></i><span>Fees Report</span> </a></li>
+                            <li class=""><a href="#duefeesreport" style="margin-left: 0px;"><i class="fa fa-money"></i><span>Due Fees Report</span> </a></li>
+                            <li class=""><a href="#balancefeesreport" style="margin-left: 0px;"><i class="fa fa-google-wallet"></i><span>Balance Fees Report</span> </a></li>
+                            <li class=""><a href="#studentfinereport" style="margin-left: 0px;"><i class="fa fa-handshake-o"></i><span>Student Fine Report</span> </a></li>
+                            <li class=""><a href="#transactionreport" style="margin-left: 0px;"><i class="fa fa-credit-card"></i><span>Transaction Report</span> </a></li>
+                            <li class=""><a href="#accountledgerreport" style="margin-left: 0px;"><i class="fa fa-calculator"></i><span>accountledgerreport</span> </a></li>
+                            <li class=""><a href="#examschedulereport" style="margin-left: 0px;"><i class="fa fa-calendar"></i><span>Exam Schedule Report</span> </a></li>
+                            <li class=""><a href="#meritstagereport" style="margin-left: 0px;"><i class="fa fa-list-alt"></i><span>Merit Stage Report</span> </a></li>
+                            <li class=""><a href="#tabulationsheetreport" style="margin-left: 0px;"><i class="fa fa-search"></i><span>Tabulation Sheet Report</span> </a></li>
+                            <li class=""><a href="#progresscardreport" style="margin-left: 0px;"><i class="fa fa-id-card-o"></i><span>Progress Card Report</span> </a></li>
+                            <li class=""><a href="#report/classreport" style="margin-left: 0px;"><i class="fa icon-classreport"></i><span>Class Report</span> </a></li>
+                            <li class=""><a href="#attendancereport" style="margin-left: 0px;"><i class="fa icon-attendancereport"></i><span>Attendance Report</span> </a></li>
+                        </ul>
+                    </li>
+                    <li class=""><a href="#visitorinfo"><i class="fa icon-visitorinfo"></i><span>Visitor Information</span> </a></li>
+
+                    {% if request.user|in_group:"admin" %}
+                    <li class="treeview ">
+                        <a href="##">
+                            <i class="fa icon-administrator"></i>
+                                <span>Administrator</span> 
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li class="">
+                                <a href="#certificate_template" style="margin-left: 0px;">
+                                    <i class="fa fa-certificate">
+                                    </i><span>Certificate Template</span> </a></li>
+                            <li class=""><a href="#schoolyear" style="margin-left: 0px;"><i class="fa fa fa-calendar-plus-o"></i><span>Academic Year</span> </a></li>
+                            <li class=""><a href="#custom_group" style="margin-left: 0px;"><i class="fa fa-object-ungroup"></i><span>Custom Group</span> </a></li>
+                            <li class=""><a href="#complain" style="margin-left: 0px;"><i class="fa fa-commenting"></i><span>Complain</span> </a></li>
+                            <li class=""><a href="#studentgroup" style="margin-left: 0px;"><i class="fa fa-object-group"></i><span>Student Group</span> </a></li>
+                            <li class=""><a href="#systemadmin" style="margin-left: 0px;"><i class="fa icon-systemadmin"></i><span>System Admin</span> </a></li>
+                            <li class=""><a href="#mailandsmstemplate" style="margin-left: 0px;"><i class="fa icon-template"></i><span>Mail / SMS Template</span> </a></li>
+                            <li class=""><a href="#bulkimport" style="margin-left: 0px;"><i class="fa fa-upload"></i><span>Import</span> </a></li>
+                            <li class=""><a href="#usertype" style="margin-left: 0px;"><i class="fa icon-role"></i><span>Role</span> </a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+
+                    <li class="treeview "><a href="##"><i class="fa fa-gavel"></i><span>Settings</span> <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="treeview-menu">
+                            <li class=""><a href="#frontend_setting" style="margin-left: 0px;"><i class="fa fa-asterisk"></i><span>Frontend Settings</span> </a></li>
+                            <li class=""><a href="#reportsetting" style="margin-left: 0px;"><i class="fa fa-home"></i><span>Report Setting</span> </a></li>
+                            <li class=""><a href="#setting" style="margin-left: 0px;"><i class="fa fa-gears"></i><span>General Setting</span> </a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview "><a href="##"><i class="fa fa-home"></i><span>Frontend</span> <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="treeview-menu">
+                            <li class=""><a href="#pages" style="margin-left: 0px;"><i class="fa fa-connectdevelop"></i><span>Pages</span> </a></li>
+                            <li class=""><a href="#frontendmenu" style="margin-left: 0px;"><i class="fa fa-bars"></i><span>menu</span> </a></li>
+                            <li class=""><a href="#posts_categories" style="margin-left: 0px;"><i class="fa fa-anchor"></i><span>Posts Categories</span> </a></li>
+                            <li class=""><a href="#posts" style="margin-left: 0px;"><i class="fa fa-thumb-tack"></i><span>Posts</span> </a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+        <aside class="right-side">
+            <section class="content">
+                {% if messages %} {% for message in messages %}
+                <div class="alert alert-{% if message.success %} success {% else %} warning {% endif %}" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %} {% endif %} {% block main%} {% endblock main %}
+            </section>
+        </aside>
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                <b>v</b> 1.0 </div>
+            <strong>copyright &copy; Bitpoint Inc.</strong>
+        </footer>
+    </div>
+    <!-- ./wrapper -->
+
+    <script src="{% static 'new/js/sweetalert.min.js' %}"></script>
+
+    <!-- Bootstrap js -->
+    <script type="text/javascript" src="{% static 'new/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'new/js/bootstrap-multiselect.js' %}"></script>
+    <!-- Style js -->
+    <script type="text/javascript" src="{% static 'new/js/style.js' %}"></script>
+
+    <!-- Jquery datatable tools js -->
+    <script type="text/javascript" src="{% static 'new/js/jquery.dataTables.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'new/js/dataTables.buttons.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'new/js/jszip.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'new/js/pdfmake.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'new/js/vfs_fonts.js' %}"></script>
+    <script type="text/javascript" src="{% static 'new/js/buttons.html5.min.js' %}"></script>
+    <!-- dataTables Tools / -->
+    <script type="text/javascript" src="{% static 'new/js/dataTables.bootstrap.js' %}"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    <script type="text/javascript" src="{% static 'new/js/inilabs.js' %}"></script>
+
+    <!-- Jquery gritter -->
+    <!-- datatable with buttons -->
+    <script>
+        $(document).ready(function() {
+            $('#example3, #example1, #example2').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copyHtml5',
+                    'excelHtml5',
+                    'csvHtml5',
+                    'pdfHtml5'
+                ],
+                search: false
+            });
+        });
+    </script>
+    <!-- dataTable with buttons end -->
+
+    <script type="text/javascript">
+        $(function() {
+            $("#withoutBtn").dataTable();
+        });
+    </script>
+
+    <script type="text/javascript">
+        $("ul.sidebar-menu li").each(function(index, value) {
+
+            if ($(this).attr('class') == 'active') {
+                $(this).parents('li').addClass('active');
+            }
+
+        });
+    </script>
+    {% block script %}
+    {% endblock script %}
+</body>
+</html>

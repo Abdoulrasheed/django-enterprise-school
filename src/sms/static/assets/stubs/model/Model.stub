@@ -1,0 +1,42 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class DUMMY_CLASS_NAME_m extends MY_Model {
+
+    protected $_table_name = 'DUMMY_DATABASE_NAME';
+    protected $_primary_key = 'DUMMY_PRIMARY_ID';
+    protected $_primary_filter = 'intval';
+    protected $_order_by = "DUMMY_PRIMARY_ID asc";
+
+    function __construct() {
+        parent::__construct();
+    }
+
+    function get_DUMMY_CLASS_NAME_SORT($array=NULL, $signal=FALSE) {
+        $query = parent::get($array, $signal);
+        return $query;
+    }
+
+    function get_single_DUMMY_CLASS_NAME_SORT($array) {
+        $query = parent::get_single($array);
+        return $query;
+    }
+
+    function get_order_by_DUMMY_CLASS_NAME_SORT($array=NULL) {
+        $query = parent::get_order_by($array);
+        return $query;
+    }
+
+    function insert_DUMMY_CLASS_NAME_SORT($array) {
+        $id = parent::insert($array);
+        return $id;
+    }
+
+    function update_DUMMY_CLASS_NAME_SORT($data, $id = NULL) {
+        parent::update($data, $id);
+        return $id;
+    }
+
+    public function delete_DUMMY_CLASS_NAME_SORT($id){
+        parent::delete($id);
+    }
+}

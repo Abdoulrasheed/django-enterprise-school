@@ -1,0 +1,111 @@
+{% extends 'new_base.html' %} 
+{% block main %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title"><i class="fa icon-permission"></i> Permission</h3>
+
+                        <ol class="breadcrumb">
+                            <li><a href="{% url 'home_page' %}"><i class="fa fa-laptop"></i> Dashboard</a></li>
+                            <li class="active">Permission</li>
+                        </ol>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <form class="form-horizontal" role="form" method="post" id="usertype">
+                                    <div class="form-group">
+                                        <label for="usertypeID" class="col-sm-2 col-md-offset-2 control-label">
+                                            Select Role </label>
+
+                                        <div class="col-sm-4">
+                                            <select name="usertypeID" id="usertypeID" class="form-control select2">
+                                                <option value="0">Select Role</option>
+                                                {% for role in roles %}
+                                                    <option value="{{ role.id }}">{{ role }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                        <!-- <div class="col-sm-1 rep-mar">
+                            <input type="submit" class="btn btn-success" value="Permissions" >
+                        </div> -->
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- row -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <form method="post" class="form-horizontal" role="form" id="usertype">{% csrf_token %}
+                                    <div class="dataarea">
+                                        
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- row -->
+                    </div>
+                    <!-- Body -->
+                </div>
+                <!-- /.box -->
+
+                <script type="text/javascript">
+                    var usertypeID = $("#usertypeID").val();
+
+                    $('#usertypeID').change(function(event) {
+                        var usertypeID = $(this).val();
+                        $.ajax({
+                            url: "{% url 'ajax_loadpersmissions' %}",
+                            data: {"role_id": usertypeID,},
+
+                            success: function (data) {
+                              $(".dataarea").html(data);
+                            }
+                        });
+                    });
+                    $.fn.processCheck = function() {
+                        var id = $(this).attr('id');
+                        if ($('input#' + id).is(':checked')) {
+                            if ($('input#' + id).length) {
+                                $('input#' + id).prop('disabled', false);
+                                $('input#' + id).prop('checked', true);
+                            }
+                            if ($('input#' + id).length) {
+                                $('input#' + id).prop('disabled', false);
+                                $('input#' + id).prop('checked', true);
+                            }
+                            if ($('input#' + id).length) {
+                                $('input#' + id).prop('disabled', false);
+                                $('input#' + id).prop('checked', true);
+                            }
+                            if ($('input#' + id).length) {
+                                $('input#' + id).prop('disabled', false);
+                                $('input#' + id).prop('checked', true);
+                            }
+                        } else {
+                            if ($('input#' + id).length) {
+                                $('input#' + id).prop('disabled', true);
+                                $('input#' + id).prop('checked', false);
+                            }
+                            if ($('input#' + id).length) {
+                                $('input#' + id).prop('disabled', true);
+                                $('input#' + id).prop('checked', false);
+                            }
+                            if ($('input#' + id).length) {
+                                $('input#' + id).prop('disabled', true);
+                                $('input#' + id).prop('checked', false);
+                            }
+                            if ($('input#' + id).length) {
+                                $('input#' + id).prop('disabled', true);
+                                $('input#' + id).prop('checked', false);
+                            }
+                        }
+                    };
+                </script>
+            </div>
+        </div>
+{% endblock main %}

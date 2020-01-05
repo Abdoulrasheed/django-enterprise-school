@@ -1,0 +1,87 @@
+body {
+	font-family: 'helvetica';
+	font-size:12px;
+	color:#707478;
+}
+
+p {
+	margin: 2px;
+}
+
+.logo{ 
+	width:50px;
+	height:50px;
+	text-align:center;
+}
+
+
+.title{
+	font-size: 15px
+}
+
+.title-desc {
+	font-size: 12px
+}
+
+.reportPage-header {
+	text-align: center;
+}
+
+.pull-left { 
+	float: left; 
+	text-align: left;
+	width: 35%;
+	margin: 0px;
+	padding: 10px 0px;
+}
+
+.pull-right {
+	float: right; 
+	text-align: right;
+	width: 35%;
+	margin: 0px;
+	padding: 10px 0px;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.footer {
+	padding-top: 10px;
+	text-align: center;
+}
+
+.flogo {
+	width: 30px;
+	height: 30px;
+}
+
+.copyright {
+	font-size: 10px
+}
+
+.notfound{
+	padding: 20px 0px;
+	text-align:center;
+	border:1px solid #ddd;
+}
+
+.marksheetreult {
+    padding-top: 8px !important;
+}
+
+.marksheetreult .span {
+    width:80px;
+    display: inline-inline;
+    line-height: 24px;
+    float: left;
+}
+
+.examName {
+    text-align: center;
+    margin : 0px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+}

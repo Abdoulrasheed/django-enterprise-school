@@ -1,0 +1,31 @@
+<input type="text" name="group" value="{{ group.id }}" hidden>
+<div id="hide-table">
+    <table id="" class="table table-striped table-bordered table-hover dataTable no-footer">
+        <thead>
+            <tr>
+                <th class="col-lg-1">#</th>
+                <th class="col-lg-3">Module Name</th>
+                <th class="col-lg-1">Add</th>
+                <th class="col-lg-1">Edit</th>
+                <th class="col-lg-1">Delete</th>
+                <th class="col-lg-1">View</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for feature in features %}
+            <tr>
+                <td data-title="#">
+                    <input type="checkbox" name="{{ permission.codename }}" value="517" id="{{ permission.codename }}" onclick="$(this).processCheck();">
+                </td>
+                <td data-title="Module Name">{{ feature|upper }}</td>
+                {% for permission in feature.permission_set.all %}
+                <td data-title="Add">
+                    <input type="checkbox" name="{{ permission.codename }}" value="518" id="{{ permission.codename }}" {% if permission in group.permissions.all %} checked {% endif %}>
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<button type="submit" class="btn btn-primary btn-bg" style="float: right;">Save</button>

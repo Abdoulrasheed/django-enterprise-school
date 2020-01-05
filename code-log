@@ -1,0 +1,18 @@
+1: SETUP DOCKER
+
+https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04
+
+
+2: INSTALL DOCKER COMPOSE
+
+https://docs.docker.com/compose/install/
+
+
+3: BUILD IMAGE
+
+sudo docker-compose up -d --build
+
+4: FIRE THE IMAGE
+
+sudo docker-compose up
+

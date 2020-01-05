@@ -1,0 +1,155 @@
+body {
+    margin: 0;
+    font-family: helvetica; 
+    color:#707478;
+}
+
+.site-header-title-float {
+    text-align: left;
+}
+
+.top-site-header-title {
+    margin-top:15px;
+    font-size:20px;
+}
+
+.top-site-header-create-title {
+    margin-top:35px;
+}
+
+.table {
+    border-collapse: collapse !important;
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.table td,
+.table th {
+    background-color: #fff !important;
+    padding: 8px;
+    border: 1px solid #ddd !important;
+    line-height: 1.42857143;
+    vertical-align: top;
+}
+
+.table-bordered {
+    border: 1px solid #ddd;
+}
+
+.table-bordered > tr > th,
+.table-bordered > tr > td,
+.table-bordered > thead > tr > th,
+.table-bordered > thead > tr > td {
+    border-bottom-width: 2px;
+}
+
+.pull-right {
+    text-align: right !important;
+}
+
+.refund {
+  border:3px solid #ccc;
+  margin-top:10px;
+  text-align: center; 
+  height:60px;
+  line-height: 60px;
+  border-radius: 5px;
+  font-size: 24px;
+  transform: rotate(25deg);
+  color:#ff0000;
+  font-weight: bold; 
+  width:80%;
+}
+
+
+/*Golbal Invoice*/
+
+.logo{
+  width:50px;
+  height:50px;
+  text-align:center;
+}
+
+p {
+  margin: 2px;
+}
+
+table {
+  border-spacing: 0px;
+}
+
+.title{
+  font-size: 15px
+}
+
+.title-desc {
+  font-size: 12px
+}
+
+.reportPage-header {
+  text-align: center;
+}
+
+
+.global-tableinfo {
+  width:100%;
+  border-spacing:0px;
+  font-size: 14px;
+  padding: 5px;
+}
+
+.global-tableinfo tr td {
+  padding: 3px;
+}
+
+
+.global-table {
+  width: 100%;
+}
+
+.global-table table {
+    width:100%; 
+    border-spacing:0px;
+    font-size: 12px;
+    border: 0.1px solid #ddd;
+}
+
+.global-table table td, .global-table table th {
+  border-bottom: 0.1px solid #ddd;
+  padding: 5px;
+}
+
+.global-table table th {
+    font-weight: bold;
+    text-align: left;
+}
+
+.boldandred {
+  font-weight: bold;
+  color: red;
+}
+
+
+.footer {
+  padding-top: 10px;
+  text-align: center;
+}
+
+.flogo {
+  width: 30px;
+  height: 30px;
+}
+
+.copyright {
+  font-size: 10px
+}
+
+
+
+.notfound{
+  padding: 20px 0px;
+  text-align:center;
+  border:1px solid #ddd;
+}

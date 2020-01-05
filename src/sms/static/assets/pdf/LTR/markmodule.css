@@ -1,0 +1,201 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    font-family: Helvetica;
+}
+
+body {
+	font-family: 'helvetica';
+	color:#707478;
+	background: #fff
+}
+
+address {
+    font-size: 17px;
+    font-style: normal;
+}
+
+.profileArea {
+    border: 2px solid #ddd;
+    padding-bottom: 10px;
+    height: 85%;
+    border-bottom: none;
+}
+
+.headerArea {
+    padding: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.siteLogo {
+    float: left;
+    width: 25%;
+    padding-top: 10px;
+    padding-left: 10px
+}
+
+.siteTile {
+    float: right;
+    width: 75%;
+}
+
+.siteTitle h2 {
+    font-size: 30px;
+    margin: 0px;
+    padding-top: 5px;
+    line-height: 25px;
+    font-family: Helvetica;
+}
+
+.siteTitle p {
+    margin: 0px;
+    padding: 0px;
+    font-size: 17px;
+    font-family: Helvetica;
+}
+
+.siteLogoimg {
+    width: 120px;
+    height: 120px;
+}
+
+
+.areaTop {
+    font-family: Helvetica;
+}
+
+.studentImage {
+    width: 25%;
+    float: left;
+    text-align: center;
+}
+
+.studentProfile {
+    width: 75%;
+    float: right;
+}
+
+.studentImg {
+    width: 100px;
+    height: 120px;
+    border: 5px solid #ddd;
+    padding: 5px;
+    border-radius: 10%;
+    overflow: hidden;
+}
+
+.singleItem {
+    width: 100%;
+    line-height: 25px;
+    font-size: 16px;
+    font-family: Helvetica;
+}
+
+.single_label {
+    width: 25%;
+    float: left;
+    font-weight: bold;
+}
+
+.single_value {
+    width: 75%;
+    float: left;
+}
+
+.label {
+    width: 40%;
+    float: left;
+    font-weight: bold;
+}
+
+.value {
+    width: 58%;
+    float: left;
+}
+
+.markArea {
+    padding: 0px 30px;
+    padding-top: 20px;
+    font-size: 16px
+}
+
+.footerArea {
+    text-align: center;
+    border: 2px solid #ddd;
+    border-top: none;
+    padding-bottom: 10px;
+}
+
+.flogo {
+    width: 40px;
+    height: 40px;
+}
+
+.copyright {
+    margin: 0px;
+    font-size: 14px;
+}
+
+.markArea h4 {
+    font-size: 16px;
+    margin: 0px;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}         
+
+.singleExam {
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+}
+
+.singleExam p {
+    font-size: 14px;
+    padding-left: 10px;
+}
+
+.text-red {
+    color: #FF766C;
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+.table {
+    border-collapse: collapse !important;
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+    text-align: left;
+    font-family: helvetica;
+}
+
+.table td,
+.table th {
+    background-color: #fff !important;
+    padding: 8px;
+    border: 1px solid #ddd !important;
+    line-height: 1.42857143;
+    vertical-align: top;
+}
+
+.table-bordered {
+    border: 1px solid #ddd;
+}
+
+.table-bordered>tr>th,
+.table-bordered>tr>td,
+.table-bordered>thead>tr>th,
+.table-bordered>thead>tr>td {
+    border-bottom-width: 2px;
+}
+
+.pull-right {
+    text-align: right !important;
+}
+
+.tablePadding {
+    margin: 10px;
+}

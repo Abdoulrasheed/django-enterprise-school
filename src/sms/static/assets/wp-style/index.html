@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>accordion</title>
+	
+	<link href="https://fonts.googleapis.com/css?family=Raleway:400,500,700" rel="stylesheet">
+
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/css/font-awesome.min.css">
+	<link rel="stylesheet" href="assets/css/jquery-te-1.4.0.css">
+	<link rel="stylesheet" href="assets/css/style.css">
+	<link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body>
+	
+	<div class="our-accordion mt-30 mb-30">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+						<div class="panel panel-default">
+							<div class="panel-heading" role="tab" id="headingOne">
+							  <h4 class="panel-title">
+								<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+									Collapsible Group Item 
+									<i class="fa fa-angle-right"></i>
+								</a>
+							  </h4>
+							</div>
+							<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+								 <div class="panel-body">
+							    	<form class="menu-page">
+							    		<div class="form-group">
+							    			<label for="sample-page">Navigation Label</label>
+							    			<input type="text" name="" class="form-control" id="sample-page" placeholder="Sample page">
+							    		</div>
+							    		<div class="form-group">
+							    			<div class="move">
+							    				<span>Move</span>
+							    				<a href="#">Down One</a>
+							    			</div>
+							    		</div>
+							    		<div class="form-group">
+							    			<div class="link-to-original">
+							    				<span>Orginal:</span>
+							    				<a href="#">Sample Page</a>
+							    			</div>
+							    		</div>
+							    		<div class="form-group">
+							    			<a href="#">Remove</a>
+							    			<span>|</span>
+							    			<a href="#">Cancel</a>
+							    		</div>
+							    	</form>
+								 </div>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading" role="tab" id="headingTwo">
+							  	<h4 class="panel-title">
+								    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+								      Collapsible Group Item 
+								      <i class="fa fa-angle-right"></i>
+								    </a>
+								 </h4>
+							</div>
+							<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+								<div class="panel-body">
+									<form class="menu-page">
+							    		<div class="form-group">
+							    			<label for="sample-page">Navigation Label</label>
+							    			<input type="text" name="" class="form-control" id="sample-page" placeholder="Sample page">
+							    		</div>
+							    		<div class="form-group">
+							    			<div class="move">
+							    				<span>Move</span>
+							    				<a href="#">Up one</a>
+							    				<a href="#">Under Sample Page</a>
+							    				<a href="#">To the top</a>
+							    			</div>
+							    		</div>
+							    		<div class="form-group">
+							    			<div class="link-to-original">
+							    				<span>Orginal:</span>
+							    				<a href="#">Sample Page</a>
+							    			</div>
+							    		</div>
+							    		<div class="form-group">
+							    			<a href="#">Remove</a>
+							    			<span>|</span>
+							    			<a href="#">Cancel</a>
+							    		</div>
+							    	</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="add--page--area">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8">
+					<div class="add--page--wrap">
+						<h3>Add New Page</h3>
+
+						<form>
+							<div class="form-group">
+								<input type="text" name="site-title" class="form-control" placeholder="Enter title here">
+								<span class="errors"></span>
+							</div>
+							<div class="form-group">
+								<span class="add--media"><i class="fa fa-camera"></i>Add Media</span>
+								<textarea name="write-content" id="write-content"></textarea>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<aside class="page--right--sidebar">
+						<div class="bg-white mb-15">
+							<div class="sidebar--header">
+								<h4>Publish</h4>
+								<i class="fa fa-caret-up"></i>
+							</div>
+							<div class="sidebar-body">
+								<div class="save-preview-btn clearfix">
+									<a href="#" class="btn-preview pull-right">Preview</a>
+									<a href="#" class="btn-save-draft pull-left">Save Draft</a>
+								</div>
+								<div class="post-status">
+									<i class="fa fa-map-pin"></i>
+									Status:
+									<span class="bold">Draft</span>
+									<a href="#" class="post-edit" id="draft-edit">Edit</a>
+									<div class="post-status-select" id="draft-edit-show">
+										<select>
+											<option value="">Pending Review</option>
+											<option value="" selected="selected">Draft</option>
+										</select>
+										<a href="#" class="save-post-status">Ok</a>
+										<a href="#" class="cancel-post-status">Cancel</a>
+									</div>
+								</div>
+								<div class="post-status">
+									<i class="fa fa-eye"></i>
+									Visibility:
+									<span class="bold">Public</span>
+									<a href="#" class="post-edit" id="visibility-edit">Edit</a>
+									<div class="post-status-select" id="visibility-edit-show">
+										<form>
+											<div class="form-group">
+												<input type="radio" id="public" name="visibility" value="public" checked>
+												<label for="public">Public</label>
+											</div>
+											<div class="form-group">
+												<input type="radio" name="visibility" id="password-protected" value="password">
+												<label for="password-protected">password protected</label>
+											</div>
+											<div class="form-group">
+												<input type="radio" name="visibility" value="private" id="private">
+												<label for="private">private</label>
+											</div>
+										</form>
+										<a href="#" class="save-post-status">Ok</a>
+										<a href="#" class="cancel-post-status">Cancel</a>
+									</div>
+								</div>
+								<div class="post-status">
+									<i class="fa fa-calendar-o"></i>
+									Publish
+									<span class="bold">immediately</span>
+									<a href="#" class="post-edit" id="publish-edit">Edit</a>
+									<div class="post-status-select" id="publish-edit-show">
+										<form>
+											<select id="" name="">
+												<option>01-Jan</option>
+												<option>02-Feb</option>
+												<option>03-Mar</option>
+												<option>04-Apr</option>
+												<option>05-May</option>
+												<option>06-Jun</option>
+												<option>07-Jul</option>
+												<option>08-Aug</option>
+												<option>09-Sep</option>
+												<option selected="selected">10-Oct</option>
+												<option>11-Nov</option>
+												<option>12-Dec</option>
+											</select>
+											<label class="sr-only">Day</label>
+											<input type="text" value="09" size="2" maxlength="2">
+											<label class="sr-only">year</label>
+											<input type="text" value="2017" size="4" maxlength="4">
+											<span>@</span>
+											<input type="text" value="19" size="2" maxlength="2">
+											<span>:</span>
+											<input type="text" value="04" size="2" maxlength="2">
+										</form>
+										<a href="#" class="save-post-status">Ok</a>
+										<a href="#" class="cancel-post-status">Cancel</a>
+									</div>
+								</div>
+							</div>
+							<div class="publish-btn text-right">
+								<a href="#">Publish</a>
+							</div>
+						</div>
+
+						<div class="bg-white mb-15">
+							<div class="sidebar--header">
+								<h4>Page Attribute</h4>
+								<i class="fa fa-caret-up"></i>
+							</div>
+							<div class="sidebar-body">
+								<form class="pae-attribute">
+									<div class="form-group">
+										<label for="select-parent">Parent</label>
+										<select id="select-parent">
+											<option value="">(No parent)</option>
+											<option value="">Hello Bangladesh</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="select-order">Parent</label>
+										<input type="number" name="select-order" id="select-order" placeholder="0">
+									</div>
+								</form>
+							</div>
+						</div>
+
+						<div class="bg-white mb-15">
+							<div class="sidebar--header">
+								<h4>Page Attribute</h4>
+								<i class="fa fa-caret-up"></i>
+							</div>
+							<div class="sidebar-body">
+								<div class="feauret-img-show">
+									<img src="assets/images/1.jpg" alt="">
+								</div>
+								<a href="#" id="set-featured-img">Set featured image</a>
+							</div>
+						</div>
+					</aside>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+
+	<div class="overlay"></div>
+	<div class="media--modal--wrap">
+		<div class="media--modal">
+			<span class="btn-close">X</span>
+			<div class="media-modal-content clearfix">
+				<aside class="media-sidebar">
+					<ul>
+						<li class="active"><a href="#insert-media" data-toggle="tab">Insert Media</a></li>
+						<li><a href="#create-gallery" data-toggle="tab">Create Gallery</a></li>
+						<li><a href="#create-audio-playlist" data-toggle="tab">Create Audio Playlist</a></li>
+						<li><a href="#create-video-playlist" data-toggle="tab">Create Video Playlist</a></li>
+						<li class="f-image-active"><a href="#featured-image" data-toggle="tab">Featured Image</a></li>
+						<div class="separator"></div>
+						<li><a href="#insert-from-url" data-toggle="tab">Insert from URL</a></li>
+					</ul>
+				</aside>
+				<div class="tab-content media--frame">
+					<div class="tab-pane active" id="insert-media">
+						<h2 class="media-title">Insert Media</h2>
+						<div class="upload--menu">
+							<ul>
+								<li class="active"><a href="#upload-media-files" data-toggle="tab">Upload Files</a></li>
+								<li><a href="#upload-media-library" data-toggle="tab">Media Library</a></li>
+							</ul>
+
+							<div class="tab-content">
+								<div class="tab-pane active" id="upload-media-files">
+									<div class="drop--files">
+										<div class="drop--files-vcenter">
+											<h3>Drop files anywhere to upload</h3>
+											<p>or</p>
+											<button type="button" class="">Select Files</button>
+											<div class="uploading-status">
+												
+											</div>
+											<div class="post--upload--info">
+												<p>Maxmimum upload file size: 2 MB.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane pos-relative" id="upload-media-library">
+									<div class="header--select clearfix">
+										<div class="search-box-right pull-right">
+											<form action="#" method="POST">
+												<input type="search" name="media-search" placeholder="Search media items...">
+											</form>
+										</div>
+										<div class="select--item-left pull-left">
+											<select id="">
+												<option value="all">All media items</option>
+												<option value="upload">Uploaded to this page</option>
+												<option value="image">Images</option>
+												<option value="audio">Audio</option>
+												<option value="video">Video</option>
+												<option value="unattached">Unattached</option>
+											</select>
+											<select id="">
+												<option value="">All dates</option>
+											</select>
+										</div>
+									</div>
+									<div class="drop--files">
+										<div class="drop--files-vcenter">
+											<h3>Drop files anywhere to upload</h3>
+											<p>or</p>
+											<button type="button" class="">Select Files</button>
+											<div class="uploading-status">
+												
+											</div>
+											<div class="post--upload--info">
+												<p>Maxmimum upload file size: 2 MB.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="footer--upload">
+									<a href="#">Insert into page</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="create-gallery">
+						<h2 class="media-title">Create Gallery</h2>
+						<div class="upload--menu">
+							<ul>
+								<li class="active"><a href="#upload-media-files" data-toggle="tab">Upload Files</a></li>
+								<li><a href="#upload-media-library2" data-toggle="tab">Media Library</a></li>
+							</ul>
+
+							<div class="tab-content">
+								<div class="tab-pane active" id="upload-media-files">
+									<div class="drop--files">
+										<div class="drop--files-vcenter">
+											<h3>Drop files anywhere to upload</h3>
+											<p>or</p>
+											<button type="button" class="">Select Files</button>
+											<div class="uploading-status">
+												
+											</div>
+											<div class="post--upload--info">
+												<p>Maxmimum upload file size: 2 MB.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane pos-relative" id="upload-media-library2">
+									<div class="header--select clearfix">
+										<div class="search-box-right pull-right">
+											<form action="#" method="POST">
+												<input type="search" name="media-search" placeholder="Search media items...">
+											</form>
+										</div>
+										<div class="select--item-left pull-left">
+											<select id="">
+												<option value="all">All media items</option>
+												<option value="upload">Uploaded to this page</option>
+												<option value="image">Images</option>
+												<option value="audio">Audio</option>
+												<option value="video">Video</option>
+												<option value="unattached">Unattached</option>
+											</select>
+											<select id="">
+												<option value="">All dates</option>
+											</select>
+										</div>
+									</div>
+									<div class="drop--files">
+										<div class="drop--files-vcenter">
+											<h3>Drop files anywhere to upload</h3>
+											<p>or</p>
+											<button type="button" class="">Select Files</button>
+											<div class="uploading-status">
+												
+											</div>
+											<div class="post--upload--info">
+												<p>Maxmimum upload file size: 2 MB.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="footer--upload">
+									<a href="#">Create a new gallery</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="create-audio-playlist">
+						<h2 class="media-title">Create Audio Playlist</h2>
+						<div class="upload--menu">
+							<ul>
+								<li class="active"><a href="#upload-media-files" data-toggle="tab">Upload Files</a></li>
+								<li><a href="#upload-media-library3" data-toggle="tab">Media Library</a></li>
+							</ul>
+
+							<div class="tab-content">
+								<div class="tab-pane active" id="upload-media-files">
+									<div class="drop--files">
+										<div class="drop--files-vcenter">
+											<h3>Drop files anywhere to upload</h3>
+											<p>or</p>
+											<button type="button" class="">Select Files</button>
+											<div class="uploading-status">
+												
+											</div>
+											<div class="post--upload--info">
+												<p>Maxmimum upload file size: 2 MB.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane pos-relative" id="upload-media-library3">
+									<div class="header--select clearfix">
+										<div class="search-box-right pull-right">
+											<form action="#" method="POST">
+												<input type="search" name="media-search" placeholder="Search media items...">
+											</form>
+										</div>
+										<div class="select--item-left pull-left">
+											<select id="">
+												<option value="all">All media items</option>
+												<option value="upload">Uploaded to this page</option>
+												<option value="image">Images</option>
+												<option value="audio">Audio</option>
+												<option value="video">Video</option>
+												<option value="unattached">Unattached</option>
+											</select>
+											<select id="">
+												<option value="">All dates</option>
+											</select>
+										</div>
+									</div>
+									<div class="drop--files">
+										<div class="drop--files-vcenter">
+											<h3>Drop files anywhere to upload</h3>
+											<p>or</p>
+											<button type="button" class="">Select Files</button>
+											<div class="uploading-status">
+												
+											</div>
+											<div class="post--upload--info">
+												<p>Maxmimum upload file size: 2 MB.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="footer--upload">
+									<a href="#">Create a new playlist</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="create-video-playlist">
+						<h2 class="media-title">Create Audio Playlist</h2>
+						<div class="upload--menu">
+							<ul>
+								<li class="active"><a href="#upload-media-files" data-toggle="tab">Upload Files</a></li>
+								<li><a href="#upload-media-library4" data-toggle="tab">Media Library</a></li>
+							</ul>
+
+							<div class="tab-content">
+								<div class="tab-pane active" id="upload-media-files">
+									<div class="drop--files">
+										<div class="drop--files-vcenter">
+											<h3>Drop files anywhere to upload</h3>
+											<p>or</p>
+											<button type="button" class="">Select Files</button>
+											<div class="uploading-status">
+												
+											</div>
+											<div class="post--upload--info">
+												<p>Maxmimum upload file size: 2 MB.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane pos-relative" id="upload-media-library4">
+									<div class="header--select clearfix">
+										<div class="search-box-right pull-right">
+											<form action="#" method="POST">
+												<input type="search" name="media-search" placeholder="Search media items...">
+											</form>
+										</div>
+										<div class="select--item-left pull-left">
+											<select id="">
+												<option value="all">All media items</option>
+												<option value="upload">Uploaded to this page</option>
+												<option value="image">Images</option>
+												<option value="audio">Audio</option>
+												<option value="video">Video</option>
+												<option value="unattached">Unattached</option>
+											</select>
+											<select id="">
+												<option value="">All dates</option>
+											</select>
+										</div>
+									</div>
+									<div class="drop--files">
+										<div class="drop--files-vcenter">
+											<h3>Drop files anywhere to upload</h3>
+											<p>or</p>
+											<button type="button" class="">Select Files</button>
+											<div class="uploading-status">
+												
+											</div>
+											<div class="post--upload--info">
+												<p>Maxmimum upload file size: 2 MB.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="footer--upload">
+									<a href="#">Create a new video playlist</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="featured-image">
+						<h2 class="media-title">Featured Image</h2>
+						<div class="upload--menu">
+							<ul>
+								<li class="active"><a href="#upload-media-files" data-toggle="tab">Upload Files</a></li>
+								<li class="f-media-active"><a href="#upload-media-library5" data-toggle="tab">Media Library</a></li>
+							</ul>
+
+							<div class="tab-content">
+								<div class="tab-pane active" id="upload-media-files">
+									<div class="drop--files">
+										<div class="drop--files-vcenter">
+											<h3>Drop files anywhere to upload</h3>
+											<p>or</p>
+											<button type="button" class="">Select Files</button>
+											<div class="uploading-status">
+												
+											</div>
+											<div class="post--upload--info">
+												<p>Maxmimum upload file size: 2 MB.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane pos-relative" id="upload-media-library5">
+									<div class="header--select clearfix">
+										<div class="search-box-right pull-right">
+											<form action="#" method="POST">
+												<input type="search" name="media-search" placeholder="Search media items...">
+											</form>
+										</div>
+										<div class="select--item-left pull-left">
+											<select id="">
+												<option value="all">All media items</option>
+												<option value="upload">Uploaded to this page</option>
+												<option value="image">Images</option>
+												<option value="audio">Audio</option>
+												<option value="video">Video</option>
+												<option value="unattached">Unattached</option>
+											</select>
+											<select id="">
+												<option value="">All dates</option>
+											</select>
+										</div>
+									</div>
+									<div class="drop--files">
+										<div class="drop--files-vcenter">
+											<h3>Drop files anywhere to upload</h3>
+											<p>or</p>
+											<button type="button" class="">Select Files</button>
+											<div class="uploading-status">
+												
+											</div>
+											<div class="post--upload--info">
+												<p>Maxmimum upload file size: 2 MB.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="footer--upload">
+									<a href="#" id="set-f-img">Set featured image</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="insert-from-url">
+						<h2 class="media-title">Insert from URL</h2>
+						<div class="insert--url">
+							<form>
+								<div class="form-group">
+									<input type="url" name="insert-url" class="form-control" placeholder="http://">
+								</div>
+								<div class="form-group">
+									<label for="link-text">Link Text</label>
+									<input type="text" name="link-text" class="form-control" id="link-text">
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="assets/js/jquery-1.12.4.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/jquery-te-1.4.0.min.js"></script>
+	<script src="assets/js/script.js"></script>
+</body>
+</html>

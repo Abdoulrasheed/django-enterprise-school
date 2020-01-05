@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Add class {% endblock title %}
+
+{% block main %}
+<!--Main layout-->
+<main>
+  <div style="margin-bottom: 259px;" class="container-fluid">
+                 <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="{% url 'home_page' %}">Home Page</a>
+            <span>/</span>
+            <a href="{% url 'class_list' %}">Bulk Upolad</a>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
+      <div class="alert alert-info">
+  <strong>Info!</strong> Only CSV File is accepted</a>.
+</div>
+      {% if form %}
+   <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Please correct the errors below</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% for field in form %}
+    {% if field.errors %}
+     {% for error in field.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong class="{{ message.tags }}">{{ field.label }}: {{ error }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+    <div>
+      <div aria-labelledby="add_a_class">
+        <div class="row">
+          <div class="col-md-12">
+            <form enctype="multipart/form-data" class="md-form" method="POST">{% csrf_token %}
+              <div class="file-field">
+                <div class="btn blue-gradient btn-sm float-left">
+                  <span>
+                    <i class="fas fa-cloud-upload-alt mr-2" aria-hidden="true"></i>Choose Student template</span>
+                  <input name="csv_file" type="file" accept=".csv">
+                </div>
+              </div>
+         
+              <div class="file-field">
+                <button type="submit" class="btn blue-gradient btn-sm float-left">
+                  Upload
+                </button>
+              </div>
+        
+              <div class="file-field">
+                <a href="{% url 'download_template_url' %}" class="btn gradient btn-sm float-left">
+                  Download Sample
+                </a>
+            </div>
+            </form>
+          </div>
+
+           <div class="col-md-12">
+            <form enctype="multipart/form-data" class="md-form" method="POST">{% csrf_token %}
+              <div class="file-field">
+                <div class="btn blue-gradient btn-sm float-left">
+                  <span><i class="fas fa-cloud-upload-alt mr-2" aria-hidden="true"></i>Choose Teacher template</span>
+                  <input name="teacher" type="file" accept=".csv">
+                </div>
+              </div>
+         
+              <div class="file-field">
+                <button type="submit" class="btn blue-gradient btn-sm float-left">
+                  Upload
+                </button>
+              </div>
+        
+              <div class="file-field">
+                <a href="{% url 'download_template_url' %}" class="btn gradient btn-sm float-left">
+                  Download Sample
+                </a>
+            </div>
+            </form>
+          </div>
+
+           <div class="col-md-12">
+            <form enctype="multipart/form-data" class="md-form" method="POST">{% csrf_token %}
+              <div class="file-field">
+                <div class="btn blue-gradient btn-sm float-left">
+                  <span><i class="fas fa-cloud-upload-alt mr-2" aria-hidden="true"></i>Choose Parent template</span>
+                  <input name="parent" type="file" accept=".csv">
+                </div>
+              </div>
+         
+              <div class="file-field">
+                <button type="submit" class="btn blue-gradient btn-sm float-left">
+                  Upload
+                </button>
+              </div>
+        
+              <div class="file-field">
+                <a href="{% url 'download_template_url' %}" class="btn gradient btn-sm float-left">
+                  Download Sample
+                </a>
+            </div>
+            </form>
+          </div>
+
+           <div class="col-md-12">
+            <form enctype="multipart/form-data" class="md-form" method="POST">{% csrf_token %}
+              <div class="file-field">
+                <div class="btn blue-gradient btn-sm float-left">
+                  <span><i class="fas fa-cloud-upload-alt mr-2" aria-hidden="true"></i>Choose User template</span>
+                  <input name="user" type="file" accept=".csv">
+                </div>
+              </div>
+         
+              <div class="file-field">
+                <button type="submit" class="btn blue-gradient btn-sm float-left">
+                  Upload
+                </button>
+              </div>
+        
+              <div class="file-field">
+                <a href="{% url 'download_template_url' %}" class="btn gradient btn-sm float-left">
+                  Download Sample
+                </a>
+            </div>
+            </form>
+          </div>
+          </div>
+        </div>
+  </div>
+</main>
+{% endblock %}

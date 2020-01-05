@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+
+{% block main %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<div class="container">
+ <form class="form" method="post" id="personForm" data-batches-url="{% url 'ajax_load_batches' %}" enctype="multipart/form-data">{% csrf_token %}
+  {% crispy form.1 %}
+  {% crispy form.0 %}
+<input type="submit" value="Save" name="submit" class="btn btn-sm btn-primary">
+</form>
+</div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+  $(document).ready( function(){
+    $("#id_in_class").change(function () {
+    var url = $("#personForm").attr("data-batches-url");
+    var class_id = $(this).val();
+
+    $.ajax({
+      url: url,
+      data: {
+        'class': class_id
+      },
+      success: function (data) {
+        $("#id_batch").html(data);
+      }
+    });
+  });
+
+  $("#id_batch").on('change', function(){
+    var batch_id = $(this).val();
+    // get optional subjects
+    $.ajax({
+      url: "{% url 'batch_optional_subjects' %}",
+      data: {
+        'batch_id': batch_id,
+      },
+
+      success: function (data) {
+        $("#id_optional_subjects").html(data);
+      }
+    });
+  });
+});
+  </script>
+{% endblock %}

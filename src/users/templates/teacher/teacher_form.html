@@ -1,0 +1,25 @@
+{% load static crispy_forms_tags %}
+
+{% block main %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <div style="margin-bottom: 259px;" class="container-fluid">
+       <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="{% url 'home_page' %}">Home Page</a>
+            <span>/</span>
+            <a href="{% url 'teachers_list' %}">Teacher</a>
+            <span>/</span>
+            <span>Add Teacher</span>
+         </h6>
+      </div>
+   </div>
+<form method="post" enctype="multipart/form-data">{% csrf_token %}
+{% crispy form.1 %}
+{% crispy form.0 %}
+<input type="submit" value="Save" name="submit" class="btn btn-sm btn-primary">
+</form>
+</div>
+{% endblock %}

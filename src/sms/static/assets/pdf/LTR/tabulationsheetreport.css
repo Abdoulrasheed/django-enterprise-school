@@ -1,0 +1,104 @@
+*{margin:0px;padding:0px;}
+
+body {
+    font-family: 'helvetica';
+    font-size:12px;
+    color:#707478;
+}
+
+.logo{ 
+    width:50px;
+    height:50px;
+    text-align:center;
+}
+
+p {
+    margin: 2px;
+}
+
+.title{
+    font-size: 15px
+}
+
+.title-desc {
+    font-size: 12px
+}
+
+.reportPage-header {
+    text-align: center;
+}
+
+
+.maintabulationsheetreport table { 
+    text-align: center;
+    width: 100%;
+    padding: 10px; 
+    border-collapse: collapse;
+}
+
+.maintabulationsheetreport table th {
+    padding: 2px;
+    border:0.1px solid #ddd;
+    text-align: center;
+    font-size: 10px;
+    min-height: 40px;
+    line-height: 15px;
+}
+
+.maintabulationsheetreport table td {
+    padding: 2px;
+    border:0.1px solid #ddd;
+    font-size: 10px;
+}
+
+
+
+
+.pull-left { 
+    float: left; 
+    text-align: left;
+    width: 35%;
+    margin: 0px;
+    padding: 10px 0px;
+}
+
+.pull-right {
+    float: right; 
+    text-align: right;
+    width: 35%;
+    margin: 0px;
+    padding: 10px 0px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.grand-total {
+    font-weight: bold;
+    text-align: right;
+}
+
+.rtext-bold {
+    font-weight: bold;
+}
+
+.footer {
+    padding-top: 10px;
+    text-align: center;
+}
+
+.flogo {
+    width: 30px;
+    height: 30px;
+}
+
+.copyright {
+    font-size: 10px
+}
+
+.notfound{
+    padding: 20px 0px;
+    text-align:center;
+    border:1px solid #ddd;
+}

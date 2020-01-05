@@ -1,0 +1,106 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    font-family: Helvetica;
+}
+
+body {
+    font-family: 'helvetica';
+    color:#707478;
+    background: #fff
+}
+
+address {
+    font-size: 17px;
+    font-style: normal;
+}
+
+.date {
+    padding-top: 20px;
+}
+
+
+.left {
+    width: 50%;
+    float: left;
+    text-align: left;
+}
+
+.right {
+    width: 50%;
+    float: right;
+    text-align: right;
+}
+
+.mainArea {
+    border: 2px solid #ddd;
+}
+
+.headerArea {
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.siteLogo {
+    float: left;
+    width: 25%;
+    padding-top: 10px;
+    padding-left: 10px
+}
+
+.siteTile {
+    float: right;
+    width: 75%;
+}
+
+.siteTitle h2 {
+    font-size: 30px;
+    margin: 0px;
+    padding-top: 5px;
+    line-height: 25px;
+    font-family: Helvetica;
+}
+
+.siteTitle p {
+    margin: 0px;
+    padding: 0px;
+    font-size: 17px;
+    font-family: Helvetica;
+}
+
+.siteLogoimg {
+    width: 120px;
+    height: 120px;
+}
+
+
+
+.title {
+    text-align: center;
+    font-weight: bold;
+    font-family: Helvetica;
+}
+
+.signatureArea {
+    width:50%;
+    float: right;
+    text-align: center;
+    padding-top: 30px; 
+}
+
+.signatureArea p {
+    margin: 0px;
+}
+
+.userName {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.noticeArea {
+    padding: 0px 20px;
+}
+
+.footerTop {
+    padding: 20px;
+}

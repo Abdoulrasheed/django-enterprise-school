@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+{% load static tags %}
+{% block title %} Score Entry {% endblock title %}
+{% block main %}
+   <div style="margin-bottom: 195px" class="container-fluid">
+   <!-- Heading -->
+        <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="{% url 'home_page' %}">Home Page</a>
+            {% if request.user.is_superuser %}
+            <span>/</span>
+            <a href="{% url 'score_list' %}">Score</a>
+            {% endif %}
+            <span>/</span>
+            <a>Add Score</a>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
+   <div hidden id="alertm" class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong id="msg">Saved Successfully</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+   <!-- Editable table -->
+   <div class="card">
+      <span class="mdb-color darken-3 card-header white-text text-uppercase py-1">
+        <small class="text-left">Score entry :</small>
+        <span id="headers">
+          <small class="ml-xl-2" title="term detected based on time set in general settings">
+            {{ term }} Term 
+            {% if request.user|in_group:'admin' %}
+            <a href="{% url 'general_setting' %}" class="initialism">
+              <kbd>Configure term in settings</kbd>
+            </a>
+            {% endif %}
+          </small>
+        </span>
+    </span>
+      <div class="container">
+         <form method="get" id="form" data-class-url="{% url 'get_section_classes' %}" data-batch-url="{% url 'ajax_load_batches' %}" data-subjects-url="{% url 'ajax_load_subjects' %}" data-score-url="{% url 'score_entry' %}">{% csrf_token %}
+         <div class="row">
+          {% if request.user|in_group:'admin' %}
+            <div class="col-md-3">
+               <select id="id_section" name="class" class="mdb-select md-form">
+                <option value="" disabled selected>Select a section</option>
+                {% for section in sections %}
+                  <option value="{{ section.id }}">{{ section.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div hidden class="col-md-3 class_div">
+               <select id="id_class" name="class" class="mdb-select md-form">
+                <option value="" disabled selected>Select a class</option>
+                {% for class in classes %}
+                  <option value="{{ class.id }}">{{ class.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+             <div hidden class="col-md-3 batch_div">
+               <select id="id_batch" name="class" class="mdb-select md-form">
+              </select>
+            </div>
+
+            <div hidden class="col-md-3 subject_div">
+               <select id="id_subject" name="subject" class="mdb-select md-form">
+              </select>
+            </div>
+
+            <div hidden class="col-md-3 ">
+            <select id="" name="" class="mdb-select md-form">
+                <option value="" disabled selected>Select a subject</option>
+              </select>
+            </div>
+            {% endif %}
+            {% if not request.user|in_group:'admin' and request.user|in_group:'teacher' %}
+             <div class="col-md-3 teacher_div" hidden>
+            <input type="text" id="t_class" value="" hidden>
+            <select id="id_subject" name="subject" class="mdb-select md-form">
+                <option value="" disabled>Select a subject</option>
+                {% for i in assigned_subjects %}
+                <option selected disabled>{{ i.clss.name }} subjects</option>
+                 {% for subject in i.subjects.all %}
+                    <option class="t_clss" class-id="{{i.clss.id}}" batch-id="{{ i.batch.id }}" value="{{ subject.id }}">{{ subject }} <i>({{ i.clss }} - {{ i.batch.name }})</i></option>
+                    {% empty %}
+                    No subject
+                  {% endfor %}
+                {% empty %}
+                <option value="" disabled>No subject available</option>
+                {% endfor %}
+              </select>
+            </div>
+            {% endif %}
+          <div hidden id="loader" class="progress md-progress primary-color-dark">
+              <div class="indeterminate"></div>
+          </div>
+         </div>
+      </form>
+      </div>
+      <div class="card-body">
+         <div id="table" class="table-editable"></div>
+      </div>
+   </div>
+</div>
+{% block script %}
+{% if request.user.is_superuser %}
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    var get_class_url = $("#form").attr("data-class-url");
+    var get_batches_url = $("#form").attr("data-batch-url");
+    var get_subjects_url = $("#form").attr("data-subjects-url");
+    var score_table_url = $("#form").attr("data-score-url");
+
+    $("#id_section").change(function(){
+      var section_id = $(this).val()
+      $("#table").fadeIn(5000).html("");
+
+      $.ajax({  // initialize an AJAX request
+        url: get_class_url,
+        data: {
+          'section': section_id
+        },
+
+        beforeSend: function(){
+          $("#loader").removeAttr('hidden');
+        },
+
+        complete: function(){
+          $("#loader").attr('hidden', 'hidden');
+        },
+
+        success: function (data) {
+          $("#id_class").html(data);
+          $('.class_div').fadeIn(1000).removeAttr('hidden');
+        }
+
+      });
+    });
+
+
+    $("#id_class").change(function(){
+      var class_id = $(this).val()
+
+      $.ajax({
+        url: get_batches_url,
+        data: {
+          'class': class_id
+        },
+
+        beforeSend: function(){
+          $("#loader").removeAttr('hidden');
+        },
+
+        complete: function(){
+          $("#loader").attr('hidden', 'hidden');
+        },
+
+        success: function (data) { 
+          $("#id_batch").html(data);
+          $('.batch_div').fadeIn(1000).removeAttr('hidden');
+        }
+
+      });
+    });
+
+    $("#id_batch").change(function(){
+      var batch = $(this).val()
+      $.ajax({
+        url: get_subjects_url,
+        data: {
+          'batch_id': batch
+        },
+
+        beforeSend: function(){
+          $("#loader").removeAttr('hidden');
+        },
+
+        complete: function(){
+          $("#loader").attr('hidden', 'hidden');
+        },
+
+        success: function (data) { 
+          $("#id_subject").html(data);
+          $('.subject_div').fadeIn(1000).removeAttr('hidden');
+          console.log($('#id_subject'));
+        }
+
+      });
+    });
+
+    $("#id_subject").change(function(){
+      var subject_id = $(this).val()
+      var class_id = $("#id_class").val()
+      var batch_id = $("#id_batch").val()
+
+      if(subject_id){
+        $.ajax({
+          url: score_table_url,
+          data: {
+            'subject': subject_id,
+            'class': class_id,
+            'batch': batch_id,
+        },
+
+        beforeSend: function(){
+          $("#loader").removeAttr('hidden');
+        },
+
+        complete: function(){
+          $("#loader").attr('hidden', 'hidden');
+        },
+
+        success: function (data) {
+          $("#table").html(data);
+        }
+      });
+      }
+    });
+  });
+</script>
+{% endif %}
+{% if request.user|in_group:'teacher' %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.teacher_div').removeAttr("hidden");
+    var score_table_url = $("#form").attr("data-score-url");
+
+    $("#id_subject").change(function(){
+      var subject_id = $(this).val();
+      var class_id = $("option:selected", this).attr('class-id');
+      var batch_id = $("option:selected", this).attr('batch-id');
+
+      if(subject_id){
+        $.ajax({
+          url: score_table_url,
+          data: {
+            'subject': subject_id,
+            'class': class_id,
+            'batch': batch_id,
+        },
+
+        beforeSend: function(){
+          $("#loader").removeAttr('hidden');
+        },
+
+        complete: function(){
+          $("#loader").attr('hidden', 'hidden');
+        },
+
+        success: function (data) {
+          $("#table").html(data);
+        }
+      });
+      }
+    });
+  });
+</script>
+{% endif %}
+{% endblock %}
+{% endblock main %}

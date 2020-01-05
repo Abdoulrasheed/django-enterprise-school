@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+
+{% block title %} Add class {% endblock title %}
+
+{% block main %}
+<!--Main layout-->
+<main>
+  <div style="margin-bottom: 259px;" class="container-fluid">
+                 <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="{% url 'home_page' %}">Home Page</a>
+            <span>/</span>
+            <a href="{% url 'class_list' %}">Class</a>
+            <span>/</span>
+            <a>Add Class</a>
+         </h6>
+      </div>
+   </div>
+    <div>
+      <div aria-labelledby="add_a_class">
+        <div class="row">
+          <div class="col-md-6">
+            <form method="post">{% csrf_token %}
+              {{ form|crispy }}
+              <input type="submit" name="submit" value="save" class="btn btn-primary">
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</main>
+{% endblock %}

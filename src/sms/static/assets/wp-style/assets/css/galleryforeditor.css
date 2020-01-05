@@ -1,0 +1,28 @@
+
+.gallery-area.area-padding {
+    display: inline-flex;
+}
+
+.container {
+    display: inline-flex;
+}
+
+
+.row.text-center {
+    display: inline-flex;
+}	
+
+
+.gallery-item {
+    display: inline-flex;
+}
+
+
+.single-gallery > img {
+    width: 100px;
+    height: 100px;
+}
+
+.container.foredit-container {
+    width: auto;
+}

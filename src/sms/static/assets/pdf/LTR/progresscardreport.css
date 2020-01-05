@@ -1,0 +1,152 @@
+body {
+    font-family: 'helvetica';
+    font-size:16px;
+    color:#707478;
+    overflow: hidden;
+}
+
+table {
+    width:100%; 
+    border-spacing:0px;
+    font-size: 10px;
+    padding: 0px;
+    border: 0.1px solid #ddd;
+}
+
+td, th {
+    border: 0.1px solid #ddd;
+}
+
+th {
+    font-weight: bold;
+}
+
+p {
+    margin: 2px;
+}
+
+.mainprogresscardreport {
+    margin: 0px;
+    overflow: hidden;
+    max-width:auto;
+    margin: 0px auto;
+    margin-bottom: 0px;
+    background-size: 100% 100%;
+}
+
+.progresscard-headers{
+    border-bottom: 1px solid #ddd;
+    overflow: hidden;
+    padding-bottom: 0px;
+    vertical-align: middle;
+    margin-bottom: 4px;
+}
+
+.progresscard-logo {
+    float: left;
+    display: inline;
+    width:50px;
+}
+
+.progresscard-headers img{
+    width: 60px;
+    height: 60px;
+}
+
+.school-name {
+    float: left;
+}
+
+.school-name h2{
+    padding-left: 20px;
+    padding-top: 15px;
+    font-weight: bold;
+    font-size: 30px;
+    line-height: 30px;
+}
+
+.progresscard-infos {
+    width: 100%;
+    overflow: hidden;
+}
+
+.progresscard-infos h3{
+    padding: 2px 0px;
+    margin: 0px;
+    font-size: 18px;
+}
+
+.progresscard-infos p {
+    margin-bottom: 2px;
+}
+
+.school-address {
+    float: left;
+    width: 40%;
+}
+
+.school-address h4 {
+    margin: 3px;
+    font-size: 18px;
+}
+
+.student-profile {
+    float: left;
+    width: 40%;
+}
+
+.student-profile h4{
+    margin: 3px;
+    font-size: 18px;
+}
+
+.student-profile p {
+    margin-bottom: 2px;
+}
+
+.student-profile-img {
+    float: left;
+    width: 19.9%;
+    text-align: right;
+}
+
+.student-profile-img img {
+    border: 1px solid #ddd;
+    margin-top: 5px;
+}
+
+.progresscard-contents {
+    width: 100%;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.progresscard-contents h4 {
+    font-size: 18px;
+    margin: 5px;
+}
+
+.progresscard-contents table {
+    width: 100%;
+}
+
+.progresscard-contents table tr, .progresscard-contents table td, .progresscard-contents table th {
+    padding: 7px 0px;
+    font-size: 14px;
+    text-align: center;
+
+}
+
+.profileimg {
+    border:1px solid #ddd;
+    width: 130px;
+    height: 130px;
+}
+
+.notfound{
+    padding: 15px 0px;
+    text-align:center;
+    border:1px solid #ddd;
+    font-weight: bold;
+    font-size: 18px
+}

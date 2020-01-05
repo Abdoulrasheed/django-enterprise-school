@@ -1,0 +1,190 @@
+*{margin:0px;padding:0px;}
+
+.mainadmincardreport {
+    font-family: arial;
+    max-width:794px;
+    margin-left: auto;
+    margin-right: auto;
+    -webkit-print-color-adjust: exact;
+    overflow: hidden;
+}
+
+.admincardreport {
+    border: 1px solid #ddd;
+    overflow: hidden;
+    padding: 20px 50px;
+    margin-bottom: 15px;
+    height: 443px !important;
+    background-size: 100% 100%;
+}
+
+.admitcardheader {
+    width: 100%;
+    text-align: center;
+    color: #000;
+}
+
+.admitcardheader h3{
+    font-weight: normal;
+    line-height: 20px;
+}
+
+.admitcardbody {
+    float: left;
+    width: 100%;
+    color: #000;
+    padding: 0px 0px;
+}
+
+.admitcardbody h3{
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 4px;
+    color: #000;
+    font-weight: 500;
+    margin: 0px;
+    font-size: 14px;
+}
+
+.admitcardheader h5{
+    margin:0px;
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.studentprofile {
+    float: left;
+    padding-top: 5px;
+    text-align: right;
+    width: 15%
+}
+
+.studentprofile img {
+    width: 80px;
+    height: 90px;
+    border: 1px solid red !important;
+}
+
+.admitcardstudentinfo {
+    float: left;
+    width: 85%;
+    padding-top: 5px;
+}
+
+.admitcardstudentinfo p{
+    margin: 0px;
+    line-height: 17px;
+}
+
+
+
+.studentinfo {
+    float: left;
+    width: 100%;
+    font-family: monospace;
+}
+
+.studentinfo p {
+    width: 50%;
+    float: left;
+    margin-bottom: 1px;
+    padding: 0 0px;
+    font-size: 12px;
+}
+
+.studentinfo p span {
+    font-weight: bold;
+}
+
+
+.subjectlist {
+    width:100%;
+    float: left;
+    font-family: monospace;
+    margin-top: -20px;
+    height: 220px;
+}
+
+.subjectlist table { 
+    font-family: "Times New Roman", Times, serif;
+    text-align: center;
+    font-size: 10px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.subjectlist table td{
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 2px;
+    border:1px solid #ddd;
+}
+
+.studentinfo span {
+    width:95px;
+    display: inline-block;
+}
+
+.admitcardfooter {
+    width: 100%;
+    padding-top: 20px;
+    font-weight: bold;
+}
+
+.account_signature {
+    display: inline-block;
+    text-align: left;
+    width: 50%;
+    float: left;
+    font-size: 15px;
+    font-weight: 600
+}
+
+.headmaster_signature {
+    display: inline-block;
+    text-align: right;
+    float: right;
+    width: 50%;
+    font-size: 12px;
+    font-weight: 600
+}
+
+/*Admin Card Report BackEnd*/
+.admitcardreportbackend {
+    border: 1px solid #ddd;
+    overflow: hidden;
+    padding:30px 50px;
+    margin-bottom: 15px;
+    height: 443px;
+    color: #000;
+    font-size: 14px;
+    background-size: 100% 100%;
+}
+
+.admitcardreportbackend ol {
+    padding-left: 10px;
+}
+
+.admitcardreportbackend ol li{
+    line-height: 16px;
+}
+
+.admitcardreportbackend ol li span{
+    font-weight: bold;
+}
+
+.title {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #700CE8;
+}
+
+.address {
+    color: #DBA912;
+}
+
+.notfound{
+    padding: 20px 0px;
+    text-align:center;
+    border:1px solid #ddd;
+}
+

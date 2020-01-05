@@ -1,0 +1,2 @@
+$("#write-content").summernote();
+

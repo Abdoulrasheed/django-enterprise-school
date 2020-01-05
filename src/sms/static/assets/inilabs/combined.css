@@ -1,0 +1,399 @@
+.backendThemeMainWidht {
+	width: 16.66%;
+}
+
+.backendThemeHeadHeight {
+	height: 20px;
+}
+
+.backendThemeBodyHeight {
+	height: 80px;
+}
+
+.backendThemeBodyMargin {
+	margin-top: 20px;
+}
+
+@media screen and (max-width: 480px) {
+	.backendThemeMainWidht {
+		width: 50%;
+	}
+
+	.backendThemeHeadHeight {
+		height: 15px;
+	}
+
+	.backendThemeBodyHeight {
+		height: 50px;
+	}
+
+	.backendThemeBodyMargin {
+		margin-top: 5px;
+	}
+}
+
+.box-header.bg-white {
+	background-color: #ffffff;
+}
+
+.box .box-header .box-title.fontColor, 
+.fontColor {
+	font-size: 18px;
+	color: #707478;
+}
+
+.box .box-header .box-title.fontColor p {
+	font-size: 12px;
+}
+
+.box.outheBoxShadowColor {
+	background-color: #f1f2f7; 
+	box-shadow: none;
+}
+
+.box.outheBoxShadow {
+	box-shadow: none;
+}
+
+.box-body.outheMargAndBox {
+	padding:0px 0px 0px 0px;
+	box-shadow: none;
+}
+
+.box-body.innerMargAndBox {
+	padding:0px 15px 0px 15px;
+	box-shadow: none;
+}
+
+.examQuesBox {
+  display: inline-block;
+  padding-left: 0;
+  margin: 20px 0;
+  border-radius: 4px;
+}
+.examQuesBox > li {
+  display: inline-block;
+}
+
+.examQuesBox > li > a {
+    display: block;
+    text-align: center;
+    line-height: 40px !important;
+    padding: 10px;
+    margin: 5px;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    width: 70px;
+    height: 60px;
+}
+
+.examQuesBox.text li {
+	padding: 0px 5px;
+	line-height: 70px;
+	font-size: 16px;
+	color: #656f7d;
+	float: left;
+	width: 50%;
+}
+
+.checkbox.hints {
+	float: right;
+	color: #656f7d;
+	padding: 8px 5px;
+}
+
+.checkbox.hints span {
+    float: left;
+}
+
+
+.checkbox.hints span .time {
+	color: #D9534F;
+	display: inline;
+	float: right;
+}
+
+nav h2 {
+	font-size: 18px;
+}
+
+.examQuesBox > li > a,
+.examQuesBox > li > span {
+  position: relative;
+  float: left;
+  margin-left: -1px;
+  line-height: 1.42857143;
+  color: #FFF;
+  text-decoration: none;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+.examQuesBox-lg > li > a,
+.examQuesBox-lg > li > span {
+  padding: 10px 16px;
+  font-size: 18px;
+  line-height: 1.3333333;
+}
+
+
+.examQuesBox-sm > li > a,
+.examQuesBox-sm > li > span {
+  padding: 5px 10px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.examQuesBox-sm > li:last-child > a,
+.examQuesBox-sm > li:last-child > span {
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+.examQuesBox > li a.answered,
+.btn.oe-btn-answered {
+	background-color: #2196F3;
+	color: #FFF;
+}
+
+.examQuesBox > li a.marked,
+.btn.oe-btn-marked {
+	background-color: #6ab3ce;
+	color: #FFF;
+}
+
+
+.examQuesBox > li a.notanswered,
+.btn.oe-btn-notanswered {
+	background-color: #D9534F;
+	color: #FFF;
+}
+
+.examQuesBox > li a.notvisited,
+.btn.oe-btn-notvisited {
+	background-color:  #656f7d;
+	color: #FFF;
+}
+
+.question-body .lb-content {
+	width: 80%;
+	font-size: 16px;
+	text-transform: capitalize;
+	/*margin-left: 4%;*/
+}
+
+.question-body .lb-content span {
+	font-size: 20px;
+	text-transform: capitalize;
+}
+
+.question-body .lb-mark {
+	float: right;
+	font-size: 16px;
+	width: 15%;
+	font-size: 18px;
+	text-transform: capitalize;
+	text-align: right;
+}
+
+.question-body .lb-mark .fa {
+	color: #2196F3;
+}
+
+.question-body .lb-title {
+	font-size: 18px;
+	width: 100%;
+	color: #2196F3;
+	text-transform: uppercase;
+}
+
+.question-color {
+	color: #2196F3;
+}
+
+.question-answer {
+	margin-top:	2%;
+	width: 100%;
+	height: auto;
+}
+
+
+.question-answer.table > thead > tr > th {
+	font-size: 16px;
+} 
+
+.question-answer .table > thead > tr > th, 
+.question-answer .table > tbody > tr > th, 
+.question-answer .table > tfoot > tr > th, 
+.question-answer .table > thead > tr > td, 
+.question-answer .table > tbody > tr > td, 
+.question-answer .table > tfoot > tr > td {
+	border-top: 0px;
+}
+
+.question-answer .table > thead > tr > th, 
+.question-answer .table > tfoot > tr > th, 
+.question-answer .table > tbody > tr > td {
+	border-top: 0px;
+	line-height: 10px;
+}
+
+.question-answer .table > tfoot > tr > th,  
+.question-answer .table > tbody > tr > td, {
+	font-size: 14px;
+	line-height: 34px;
+}
+
+.question-answer .table input[type='text'] {
+	border: 1px solid #e2e7eb;
+    border-radius: 3px;
+    box-shadow: none;
+    color: #555;
+    font-size: 12px;
+    line-height: 1.42857;
+    width: 50%;
+    height: 34px;
+    text-align: center;
+}
+
+.question-answer .table input[type='text'].fillInTheBlank {
+	width: 90%;
+	text-align: left;
+	padding: 0 0 0 10px;
+}
+
+.question-answer .table input[type='button'] {
+	border: 1px solid #e2e7eb;
+    border-radius: 3px;
+    box-shadow: none;
+    color: #555;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1.42857;
+    width: 35px;
+    height: 35px;
+    text-align: center;
+    border-radius: 50px;
+    background-color: #2196F3;
+    color: #FFF;
+}
+
+.question-answer-button {
+	width: 100%;
+	height: auto;
+	margin-top: 10%;
+}
+
+.btn.oe-btn-answered {
+	font-size: 14px;
+	text-transform: uppercase;
+	padding: 6px 8px;
+    background-color: #2196F3;
+}
+
+.btn.oe-btn-notvisited {
+	font-size: 14px;
+	text-transform: uppercase;
+	padding: 6px 8px;
+}
+
+.btn.oe-btn-notanswered {
+	font-size: 14px;
+	text-transform: uppercase;
+	padding: 6px 8px;
+}
+
+.info-box {
+	width: 100%;
+	overflow: hidden;
+}
+
+.info-box span {
+	width: 50%;
+	display: inline-block;
+}
+
+.btn.btn-success.btn-xs.salary-btn {
+	margin: 7px 0px 0px 0px; 
+}
+
+.btn.btn-danger.btn-xs.salary-btn {
+	margin: 7px 4px 0px 0px; 
+}
+
+.timer {
+	text-align: center;
+	font-size: 40px;
+	color: #D9534F;
+}
+
+
+.fixedDivAndScrollRelative {
+	position: relative;
+	width: 100%;
+}
+
+.fixedDivAndScroll {
+	background-color: #eee;
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 159px;
+    padding-bottom: 10px; 
+    right: 15px;
+}
+
+.s-tag {
+	display: block;
+}
+
+@media screen and (max-width: 480px) {
+	.fixedDivAndScroll {
+		/*background-color: #ccc;
+	    left: 0;
+	    margin: 15px;
+	    position: fixed;
+	    top: 9%;
+	    z-index: 1029;*/
+	    left: 0;
+	    margin: 0 15px;
+	    width: 100%;
+	    background-color: #000;
+	}
+
+	.s-tag {
+		display: inline-block;
+	}
+}
+
+.reportPage-header {
+    width: 100%;
+}
+
+.reportPage-header .header .bannerLogo{
+    text-align: center;
+}
+
+.reportPage-header .header .bannerLogo img {
+    height: 50px;
+    width: 50px;
+}
+
+.reportPage-header .title {
+  font-size: 16px;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+
+.reportPage-header .title-desc {
+  font-size: 14px;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0px;
+  margin-top: 0px;
+}

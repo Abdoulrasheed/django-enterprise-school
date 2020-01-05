@@ -1,0 +1,17 @@
+{% load static crispy_forms_tags %}
+<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+      <!--Grid row-->
+  <div class="row">
+  <!--Grid column-->
+  <div class="col-md-6 mb-4">
+<form method="POST" action="{% url 'create_mark_permission' %}">{% csrf_token %}
+  <input type="text" hidden name="section" value="{{ selected_section }}">
+  {% for form in form %}
+    {{ form|as_crispy_field }}
+  {% endfor %}
+  <button class="btn btn-sm btn-primary">Save</button>
+</form>
+</div>
+<!--Grid row-->
+</div>
+<script src="{% static 'js/datepicker.js' %}"></script>

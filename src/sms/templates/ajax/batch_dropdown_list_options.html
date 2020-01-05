@@ -1,0 +1,4 @@
+<option selected disabled value="">Select a batch</option>
+{% for batch in batches %}
+<option value="{{ batch.id }}">{{ batch.name }}</option>
+{% endfor %}

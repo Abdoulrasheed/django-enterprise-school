@@ -1,0 +1,133 @@
+body {
+	font-family: 'helvetica';
+	font-size:12px;
+	color:#707478;
+}
+
+.logo{ 
+	width:50px;
+	height:50px;
+	text-align:center;
+}
+
+p {
+	margin: 2px;
+}
+
+.box h2 {
+	font-size: 14px;
+}
+
+.title{
+	font-size: 15px
+}
+
+.title-desc {
+	font-size: 12px
+}
+
+.reportPage-header {
+	text-align: center;
+}
+
+table {
+	width:100%; 
+	border-spacing:0px;
+	font-size: 10px;
+	padding: 0px;
+}
+
+th{
+	font-weight: 400;
+	border-bottom: 1px solid #ddd;
+	font-size: 16px;
+	padding: 6px 0px
+}
+
+td{
+	border-bottom: 01px solid #ddd;
+	padding:6px 12px;
+}
+
+.pull-left { 
+	float: left; 
+	text-align: left;
+	width: 48%;
+	margin: 0px;
+	padding: 10px 0px;
+}
+
+.pull-right {
+	float: right; 
+	text-align: left;
+	width: 48%;
+	margin: 0px;
+	padding: 10px 0px;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.footer {
+	padding-top: 10px;
+	text-align: center;
+}
+
+.flogo {
+	width: 30px;
+	height: 30px;
+}
+
+.copyright {
+	font-size: 10px
+}
+
+.notfound{
+	padding: 20px 0px;
+	text-align:center;
+	border:1px solid #ddd;
+}
+
+.box-title{background-color:#eaeaec}
+.box h3{margin: 0px;padding:10px;color:#001f3f !important;font-size: 14;font-weight:400;}
+.box-solid{border:1px solid #ddd;}
+.box-body{padding: 15px 10px;}
+.panel_heading h2{padding: 0px;margin:0px;margin-top: 10px;font-weight: 400;text-align: center;font-size: 16px}
+
+.classinfo{border-left:2px solid black;border-radius: 5px}
+.classinfo span{padding: 5px 0px;display: block;color:#0073b7 !important;font-size: 12px}
+.subjectandteacher{border-left:2px solid green;border-radius: 5px}
+.subjectandteacher .box-body{padding-top: 0px;margin-top: 0px}
+
+.classteacher{border-left:2px solid red;border-radius: 5px}
+
+.profile {
+	margin-bottom: 20px;
+	background-color: #fff;
+	border: 0px solid transparent;
+	border-radius: 4px;
+	text-align: center;
+}
+.border_image{margin-top: 10px}
+img {
+	width: 50px;
+	height:50px;
+	border:2px solid #ccc;
+}
+
+.profile{
+	background: #C24984;
+	border-bottom: 2px solid #ddd;
+	margin-bottom: 5px
+
+}
+
+.classteacher h1 {font-size: 16px;font-weight: 300;margin-bottom: 5px;color:#fff;}
+
+.free_collection{border-left:2px solid orange;border-radius: 5px}
+.free_collection .box-body{margin-top: 0px;padding-top: 0px}
+.hr{color:#ddd;}
+
+.logo{border:none;}
+.flogo{border:none;}

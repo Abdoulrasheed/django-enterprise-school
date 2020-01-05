@@ -1,0 +1,49 @@
+{% block main %}
+<div class="text-center">
+	<div hidden id="loader" class="progress md-progress primary-color-dark">
+		<div class="indeterminate">
+			
+		</div>
+	</div>
+	<form class="form">
+		<select class="browser-default custom-select role">
+			<option disabled selected>Select a role</option>
+		 	{% for role in roles %}
+				<option value="{{ role.id }}">{{ role }}</option>
+			{% empty %}
+				<option selected disabled>No role, please create one</option>
+			{% endfor %}
+		</select>
+	</form>
+	<br>
+	<br>
+	<section class="dataarea">
+	</section>
+</div>
+{% block script %}
+<script type="text/javascript">
+	$(".role").change(function(){
+		let selected_role = $(this).val();
+		$.ajax({
+			url: "{% url 'ajax_loadpersmissions' %}",
+
+			data: {
+				"role_id": selected_role,
+			},
+
+			beforeSend: function(){
+            	$("#loader").removeAttr('hidden');
+           	},
+
+	        complete: function(){
+	            $("#loader").attr('hidden', 'hidden');
+	        },
+
+	        success: function (data) {
+	          $(".dataarea").html(data);
+	        }
+		});
+	});
+</script>
+{% endblock script %}
+{% endblock %}

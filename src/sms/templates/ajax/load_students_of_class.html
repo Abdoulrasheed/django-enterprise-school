@@ -1,0 +1,42 @@
+<tbody>
+    {% for student in students %}
+  <tr role="row" class="{% cycle 'odd' 'even' %}">
+    <td data-title="#" class="sorting_1">1</td>
+    <td data-title="Photo">
+      <img src="#" width="35px" height="35px" class="img-rounded" alt="">
+    </td>
+    <td data-title="Name">{{ student.user.get_full_name }}</td>
+    <td data-title="Roll">{{ student.roll_number }}</td>
+    <td data-title="Email">{{ student.email|default_if_none:"" }}</td>
+    <td data-title="Email">{{ student.username }}</td>
+    {% if request.user|in_group:'admin' %}
+    <td data-title="Status">
+      <div class="onoffswitch-small" id="4009">
+        <input title="if deativated, this student can no longer have access to this site" type="checkbox" id="myonoffswitch4009" class="onoffswitch-small-checkbox" name="paypal_demo" {% if student.user.is_active  %} checked {% endif %}>
+        <label for="myonoffswitch4009" class="onoffswitch-small-label">
+        <span class="onoffswitch-small-inner"></span>
+        <span class="onoffswitch-small-switch"></span>
+        </label>
+      </div>
+    </td>
+    <td data-title="Action">
+        <a href="{% url 'profile' user_id=student.user.id %}" class="btn btn-success btn-xs mrg" data-placement="top" data-toggle="tooltip" data-original-title="View">
+            <i class="fa fa-check-square-o"></i>
+        </a>
+
+        <a href="#" class="btn btn-warning btn-xs mrg" data-placement="top" data-toggle="tooltip" data-original-title="Edit">
+            <i class="fa fa-edit"></i>
+        </a>
+
+        <a href="#" onclick="return confirm('you are about to delete a record. This cannot be undone. are you sure?')" class="btn btn-danger btn-xs mrg" data-placement="top" data-toggle="tooltip" data-original-title="Delete">
+            <i class="fa fa-trash-o"></i>
+        </a>                                                    
+    </td>
+    {% endif %}
+  </tr>
+  {% empty %}
+   <tr class="odd">
+        <td valign="top" colspan="6" class="dataTables_empty">No data available in table</td>
+    </tr>
+  {% endfor %}
+</tbody>

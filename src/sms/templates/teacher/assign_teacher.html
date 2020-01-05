@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Assign Teachers {% endblock title %}
+
+{% block main %}
+
+<!--Main layout-->
+    <div class="container-fluid">
+         <!-- Heading -->
+   <div class="card mb-4 wow fadeIn">
+      <!--Card content-->
+      <div class="card-body d-sm-flex justify-content-between">
+         <h6 class="mb-2 mb-sm-0 pt-1">
+            <a href="{% url 'home_page' %}">Home Page</a>
+            <span>/</span>
+            <span>Assign Teachers</span>
+         </h6>
+      </div>
+   </div>
+   <!-- Heading -->
+      <!--Assign Teacher: Basic examples-->
+      <Assign Teacher>
+        <!--Top Table UI-->
+        <div class="card p-2 mb-5">
+
+          <!--Grid row-->
+          <div class="row">
+
+            <!--Grid column-->
+            <div class="col-lg-3 col-md-12">
+              <a class="btn btn-info" href="{% url 'add_subject_allocation' %}">
+                Allocate Subject
+              </a>
+            </div>
+            <div class="col-lg-3 col-md-12">
+            </div>
+            <div class="col-lg-3 col-md-12">
+            </div>
+            <form>
+               <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown"
+                     aria-haspopup="true" aria-expanded="false">
+                  Select class
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
+                     <h6  class="dropdown-header">Select Term</h6>
+                      <input type="submit" name="" value="First" id="firstTerm" data-toggle="tooltip" title="Select a term" class="dropdown-item" value="First Term">
+                      <input type="submit" value="Second" name="" id="secondTerm" data-toggle="tooltip" title="Select a term" class="dropdown-item" value="Second Term">
+                      <input type="submit" value="Third" id="thirdTerm" name="" data-toggle="tooltip" title="Select a term" class="dropdown-item" value="Third Term">
+                  </div>
+               </div>
+          </form>
+            <!--Grid column-->
+
+            <!--Grid column-->
+            <div class="col-lg-3 col-md-6">
+
+            </div>
+            <!--Grid column-->
+
+            <!--Grid column-->
+            <div class="col-lg-3 col-md-6">
+
+            </div>
+            <!--Grid column-->
+
+            <!--Grid column-->
+            <div class="col-lg-3 col-md-6">
+            </div>
+            <!--Grid column-->
+          </div>
+          <!--Grid row-->
+
+        </div>
+        <!--Top Table UI-->
+
+        <div class="card card-cascade narrower z-depth-1">
+
+          <!--Card image-->
+          <div class="view view-cascade gradient-card-header mdb-color darken-3 narrower py-2 mx-4 mb-3 d-flex justify-content-between align-items-center">
+
+            <a class="white-text mx-3">
+              Subject allocation {% if term %} for {{ term }} term {% endif %}
+            </a>
+
+          </div>
+          <!--/Card image-->
+
+          <div class="px-4">
+
+            <div class="table-responsive">
+              <!--Table-->
+              <table id="table" class="table table-hover mb-0">
+
+                <!--Table head-->
+                <thead>
+                  <tr>
+                    <th class="th-lg"><a>Teacher<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg ml-xl-5"><a href="">Subject(s)<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a href="">Class<i class="fas fa-sort ml-1"></i></a></th>
+                    <th class="th-lg"><a href="">Action<i class="fas fa-sort ml-1"></i></a></th>
+                  </tr>
+                </thead>
+                <!--Table head-->
+
+                <!--Table body-->
+                <tbody>
+                  {% for i in assigned_teachers %}
+                  <tr>
+                    <td class="teachername" teacher="{{ i.teacher|capfirst }}">{{ i.teacher|capfirst }}</td>
+                    <td>
+                      {% for subject in i.subjects.all %}
+                            {% if forloop.counter|divisibleby:2 %}
+
+                            <span title="{{ subject.name|capfirst }}" class="btn subject_name btn-sm btn-blue-grey">
+                              {{ subject.name|capfirst }}
+                            </span>
+
+                            {% else %}
+                            <span title="{{ subject.name|capfirst }}" class="btn subject_name btn-sm btn-indigo">
+                              {{ subject.name|capfirst }}
+                            </span>
+                            {% endif %}
+
+                        {% empty %}
+                          <small>No subject is allocated
+                            <a class="small blue-text" href="{% url 'add_subject_allocation' %}">Click to allocate</a>
+                          </small>
+                      {% endfor %}
+                    </td>
+                    <td>
+                      {{ i.clss }}
+                    </td>
+                    <td>
+                      <a data-toggle="tooltip"
+                        data-placement="top"
+                        title="Click on Allocate Subject to update" class="teal-text">
+                        <i class="fa fa-pen"></i>
+                      </a>
+                      <a object-id="{% url 'delete_all_allocated_subjects' id=i.pk %}" href="#" title="Delete" class="red-text deallocate_all" data-toggle="modal" data-target="#modalConfirmDelete"><i class="fa fa-times"></i></a>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <span>No data available</span>
+                  {% endfor %}
+                </tbody>
+                <!--Table body-->
+              </table>
+              <!--Table-->
+            </div>
+
+            <hr class="my-0">
+
+            <hr class="my-0">
+
+            <!--Bottom Table UI-->
+            <div class="d-flex justify-content-between">
+              <!--Pagination -->
+              <nav class="my-4">
+                <ul class="pagination pagination-circle pg-blue mb-0">
+                  <!--Arrow left-->
+                  <li class="page-item disabled">
+                    <a class="page-link" aria-label="Previous">
+                      <span aria-hidden="true">&laquo; Previous</span>
+                    </a>
+                  </li>
+                  <!--Arrow right-->
+                  <li class="page-item disabled">
+                    <a class="page-link" aria-label="Next">
+                      <span aria-hidden="true">&raquo; Next</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+              <!--/Pagination -->
+
+            </div>
+            <!--Bottom Table UI-->
+
+          </div>
+        </div>
+
+      </Assign Teacher>
+      <!--Assign Teacher: Basic examples-->
+      <!-- Button trigger modal-->
+
+        <!--Modal: modalConfirmDelete-->
+        <div class="modal fade" id="modalConfirmDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
+            <!--Content-->
+            <div class="modal-content text-center">
+              <!--Header-->
+              <div class="modal-header d-flex justify-content-center">
+                <p class="heading">This will remove all subjects allocated to
+                  <b id="allocatedto"></b></p>
+              </div>
+
+              <!--Body-->
+              <div class="modal-body">
+                <small>All of the following subjects will be deleted</small>
+
+                <i class="fas fa-times fa-4x animated rotateIn"></i>
+                <ul class="list-group" id="lsub"></ul>
+                <small>Are sure to continue ?</small>
+                <p>You cannot undo this operation</p>
+
+              </div>
+
+              <!--Footer-->
+              <div class="modal-footer flex-center">
+                <a href="" id="confirmed" class="btn  btn-outline-danger">Yes</a>
+                <a type="button" class="btn  btn-danger waves-effect" data-dismiss="modal">No</a>
+              </div>
+            </div>
+            <!--/.Content-->
+          </div>
+        </div>
+        <!--Modal: modalConfirmDelete-->
+    </div>
+  {% endblock main %}
+  {% block script %}
+  <script src="{% static 'js/sms/sms_script.js' %}"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+       $("#firstTerm").click(function(){
+          $("#firstTerm").attr('name', 'term')
+        });
+
+       $("#secondTerm").click(function(){
+          $("#secondTerm").attr('name', 'term')
+        });
+
+       $("#thirdTerm").click(function(){
+          $("#thirdTerm").attr('name', 'term')
+        });
+
+       $(".deallocate_all").click(function(){
+          var row = $(this).closest("tr > td");
+          var link = $(row).find(".deallocate_all").attr('object-id');
+          $("#confirmed").attr('href', link);
+
+          var row1 = $(this).closest("tbody > tr");
+          var teacher = $(row1).find(".teachername").attr('teacher');
+          $("#allocatedto").text(teacher);
+
+          var row2 = $(this).closest("tbody > tr");
+          var subject = $(row2).find(".subject_name").text();
+          // $("#lsub").html(
+
+          //   )
+          var a = subject.split(",")
+          var arr = new Array()
+          for (var i = a.length - 1; i >= 0; i--) {
+            arr.push('<li class="list-group-item">'+a[i]+'</li>');
+          $("#lsub").html(arr)
+          }
+       });
+    });
+  </script>
+  {% endblock script %}
