@@ -1,132 +1,550 @@
 {% load static tags %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="{% static 'pdf/terminalreport.css' %}">
 </head>
-<body>
-    {% for index, result in results.items %}
-    <div class="mainterminalreport">
-        <div class="terminal-headers">
-            <div class="terminal-logo">
-                <img src="{{setting.school_logo}}" alt="school logo">
-            </div>
-            <div class="school-name">
-                <h2>{{setting.school_name}}</h2>
-            </div>
-        </div>
-        <div class="terminal-infos">
-            <div class="school-address">
-                <h4><b>{{setting.school_name}}</b></h4>
-                <p>{{setting.school_address}}</p>
-                <p>Phone : 07033389645</p>
-                <p>Email: mail@bitpoint.com</p>
-            </div>
-            <div class="student-profile">
-                <h4><b>{{result.0.user.get_full_name|title}}</b></h4>
-                <p>Session: <b>{{result.0.year_of_admission}}</b>
-                <p>Position :  <b>{% get_rank result.0.student_rank %}</b></p>
-                <p>Roll No. : <b>{{result.0.roll_number}}</b>, Class: <b>{{result.0.in_class}}</b></p>
-                <p>Reg. No. : <b>{{result.0.roll_number}}</b></p>  
-                <p>Out Of: <b>{{number_of_student}}</b></p>
-                <p>Term : <b>{{term}}</b></p>
 
+<body>
+    <div class="row">
+        <div class="col-sm-12" style="margin:10px 0px"></div>
+    </div>
+    {% for index, result in results.items %}
+    <div class="box">
+        <div>
+            <style type="text/css">
+                table {
+                    font-family: arial, sans-serif;
+                    border-collapse: collapse;
+                    width: 100%;
+                }
+                
+                .mainprogresscardreport {
+                    margin: 0px;
+                    overflow: hidden;
+                    border: 1px solid #ddd;
+                    max-width: 815px;
+                    height: auto;
+                    margin: 0px auto;
+                    margin-bottom: 10px;
+                    padding: 20px;
+                    color: #1f2020;
+                }
+                
+                .progresscard-headers {
+                    border-bottom: 1px solid #ddd;
+                    overflow: hidden;
+                    padding-bottom: 10px;
+                    vertical-align: middle;
+                    margin-bottom: 4px;
+                }
+                
+                .progresscard-logo {
+                    float: left;
+                }
+                
+                .progresscard-headers img {
+                    width: 60px;
+                    height: 60px;
+                }
+                
+                .school-name h2 {
+                    float: left;
+                    padding-left: 20px;
+                    padding-top: 7px;
+                    font-weight: bold;
+                }
+                
+                .progresscard-infos {
+                    width: 100%;
+                    overflow: hidden;
+                }
+                
+                .progresscard-infos h3 {
+                    padding: 2px 0px;
+                    margin: 0px;
+                }
+                
+                .progresscard-infos p {
+                    margin-bottom: 3px;
+                    font-size: 15px;
+                }
+                
+                .school-address {
+                    float: left;
+                    width: 40%;
+                }
+                
+                .student-profile {
+                    float: left;
+                    width: 40%;
+                }
+                
+                .student-profile-img {
+                    float: left;
+                    width: 20%;
+                    text-align: right;
+                }
+                
+                .student-profile-img img {
+                    width: 120px;
+                    height: 120px;
+                    border: 1px solid #ddd;
+                    margin-top: 5px;
+                    margin-right: 2px;
+                }
+                
+                @media screen and (max-width: 480px) {
+                    .school-name h2 {
+                        padding-left: 0px;
+                        float: none;
+                    }
+                    .school-address {
+                        width: 100%;
+                    }
+                    .student-profile {
+                        width: 100%;
+                    }
+                    .student-profile-img {
+                        margin-top: 10px;
+                        width: 100%;
+                    }
+                    .student-profile-img img {
+                        width: 100%;
+                        height: 100%;
+                        margin: 10px 0px;
+                    }
+                }
+                
+                .progresscard-contents {
+                    width: 100%;
+                    overflow: hidden;
+                    margin-top: 10px;
+                }
+                
+                .progresscard-contents table {
+                    width: 100%;
+                }
+                
+                .progresscard-contents table tr,
+                .progresscard-contents table td,
+                .progresscard-contents table th {
+                    border: 1px solid #ddd;
+                    padding: 8px 1px;
+                    font-size: 14px;
+                    text-align: center;
+                }
+                
+                @media print {
+                    .mainprogresscardreport {
+                        border: 0px solid #ddd;
+                        padding: 0px 20px;
+                    }
+                    .student-profile-img img {
+                        margin-right: 5px !important;
+                    }
+                    .progresscard-contents table td,
+                    .progresscard-contents table th {
+                        font-size: 12px;
+                    }
+                }
+                
+                #third_table td {
+                    border: 1px solid #565353;
+                    padding: 5px;
+                    padding-left: 11px;
+                    padding-right: 10px;
+                }
+            </style>
+            <!-- form start -->
+            <div class="box-body" style="margin-bottom: 50px;">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="mainprogresscardreport">
+                            <div style="border: 3px solid green; padding: 10px;">
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td align="left" style="width:20%;">
+                                            <img src="{{ setting.get_logo }}" alt="school logo" style="height: 55px; width: 60px; float: left;">
+                                        </td>
+
+                                        <td align="center" style="width: 60%;">
+                                            <span style="font-size:18px;">
+                                {{ setting.school_name|title }}
+                              </span>
+                                            <p>&nbsp;</p>
+                                            <p style="font-size:12px;  margin-top:-30px;">
+                                                MOTTO: {{ setting.school_slogan }}
+                                            </p>
+                                            <p>&nbsp;</p>
+                                            <p style="font-size:12px;  margin-top:-35px;">
+                                                {{ setting.school_address }}
+                                            </p>
+                                        </td>
+
+                                        <td align="right" style="width: 20%;">
+                                            <img height="120" width="110" src="{{ result.0.user.get_picture }}" alt="student" style="float: right;">
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br/>
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td align="left" style="width:50%;">
+                                            <p style="font-size:11px;">NAME: {{ result.0.user.get_full_name|upper }}</p>
+                                        </td>
+                                        <td align="left" style="width: 50%;">
+                                            <p style="font-size:12px;">Final Grade: A</p>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td style="width:100%;">
+                                            <table style="font-size:11px;float:left;">
+                                                <tr>
+                                                    <td style="color:green;"><b>Class:</b></td>
+                                                    <td>&nbsp;&nbsp;{{ result.0.in_class }}</td>
+
+                                                    <td style="color:green;">
+                                                      <b>&nbsp;&nbsp;Final Position:</b></td>
+                                                    <td>{% get_rank result.0.student_rank %}</td>
+
+                                                    <td style="color:green;"></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="color:green;"><b>Batch:</b></td>
+                                                    <td>&nbsp;&nbsp;{{ batch }}</td>
+                                                    <td style="color:green;"><b>&nbsp;&nbsp;Total Score: </b></td>
+                                                    <td>{{ result.0.total_mark }}&nbsp;&nbsp;</td>
+                                                    <td>&nbsp;&nbsp;ATTENDANCE</td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="color:green;"><b>Session:</b></td>
+                                                    <td>&nbsp;&nbsp;{{ result.0.session }}</td>
+                                                    <td style="color:green;"><b>&nbsp;&nbsp;Final Average: </b></td>
+                                                    <td> -- </td>
+                                                    <td style="color:green;"><b> Days School Open: </b></td>
+                                                    <td> -- </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="color:green;"><b> Term: </b></td>
+                                                    <td>&nbsp;&nbsp;{{ term }} </td>
+                                                    <td style="color:green;"><b>&nbsp;&nbsp;Highest Ave. in Class:</b></td>
+                                                    <td>{{ highest }}</td>
+                                                    <td style="color:green;"><b>Day(s) Present:</b></td>
+                                                    <td>0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="color:green;"><b>Admission No:</b></td>
+                                                    <td>&nbsp;&nbsp;{{ result.0.user.username }}</td>
+                                                    <td style="color:green;"><b>&nbsp;&nbsp;Lowest Ave. in Class:</b></td>
+                                                    <td>{{ lowest }} &nbsp;&nbsp;</td>
+                                                    <td style="color:green;"><b>Day(s) Absent:</b></td>
+                                                    <td>--</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="color:green;"><b>No. in Class:</b></td>
+                                                    <td>&nbsp;&nbsp;{{ number_of_student }} </td>
+                                                </tr>
+
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                                </br>
+                                <table style="width:100%; font-size:14px;">
+                                    <tr>
+                                        <td align="left">COGNITIVE DOMAIN</td>
+                                    </tr>
+                                </table>
+
+                                <table cellpadding="0" cellspacing="0" style="font-size:10px; width: 100%; text-align:center;" id="third_table">
+                                    <tr>
+                                        <td><b>SUBJECT:</b></td>
+                                        <td><b>CA1</b></td>
+                                        <td><b>CA2</b></td>
+                                        <td><b>Exam</b></td>
+                                        <td><b>TOTAL</br> (100%)</b></td>
+                                        <td><b>GRD</b></td>
+                                        <td><b>POS</b></td>
+                                        <td><b>OUT OF</b></td>
+                                        <td><b>LOW. IN CLASS</b></td>
+                                        <td><b>HIGH. IN CLASS</b></td>
+                                        <td><b>CLASS AVE</b></td>
+                                        <td><b>COMMENT</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td>English</td>
+                                        <td>3</td>
+                                        <td>5</td>
+                                        <td>4</td>
+                                        <td>55</td>
+                                        <td>A</td>
+                                        <td>1st</td>
+                                        <td>3</td>
+                                        <td>1</td>
+                                        <td>9</td>
+                                        <td>77.6</td>
+                                        <td>Good</td>
+                                    </tr>
+                                </table>
+                                <br/>
+                                <table cellpadding="0" cellspacing="0" style="width:100%;">
+                                    <tr>
+                                        <td style="width:50%;">
+                                            <p style="font-size:15px;">GRADE DETAILS:</p>
+                                        </td>
+                                        <td style="width:50%;">
+                                            <p style="font-size:14px;">No. of Subjects: --</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br/>
+                                <table cellpadding="0" cellspacing="0" style="width:100%;">
+                                    <tr>
+                                        <td style="font-size:14px;">
+                                            {% for scale in gradeScale %} {{ scale.grade }} = {{ scale.mark_from }} - {{ scale.mark_upto }} | {% endfor %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                    </tr>
+                                </table>
+
+                                <table cellpadding="0" cellspacing="0" style="width:100%;">
+                                    <tr>
+
+                                        <td style="width:50%;">
+                                            <table id="third_table">
+
+                                                <tr>
+                                                    <td>AFFECTIVE</td>
+                                                    <td>RATING</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Attentiveness</td>
+                                                    <td>4</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Perseverance</td>
+                                                    <td>5</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Relationship with Teachers</td>
+                                                    <td>5</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Punctuality</td>
+                                                    <td>5</td>
+                                                </tr>
+                                            </table>
+                                            <table>
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+
+                                        <td style="width:10%;">
+                                            <table>
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td style="width:10%;">
+                                            <table>
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+
+                                        <td style="width:50%;">
+                                            <table id="third_table">
+                                                <tr>
+                                                    <td>PSYCHOMOTOR</td>
+                                                    <td>RATING</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>Handwriting</td>
+                                                    <td>4</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Verbal</td>
+                                                    <td>5</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Handling Tools</td>
+                                                    <td>5</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Drawing &amp; Painting</td>
+                                                    <td>3</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Musical Skills</td>
+                                                    <td>5</td>
+                                                </tr>
+                                            </table>
+
+                                            <table>
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+                                            </table>
+
+                                            <table id="third_table">
+                                                <tr>
+                                                    <td>SCALE</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>1 - No Observable Trait</td>
+                                                </tr>
+                                            </table>
+
+                                        </td>
+
+                                    </tr>
+
+                                </table>
+
+                                <table cellpadding="0" cellspacing="0" style="width:100%; margin-top:-2%;">
+                                    <tr>
+                                        <td style="width:60%;">
+                                            <table style="font-size:12px;">
+                                                <tr>
+                                                    <td><span style="color:green;"> <b>FORM TEACHER:</b></span>--</td>
+                                                    <td style="font-size:13px;"></td>
+                                                </tr>
+                                                <br/>
+                                                <tr>
+                                                    <td style="">
+                                                        <p style="color:green;"><b>FORM TEACHER'S COMMENT:</b></p>
+                                                    </td>
+                                                    <td style="font-size:13px;">--</td>
+                                                </tr>
+                                                <br/>
+                                                <tr>
+                                                    <td style="">
+                                                        <p style="color:green;"><b>PRINCIPAL'S COMMENT:</b></p>
+                                                    </td>
+                                                    <td style="font-size:13px;">--</td>
+                                                </tr>
+
+                                                <br/>
+                                                <tr>
+                                                    <td style="">
+                                                        <p style="color:green;">
+                                                            <b>
+            {% if term == "First" %}
+                    Second Term Begins: {{ setting.st_begins }}
+                {% elif term == "Second" %}
+                    Third Term Begins: {{ setting.tt_begins }}
+                {% else %}
+                    First Term Begins: {{ setting.ft_begins }}
+            {% endif %}
+            </b>
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td style="width:40%;">
+
+                                            <table style="font-size:13px; ">
+
+                                                <tr>
+                                                    <td align="right">
+                                                        <br/>
+                                                        <br/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right">
+                                                        <br/>
+                                                        <br/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right">
+                                                        <img src="" alt="signature" style="height: 50px; width: 90px; float: left;">
+                                                        <br/>
+                                                        <p style="font-size:14px; color:green; text-align:center;">Signatury</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <div class="progresscard-contents progresscardreporttable mCustomScrollbar _mCS_1 mCS_no_scrollbar">
+                                    <div id="mCSB_1" class="mCustomScrollBox mCS-light mCSB_horizontal mCSB_inside" style="max-height: none;" tabindex="0">
+                                        <div id="mCSB_1_container" class="mCSB_container mCS_x_hidden mCS_no_scrollbar_x" style="position: relative; top: 0px; left: 0px; width: 100%;" dir="ltr">
+
+                                        </div>
+                                        <div id="mCSB_1_scrollbar_horizontal" class="mCSB_scrollTools mCSB_1_scrollbar mCS-light mCSB_scrollTools_horizontal" style="display: none;">
+                                            <div class="mCSB_draggerContainer">
+                                                <div id="mCSB_1_dragger_horizontal" class="mCSB_dragger" style="position: absolute; min-width: 30px; width: 0px; left: 0px;">
+                                                    <div class="mCSB_dragger_bar"></div>
+                                                </div>
+                                                <div class="mCSB_draggerRail"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="page-break-after: always;">&nbsp;</p>
+                    </div>
+                    <?php } ?>
+                </div>
             </div>
-            <div class="student-profile-img">
-                <img class="profileimg" src="{{ result.0.user.get_picture }}" alt="">
-            </div>
-        </div>
-        <div class="terminal-contents">
-            <h4>Terminal Report</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Subjects</th>
-                        <th>CA 1</th>
-                        <th>CA 2</th>
-                        <th>EXAM</th>
-                        <th>Total</th>
-                        <th>Position</th>
-                        <th>Grade</th>
-                        <th>Remark</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in result.1 %}
-                    <tr>
-                        <td>{% get_subject item.subject_id %}</td>
-                        <td>{{item.fca}}</td>
-                        <td>{{item.sca}}</td>
-                        <td>{{item.exam}}</td>
-                        <td>{{item.total|default_if_none:''}}</td>
-                        <td>{% get_rank item.rank %}</td>
-                        <td>{{item.grade|default_if_none:''}}</td>
-                        <td>{{item.remark|default_if_none:''}}</td>
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                        <td>Total</td>
-                        <td>{{result.0.total_mark }}</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    
-                    <tr>
-                        <td colspan="col-4)">Average : 34.07</td>
-                        <td colspan="4"><b>Class Average : 43.43</b>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">Promoted To</td>
-                        <td colspan="col-2"></td>
-                    </tr>
-                     <tr>
-                        <td colspan="2">Highest In class</td>
-                        <td colspan="col-2">{{highest}}</td>
-                    </tr>
-                     <tr>
-                        <td colspan="2">Lowest In class</td>
-                        <td colspan="col-2">{{lowest}}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">Attendance</td>
-                        <td colspan="col-2">0</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">Form Teacher Remarks</td>
-                        <td colspan="col-2"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">House Teacher's Remark</td>
-                        <td colspan="col-2"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">Principal's Remark</td>
-                        <td colspan="col-2"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="col">Results Intepretation : 
-                            <b>
-                                {% for scale in gradeScale %}
-                                    {{ scale.grade }} = 
-                                    {{ scale.mark_from }} - 
-                                    {{ scale.mark_upto }} |
-                                {% endfor %}
-                            </b>
-                        </td>
-                    </tr> 
-                </tbody>
-            </table>
         </div>
     </div>
-    <p style="page-break-after: always;">&nbsp;</p>
     {% empty %}
     <div class="notfound">
         No Student Found
     </div>
     {% endfor %}
 </body>
+
 </html>

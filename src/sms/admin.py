@@ -2,11 +2,15 @@ from django.contrib import admin
 from .models import *
 
 class GradeAdmin(admin.ModelAdmin):
-	list_display = ['score', 'remark', 'grade', 'total']
+	list_display = ['student', 'subject', 'remark', 'grade', 'total', 'term', 'session']
 
 
 class ScoreAdmin(admin.ModelAdmin):
-	list_display = ['student', 'mark_percentage', 'subject', 'score']
+	list_display = ['student', 'mark_percentage', 'subject', 'score', 'term', 'session']
+
+	search_fields = ['mark_percentage', 'student', 'subject']
+
+	list_filter = ['mark_percentage', 'student', 'subject']
 
 
 admin.site.register(Session)

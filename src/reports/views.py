@@ -1,7 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from utils.decorators import admin_required
 from django.db.models import Sum, CharField, Value
+from sms.models import Class, Session, Student, Batch, Grade, Setting, GradeScale
+from django.contrib import messages
+from django.http import HttpResponse
+from django.template.loader import get_template
+from weasyprint import HTML, CSS
 
 INDEX = lambda items, key, item: list(items.values_list(key, flat=True)).index(item)+1
 
@@ -37,6 +42,7 @@ def report_card_sheet_view(request):
 def report_student(request):
 	data = request.POST
 	obj_id = data.get('pk') or None
+	batch_id = data.get('batch') or None
 	template ='reports/reportcard_sheet.html'
 	class_id = data.get('class')
 	term = data.get('term')
@@ -50,13 +56,16 @@ def report_student(request):
 		messages.success(request, 'No students exists for class %s in term %r '%(clss, term))
 		return redirect('create_report_student')
 
-	subjects = clss.subjects.all()
+	batch = Batch.objects.get(id=batch_id)
+	subjects = batch.subjects.all()
+	students = batch.student_set.all()
 
 	if not subjects.exists():
 		messages.success(request, 'No subjects exists for class %s in term %r '%(clss, term))
 		return redirect('create_report_student')
 
-	grades = Grade.objects.filter(term=term, student__in_class=clss,session=current_session).order_by('-total')
+
+	grades = Grade.objects.filter(term=term, student__in=students, session=current_session).order_by('-total')
 	if not grades.exists():
 		messages.success(request, 'No grades exists for class %s in %r term'%(clss, term))
 		return redirect('create_report_student')
@@ -89,14 +98,15 @@ def report_student(request):
 		return redirect('create_report_student')
 
 	response = HttpResponse(content_type='application/pdf')
-	response['Content-Disposition'] = 'attachment; filename="report.pdf"'
-	# return render(request, template, context)
-	setting = Setting.objects.first()
-	scale = GradeScale.objects.all().order_by('grade')
-	se_tion = Session.objects.get(current_session=True)
-	context = {'results':records,'term':term,'setting':setting, 'highest':highest, 'lowest':lowest, 'number_of_student': grades_ordered.count(), 'gradeScale': scale, 'se_tion': se_tion}
+	response['Content-Disposition'] = 'attachment; filename="reportcard_sheet.pdf"'
 
-	from weasyprint import HTML, CSS
+	setting = Setting.objects.first()
+	scale = GradeScale.objects.filter(section=clss.section).order_by('grade')
+	session = Session.objects.get(current_session=True)
+	context = {'results':records,'term':term,'setting':setting, 
+			'highest':highest, 'lowest':lowest, 'number_of_student': grades_ordered.count(), 
+			'gradeScale': scale, 'session': session, 'batch': batch}
+
 	template = get_template(template)
 	html = template.render(context)
 

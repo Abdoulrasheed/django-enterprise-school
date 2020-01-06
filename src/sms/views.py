@@ -9,7 +9,7 @@ from django.views import View
 from django.contrib import messages
 from django.urls import reverse_lazy
 from utils.helper import BulkCreateManager
-from .remark import getRemark, getGrade
+from .remark import getRemark, get_grade
 from frontend.models import OnlineAdmission
 from django.views.generic import CreateView, TemplateView, UpdateView, DeleteView, ListView, FormView
 from django.template.loader import render_to_string
@@ -30,7 +30,6 @@ from django.shortcuts import (
 		render_to_response
 	)
 
-from django.template.loader import get_template
 from utils.decorators import (teacher_required, 
 		student_required, 
 		parent_required,
@@ -307,7 +306,6 @@ def load_batches(request):
     class_id = request.GET.get('class')
     if class_id:
     	batches = Batch.objects.filter(clss_id=class_id)
-    	print(batches)
     else:
     	batches = Batch.objects.none()
     return render(request, 'ajax/batch_dropdown_list_options.html', {'batches': batches})
@@ -379,8 +377,6 @@ def delete_section_allocation(request, id):
 	allocated_section.delete()
 	messages.success(request, "You've Successfully deallocated "+str(allocated_section.section)+" Section from "+ str(allocated_section.section_head.get_full_name()))
 	return HttpResponseRedirect(reverse_lazy('section_allocation'))
-
-
 
 @method_decorator(login_required, name='dispatch')
 class SubjectListView(ListView):
@@ -636,9 +632,6 @@ def score_list(request):
 
 @method_decorator(login_required, name='dispatch')
 class ScoreEntry(View):
-	from django.forms import modelformset_factory
-	ScoreFormSet = modelformset_factory(Score, fields=('score',), extra=0)
-
 	def get(self, request):
 		class_id = request.GET.get('class')
 		batch_id = request.GET.get('batch')
@@ -647,129 +640,53 @@ class ScoreEntry(View):
 		section_id = Class.objects.get(pk=class_id).section_id
 
 		grade_scale = GradeScale.objects.filter(section_id=section_id).values('mark_from', 'mark_upto', 'grade')
-
+		mark_percentages = MarkPercentage.objects.filter(section_id=section_id)
 		score_permission = ScorePermission.objects.get(
 			session=Session.objects.get_current_session(),
 			section_id=section_id,
 			)
-
 		batch = Batch.objects.get(pk=batch_id)
 		students = batch.student_set.all() if not subject.subject_type == OPTIONAL else batch.student_set.filter(optional_subjects__pk__in=subject_id)
-		mark_percentages = MarkPercentage.objects.filter(section_id=section_id)
+
 		ct = {
 			'mark_percentages':mark_percentages, 'students': students, 
-			'score_permission': score_permission, 'today': tz.now(), 'grade_scale': grade_scale}
+			'score_permission': score_permission, 'today': tz.now(), 
+			'grade_scale': grade_scale, 'subject': subject, 'section': section_id}
 		return render(request, 'mark/load_score_table.html', ct)
 
-
-@login_required
-@teacher_required
-def score_entry(request):
-	subject = request.POST.get('subject')
-	session = Session.objects.get_current_session()
-	classes = Class.objects.all()
-	term = get_terms()
-	context = {"classes": classes, 'term':get_terms()}
-
-	if request.method == 'POST':
+	def post(self, request):
+		subject = request.POST.get('subject')
 		subject = Subject.objects.get(pk=subject)
-		ca1 = list(request.POST.getlist('ca1'))
-		ca2 = list(request.POST.getlist('ca2'))
-		exam = list(request.POST.getlist('exam'))
-		stud_id = list(request.POST.getlist('student_id'))
+		score_list = request.POST.getlist('score')
+		section_id = request.POST.get('section')
+		stud_id = request.POST.getlist('student_id')
 
-		for i in range(0, len(stud_id)):
-			student = Student.objects.get(pk=stud_id[i])
-			total = int(ca1[i] or '0') + int(ca2[i] or '0') + int(exam[i] or '0')
-			grade, created = Grade.objects.get_or_create(session=session, term=term, student=student, subject=subject)
-			if not created:
-					grade.fca=ca1[i]
-					grade.sca=ca2[i]
-					grade.exam=exam[i]
-					grade.total=total
-					grade.grade=getGrade(total)
-					grade.remark=getRemark(total)
-					#grade.compute_position(term)
-					grade.save()
-			else:
-				a = Grade.objects.get(
-				session=session,
-				term=term,
-				student=student,
-				subject=subject)
-				a.fca=ca1[i]
-				a.sca=ca2[i]
-				a.exam=str(exam[i])
-				a.total=total
-				a.remark = getRemark(total)
-				a.grade = getGrade(total)
-				#a.compute_position(term)
-				a.save()
-		messages.success(request, "Score Successfully Recorded !")
-		return redirect('score_list')
+		mp = MarkPercentage.objects.filter(section_id=section_id)
+		term = get_terms()
 
-	selected_class = request.GET.get('class')
-	selected_term = request.GET.get('term')
-	selected_subject = request.GET.get('subject')
-	if request.user.is_superuser:
-		if not None in [selected_class, selected_term, selected_subject]:
-			selected_class = Class.objects.get(pk=selected_class)
-			current_session = session
-			students = Student.objects.filter(in_class__name=selected_class, session=session)
+		session = Session.objects.get_current_session()
+		students_list = Student.objects.filter(id__in=stud_id)
 
-			student_data = []
-			for student in students:
-				term = request.GET.get('term')
-				subject = request.GET.get('subject')
-				subject = Subject.objects.get(pk=subject)
-				# grade, created = Grade.objects.get_or_create(session=session, term=term, student=student, subject=subject)
-				grade_obj = Grade.objects.filter(
-				session=current_session,
-				term=term,
-				student=student,
-				subject=subject).first() or Grade.objects.none()
+		score_list = []
 
-				student_data += [(student, grade_obj)]
-			context.update({
-				"classes": classes,
-				"selected_subject": selected_subject,
-				"selected_class": selected_class,
-				"selected_term": selected_term,
-				"students": students,
-				"student_data":student_data
-				})
-			return render(request, 'mark/load_score_table.html', context)
-	elif request.user.is_teacher:
-		if not None in [selected_term, selected_subject]:
-			selected_class_id = request.GET.get('scid')
-			selected_class = Class.objects.get(id=selected_class_id)
-			selected_class_name = selected_class.name
-			current_session = Session.objects.get(current_session=True)
-			students = Student.objects.filter(in_class__name=selected_class, session=current_session)
+		for i in mp:
+			key = f'score-{i.id}'
+			score_list = request.POST.getlist(key)
 
-			subject = request.GET.get('subject')
-			subject = Subject.objects.get(pk=subject)
-			student_data = []
-			for student in students:
-				term = request.GET.get('term')
-				grade_obj = Grade.objects.filter(
-					session=current_session,
-					term=term,
-					student=student,
-					subject=subject).first() or Grade.objects.none()
-
-				student_data += [(student, grade_obj)]
-
-			context.update({
-				"classes": classes,
-				"selected_subject": selected_subject,
-				"selected_class_name": selected_class_name,
-				"selected_term": selected_term,
-				"students": students,
-				"student_data":student_data})
-		return render(request, 'mark/load_score_table.html', context)
-	return render(request, 'mark/get_score_list.html', context)
-
+			for c, s in enumerate(students_list): # counter, student
+				obj, created = Score.objects.get_or_create(
+					session=session, term=term, 
+					student=s, subject=subject, mark_percentage=i)
+				if not created:
+					obj.score = score_list[c] or 0
+					obj.save()
+				else:
+					obj = Score.objects.get(
+					session=session, term=term, 
+					student=s, subject=subject, mark_percentage=i)
+					obj.score = score_list[c] or 0
+					obj.save()
+		return HttpResponse('success')
 
 
 

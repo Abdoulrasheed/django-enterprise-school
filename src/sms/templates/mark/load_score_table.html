@@ -1,7 +1,7 @@
-{% load humanize %}
-<form method="post" action="{% url 'score_entry' %}">{% csrf_token %}
-   <input type="hidden" name="subject" id="sel_subject" value="">
-   <input type="hidden" name="term" id="sel_term" value="">
+{% load humanize tags %}
+<form method="post" id="scores" action="{% url 'score_entry' %}">{% csrf_token %}
+   <input type="hidden" name="subject" id="sel_subject" value="{{ subject.pk }}">
+   <input type="hidden" name="section" value="{{ section }}">
       {% with score_permission.end_time as set_date %}
      {% if set_date >  today %}
        <small style="color: {% if set_date < 5 %} red {% else %} blue {% endif %}">
@@ -9,8 +9,6 @@
       </small>
    <table class="table table-bordered table-responsive-md table-striped text-center">
       <tr>
-         {% for student, gr in gr %}
-         {% endfor %}
          <th class="text-center">Student</th>
          <th class="text-center">Picture</th>
          <th class="text-center">Roll</th>
@@ -26,7 +24,7 @@
          {% for student in students %}
       <tr>
          <td class="pt-3-half text-left" contenteditable="false">
-            <input type="hidden" name="student_id" value="{{ each.id }}">
+            <input type="hidden" name="student_id" value="{{ student.id }}">
                {{ student.user.get_full_name }}
          </td>
          <td class="pt-3-half" contenteditable="false">
@@ -37,12 +35,18 @@
          </td>
             {% for markpercent in mark_percentages %}
          <td class="pt-3-half" contenteditable="false">
-            <input max="{{ markpercent.percentage }}" value="{{ grade.fca }}"  style="border-style: inset; width: 50px;" max="30" type="number" name="{{ markpercent.name }}" class="form from-group score">
+            <input max="{{ markpercent.percentage }}" value="{% get_score student markpercent subject %}"  style="border-style: inset; width: 50px;" type="number" name="score-{{ markpercent.id }}" class="form from-group score">
          </td>
             {% endfor %}
          <td class="pt-3-half text-center total" contenteditable="false"></td>
 
-          <td class="pt-3-half text-center grade" contenteditable="false"></td>
+         <td class="pt-3-half text-center grade" contenteditable="false"></td>
+           <td class="total_td" hidden>
+            <input type="hidden" class="rtotal" name="total">
+         </td>
+           <td class="grade_td" hidden>
+            <input type="hidden" class="rgrade" name="grade">
+         </td>
       </tr>
       {% endfor %}
    </table>
@@ -73,13 +77,13 @@
       var maximum_value = $(this).attr('max');
       var score_name = $(this).attr('name');
       var score = $(this).val();
-      if (parseFloat(score) > parseFloat(maximum_value)){
+      if (parseFloat(score) > parseFloat(maximum_value) || parseFloat(score) < -100){
          $(this).val("");
          toastr.error(`${score_name} must be less than or equal to ${maximum_value}`);
       }else{
 
          //Select all inputs in row of input that is changed and self (this or changed input)
-         var inputs = $(this).parent('td').siblings('td').addBack().find('input');
+         var inputs = $(this).parent('td').siblings('td').addBack().find('.score');
 
          //Use map to return array of only values on inputs in row that is changed
          var values = inputs.map(function() { return parseFloat($(this).val())}).get();
@@ -89,11 +93,13 @@
 
          //Find total cell in row that is changed
          $(this).parent().siblings('.total').text(total);
+         $(this).parent().siblings('.total_td').find('.rtotal').val(total);
 
          var grade = between(total);
 
          //Find grade cell in row that is changed
          $(this).parent().siblings('.grade').text(grade);
+         $(this).parent().siblings('.grade_td').find('.rgrade').val(grade);
 
          var $canfocus = $(':focusable');
          var index = $canfocus.index(document.activeElement) + 1;
@@ -103,4 +109,24 @@
          }
       }
    });
+
+    $("#scores").submit(function(e) {
+    console.log('submitting.....');
+
+    e.preventDefault();
+
+    var form = $(this);
+    var url = form.attr('action');
+
+    $.ajax({
+      type: "POST",
+      url: url,
+      data: form.serialize(),
+      success: function(data){
+        if(data=='success'){
+         toastr.success('Successfully recorded !');
+        }
+      }
+    });
+});
 </script>

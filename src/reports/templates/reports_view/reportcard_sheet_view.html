@@ -21,7 +21,7 @@
    <div class="card">
       <h6 class="mdb-color darken-3 card-header text-center white-text text-uppercase py-2">Students Report</h6>
       <div class="container">
-         <form method="post" action="{% url 'report_student' %}">{% csrf_token %}
+         <form id="form" data-batch-url="{% url 'ajax_load_batches' %}" method="post" action="{% url 'report_student' %}">{% csrf_token %}
          <div class="row">
 
             <div class="col-md-3">
@@ -34,21 +34,22 @@
             </select>
             </div>
             <div class="col-md-4">
-               <select name="class" class="mdb-select colorful-select dropdown-primary mx-2 md-form mt-3 md-dropdown">
+               <select name="class" id="id_class" class="mdb-select colorful-select dropdown-primary mx-2 md-form mt-3 md-dropdown">
               <option value="" disabled selected>Select Class</option>
               {% for class in classes %}
-                     <option value="{{class.pk}}">{{ class }}</option>
-                     {{ class }}
-
-                     {% endfor %}
-
+                <option value="{{class.pk}}">{{ class }}</option>
+               {{ class }}
+              {% endfor %}
+           </select>
+            </div>
+              <div class="col-md-4">
+               <select name="batch" id="id_batch" class="mdb-select colorful-select dropdown-primary mx-2 md-form mt-3 md-dropdown">
+              <option value="" disabled selected>Select a batch</option>
             </select>
             </div>
             <div class="col-md-5">
-                     <input type="submit" name="submit" class="btn btn-info" value="Generate PDF">
-
-               </div>
-
+               <input type="submit" name="submit" class="btn btn-info" value="Generate PDF">
+            </div>
          </div>
           </form>
       </div>
@@ -68,4 +69,37 @@
       </div>
    </div>
 </div>
+{% block script %}
+
+<script type="text/javascript">
+     $("#id_class").change(function(){
+      var class_id = $(this).val()
+      console.log(class_id)
+       var get_batches_url = $("#form").attr("data-batch-url");
+
+      $.ajax({
+        url: get_batches_url,
+        data: {
+          'class': class_id
+        },
+
+        beforeSend: function(){
+          $("#loader").removeAttr('hidden');
+        },
+
+        complete: function(){
+          $("#loader").attr('hidden', 'hidden');
+        },
+
+        success: function (data) { 
+          $("#id_batch").html(data);
+          console.log(data);
+          $('.batch_div').fadeIn(1000).removeAttr('hidden');
+        }
+
+      });
+    });
+
+</script>
+{% endblock %}
 {% endblock main %}

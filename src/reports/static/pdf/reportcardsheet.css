@@ -1,0 +1,144 @@
+table {
+                    font-family: arial, sans-serif;
+                    border-collapse: collapse;
+                    width: 100%;
+                }
+                .mainprogresscardreport{
+                    margin: 0px;
+                    overflow: hidden;
+                    border:1px solid #ddd;
+                    max-width:815px;
+                    height: auto;
+                    margin: 0px auto;
+                    margin-bottom: 10px;
+                    padding:20px;
+                    color:#1f2020;
+                }
+
+                .progresscard-headers{
+                    border-bottom: 1px solid #ddd;
+                    overflow: hidden;
+                    padding-bottom: 10px;
+                    vertical-align: middle;
+                    margin-bottom: 4px;
+                }
+
+                .progresscard-logo {
+                    float: left;
+                }
+
+                .progresscard-headers img{
+                    width: 60px;
+                    height: 60px;
+                }
+
+                .school-name h2{
+                    float: left;
+                    padding-left: 20px;
+                    padding-top: 7px;
+                    font-weight: bold;
+                }
+
+                .progresscard-infos {
+                    width: 100%;
+                    overflow: hidden;
+                }
+
+                .progresscard-infos h3{
+                    padding: 2px 0px;
+                    margin: 0px;
+                }
+
+                .progresscard-infos p{
+                    margin-bottom: 3px;
+                    font-size: 15px;
+                }
+
+                .school-address{
+                    float: left;
+                    width: 40%;
+                }
+
+                .student-profile {
+                    float: left;
+                    width: 40%;
+
+                }
+
+                .student-profile-img {
+                    float: left;
+                    width: 20%;
+                    text-align: right;
+                }
+
+                .student-profile-img img {
+                    width: 120px;
+                    height: 120px;
+                    border: 1px solid #ddd;
+                    margin-top: 5px;
+                    margin-right: 2px;
+                }
+
+                 @media screen and (max-width: 480px) {
+                    .school-name h2{
+                        padding-left: 0px;
+                        float: none;
+                    }
+
+                    .school-address {
+                        width: 100%;
+                    }
+
+                    .student-profile {
+                        width: 100%;
+                    } 
+
+                    .student-profile-img  {
+                        margin-top: 10px;
+                        width: 100%;
+                    }
+
+                    .student-profile-img img {
+                        width: 100%;
+                        height: 100%;
+                        margin: 10px 0px;
+                    }
+                }
+
+                .progresscard-contents {
+                    width: 100%;
+                    overflow: hidden;
+                    margin-top: 10px;
+                }
+
+                .progresscard-contents table {
+                    width: 100%;
+                }
+
+                .progresscard-contents table tr,.progresscard-contents table td,.progresscard-contents table th {
+                    border:1px solid #ddd;
+                    padding: 8px 1px;
+                    font-size: 14px;
+                    text-align: center;
+                }
+
+                @media print {
+                    .mainprogresscardreport{
+                        border:0px solid #ddd;
+                        padding: 0px 20px;
+                    }
+
+                    .student-profile-img img {
+                        margin-right: 5px !important;
+                    }
+
+                    .progresscard-contents table td,.progresscard-contents table th {
+                        font-size: 12px;
+                    }
+                }
+                #third_table td {
+                border:1px solid #565353; 
+                padding:5px;
+                padding-left: 11px;
+                padding-right: 10px;
+                }

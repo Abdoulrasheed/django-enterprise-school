@@ -1,7 +1,7 @@
 import math
 from django import template
 from schools.models import Client, Domain
-from sms.models import Setting
+from sms.models import Setting, Session, Score, get_terms as t
 from authentication.models import User
 from django_tenants.utils import schema_context
 
@@ -124,3 +124,13 @@ def in_group(user, group_name):
 	group_name = group_name.lower()
 	check = user.groups.filter(name=group_name).exists() or user.is_superuser
 	return check
+
+
+@register.simple_tag
+def get_score(student, mp, subject):
+	obj = Score.objects.filter(
+		student=student, mark_percentage=mp, subject=subject,
+		session=Session.objects.get_current_session(),
+		term=t()).first()
+	if obj: 
+		return obj.score

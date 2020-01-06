@@ -184,7 +184,7 @@ class MarkPercentage(models.Model):
 
 
 	def __str__(self):
-		return f"{self.percentage} - {self.section}"
+		return self.name
 
 	def get_absolute_url(self):
 	    return reverse('mark_percentage')
@@ -199,13 +199,16 @@ class Score(models.Model):
 	session 	= models.ForeignKey(Session, verbose_name=_('session'), null=True, on_delete=models.SET_NULL)
 
 	def __str__(self):
-		return f"{self.student} {self.score}"
+		return f"{self.subject.name} - {self.mark_percentage.name}"
 
 class Grade(models.Model):
-	score = models.ForeignKey(Score, verbose_name=_('score'), on_delete=models.CASCADE)
-	remark= models.CharField(_('remark'), max_length=50, blank=True, null=True)
-	grade = models.CharField(_('grade'), choices=GRADE, max_length=1, blank=True, null=True)
-	total = models.FloatField(_('total'), blank=True, null=True)
+	student 	= models.ForeignKey(Student, verbose_name=_('student'), null=True, on_delete=models.CASCADE)
+	remark		= models.CharField(_('remark'), max_length=50, blank=True, null=True)
+	grade 		= models.CharField(_('grade'), choices=GRADE, max_length=1, blank=True, null=True)
+	total 		= models.FloatField(_('total'), blank=True, null=True)
+	term 		= models.CharField(_('term'), choices=TERM, default="First", max_length=7)
+	session 	= models.ForeignKey(Session, verbose_name=_('session'), null=True, on_delete=models.SET_NULL)
+	subject 	= models.ForeignKey(Subject, verbose_name=_('subject'), null=True, on_delete=models.CASCADE)
 
 	class Meta:
 		verbose_name 		= _("Grade")
@@ -213,9 +216,6 @@ class Grade(models.Model):
 	
 	def __str__(self):
 		return f"{self.grade} - {self.student}"
-
-	def get_total_score(self):
-		pass
 
 class ScoreModificationLog(models.Model):
 	score 		= models.ForeignKey(Score, verbose_name=_('score'), null=True, on_delete=models.SET_NULL)
@@ -388,10 +388,10 @@ class Notification(models.Model):
 
 class GradeScale(models.Model):
 	section 	= models.ForeignKey(Section, verbose_name=_('section'), on_delete=models.CASCADE)
-	grade 		= models.CharField(_('grade'), choices=GRADE, max_length=100, unique=True)
-	mark_from 	= models.IntegerField(_('mark from'), unique=True)
-	mark_upto 	= models.IntegerField(_('mark upto'), unique=True)
-	remark 		= models.CharField(_('remark'), max_length=20, unique=True)
+	grade 		= models.CharField(_('grade'), choices=GRADE, max_length=100)
+	mark_from 	= models.IntegerField(_('mark from'))
+	mark_upto 	= models.IntegerField(_('mark upto'))
+	remark 		= models.CharField(_('remark'), max_length=20)
 	description = models.CharField(_('description'), max_length=50, blank=True, null=True)
 	color		= models.CharField(_('color'), max_length=20, default="#008000") # green
 
