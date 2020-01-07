@@ -1,9 +1,10 @@
 from django.urls import path
 from . import views
+from wkhtmltopdf.views import PDFTemplateView
 
 urlpatterns = [
 	path('reportcard_sheet/', views.report_card_sheet_view, name="create_report_student"),
-	path('reportcard_sheet/pdf', views.report_student, name="report_student"),
+	path('reportcard_sheet/pdf', views.ReportCardSheet.as_view(), name="report_student"),
 
 	path('class_members/', views.class_member_report_view, name="class_members_report_view"),
 	path('class_members/pdf', views.class_member_report, name="class_members_report"),

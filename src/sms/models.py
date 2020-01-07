@@ -194,7 +194,7 @@ class Score(models.Model):
 	student 	= models.ForeignKey(Student, verbose_name=_('student'), on_delete=models.CASCADE)
 	mark_percentage = models.ForeignKey(MarkPercentage, verbose_name=_('mark percentage'), null=True, on_delete=models.SET_NULL)
 	subject 	= models.ForeignKey(Subject, verbose_name=_('subject'), null=True, on_delete=models.SET_NULL)
-	score 		= models.FloatField(_('score'))
+	score 		= models.FloatField(_('score'), null=True, blank=True)
 	term 		= models.CharField(_('term'), choices=TERM, max_length=7)
 	session 	= models.ForeignKey(Session, verbose_name=_('session'), null=True, on_delete=models.SET_NULL)
 

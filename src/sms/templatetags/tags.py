@@ -133,4 +133,4 @@ def get_score(student, mp, subject):
 		session=Session.objects.get_current_session(),
 		term=t()).first()
 	if obj: 
-		return obj.score
+		return ('%f' % obj.score).rstrip('0').rstrip('.')

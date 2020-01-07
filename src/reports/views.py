@@ -2,11 +2,15 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from utils.decorators import admin_required
 from django.db.models import Sum, CharField, Value
-from sms.models import Class, Session, Student, Batch, Grade, Setting, GradeScale
+from sms.models import Class, Session, Student, Batch, Grade, Setting, GradeScale, MarkPercentage
 from django.contrib import messages
 from django.http import HttpResponse
 from django.template.loader import get_template
 from weasyprint import HTML, CSS
+from utils.constants import MANDATORY, OPTIONAL
+from django.views import View
+from wkhtmltopdf.views import PDFTemplateResponse
+from django.conf import settings
 
 INDEX = lambda items, key, item: list(items.values_list(key, flat=True)).index(item)+1
 
@@ -36,94 +40,87 @@ def report_card_sheet_view(request):
 	context = {"classes": classes}
 	return render(request, 'reports_view/reportcard_sheet_view.html', context)
 
+class ReportCardSheet(View):
+    template='reports/reportcard_sheet.html'
 
-@admin_required
-@login_required
-def report_student(request):
-	data = request.POST
-	obj_id = data.get('pk') or None
-	batch_id = data.get('batch') or None
-	template ='reports/reportcard_sheet.html'
-	class_id = data.get('class')
-	term = data.get('term')
-	if not any([class_id, term]):
-		messages.success(request, 'Missing data class %s in term %r '%(class_id, term))
-		return redirect('create_report_student')
-	clss = get_object_or_404(Class, pk=class_id)
-	current_session = Session.objects.get(current_session=True)
-	students = Student.objects.filter(in_class=clss, session=current_session)
-	if not students.exists():
-		messages.success(request, 'No students exists for class %s in term %r '%(clss, term))
-		return redirect('create_report_student')
+    def post(self, request):
+    	data = request.POST
+    	obj_id = data.get('pk') or None
+    	batch_id = data.get('batch') or None
+    	class_id = data.get('class')
+    	term = data.get('term')
 
-	batch = Batch.objects.get(id=batch_id)
-	subjects = batch.subjects.all()
-	students = batch.student_set.all()
+    	if not any([class_id, term]):
+    		messages.success(request, 'Missing data class %s in term %r '%(class_id, term))
+    		return redirect('create_report_student')
 
-	if not subjects.exists():
-		messages.success(request, 'No subjects exists for class %s in term %r '%(clss, term))
-		return redirect('create_report_student')
+    	clss = get_object_or_404(Class, pk=class_id)
+    	current_session = Session.objects.get(current_session=True)
+    	students = Student.objects.filter(in_class=clss, session=current_session)
+    	if not students.exists():
+    		messages.success(request, 'No students exists for class %s in term %r '%(clss, term))
+    		return redirect('create_report_student')
 
 
-	grades = Grade.objects.filter(term=term, student__in=students, session=current_session).order_by('-total')
-	if not grades.exists():
-		messages.success(request, 'No grades exists for class %s in %r term'%(clss, term))
-		return redirect('create_report_student')
+    	batch = Batch.objects.get(id=batch_id)
+    	subs = batch.subjects.filter(subject_type=MANDATORY)
+    	students = batch.student_set.all()
 
+    	if not subs.exists():
+    		messages.success(request, 'No subjects exists for class %s in term %r '%(clss, term))
+    		return redirect('create_report_student')
 
-	grades_ordered= grades\
-	.values('student')\
-	.annotate(total_mark=Sum('total'))\
-	.order_by('-total_mark')
-	total_marks = [i.get('total_mark') for i in grades_ordered]
-	records = {}
-	highest = grades_ordered.first()['total_mark']
-	lowest = grades_ordered.last()['total_mark']
-	count = 0
-	for student in students:
-		try:
-			total_mark = (grades_ordered.get(student=student.pk)['total_mark'])
-			setattr(student, 'total_mark', total_mark)
-			student_rank = total_marks.index(total_mark)+1
-			setattr(student, 'student_rank', student_rank)
-			count += 1
-			student_grades = grades.filter(student=student)
-			data = get_subject_report_data(grades, subjects, student, student_grades)
-			records[student.id] = (student,data)
+    	grades = Grade.objects.filter(term=term, student__in=students, session=current_session).order_by('-total')
+    	if not grades.exists():
+    		messages.success(request, 'No grades exists for class %s in %r term'%(clss, term))
+    		return redirect('create_report_student')
 
-		except Exception as e:
-			DB_LOGGER.error(e)
-	if not count:
-		messages.success(request, 'No reports exists for class %s in term %r '%(clss, term))
-		return redirect('create_report_student')
+    	grades_ordered= grades\
+    	.values('student')\
+    	.annotate(total_mark=Sum('total'))\
+    	.order_by('-total_mark')
+    	total_marks = [i.get('total_mark') for i in grades_ordered]
 
-	response = HttpResponse(content_type='application/pdf')
-	response['Content-Disposition'] = 'attachment; filename="reportcard_sheet.pdf"'
+    	records = {}
 
-	setting = Setting.objects.first()
-	scale = GradeScale.objects.filter(section=clss.section).order_by('grade')
-	session = Session.objects.get(current_session=True)
-	context = {'results':records,'term':term,'setting':setting, 
-			'highest':highest, 'lowest':lowest, 'number_of_student': grades_ordered.count(), 
-			'gradeScale': scale, 'session': session, 'batch': batch}
+    	highest = grades_ordered.first()['total_mark']
+    	lowest = grades_ordered.last()['total_mark']
+    	count = 0
 
-	template = get_template(template)
-	html = template.render(context)
+    	for student in students:
+    		subjects = student.optional_subjects.all() | subs
+    		try:
+    			total_mark = (grades_ordered.get(student=student.pk)['total_mark'])
+    			setattr(student, 'total_mark', total_mark)
+    			student_rank = total_marks.index(total_mark)+1
+    			setattr(student, 'student_rank', student_rank)
+    			count += 1
+    			student_grades = grades.filter(student=student)
+    			data = get_subject_report_data(grades, subjects, student, student_grades)
+    			records[student.id] = (student,data)
 
-	css_string = """@page {
-		size: a4 portrait;
-		margin: 2mm;
-		counter-increment: page;
-	}"""
+    		except Exception as e:
+    			DB_LOGGER.error(e)
+    	if not count:
+    		messages.success(request, 'No reports exists for class %s in term %r '%(clss, term))
+    		return redirect('create_report_student')
 
-	pdf_file = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(
-			stylesheets=[CSS(string=css_string)],presentational_hints=True)
+    	setting = Setting.objects.first()
+    	scale = GradeScale.objects.filter(section=clss.section).order_by('grade')
+    	mark_percentages = MarkPercentage.objects.filter(section=clss.section)
+    	session = Session.objects.get(current_session=True)
+    	context = {'results':records,'term':term,'setting':setting, 
+    		'highest':highest, 'lowest':lowest, 'number_of_student': grades_ordered.count(), 
+    		'gradeScale': scale, 'session': session, 'batch': batch, 'mp': mark_percentages}
 
-
-	response = HttpResponse(pdf_file, content_type='application/pdf')
-	response['Content-Disposition'] = 'filename="home_page.pdf"'
-	return response
-	return HttpResponse(response.getvalue(), content_type='application/pdf')
+    	response = PDFTemplateResponse(request=request,
+    		template=self.template,
+    		filename=None,
+    		context= context,
+    		show_content_in_browser=False,
+    		cmd_options={ 'margin-top': 3, 'title': ' Report'},
+    		)
+    	return response
 
 @login_required
 @admin_required

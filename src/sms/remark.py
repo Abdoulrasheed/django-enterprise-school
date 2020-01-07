@@ -15,6 +15,8 @@ def getRemark(total, section):
 
 def get_grade(total, section):
 	gradeScale = GradeScale.objects.filter(section=section)
+	if total == None:
+		return [None, None]
 	for i in gradeScale:
 		if i.mark_from <= total <= i.mark_upto:
 			return [i.grade, i.remark]

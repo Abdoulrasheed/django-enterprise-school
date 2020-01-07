@@ -1,11 +1,9 @@
 {% load static tags %}
 <!DOCTYPE html>
 <html>
-
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
-
 <body>
     <div class="row">
         <div class="col-sm-12" style="margin:10px 0px"></div>
@@ -14,6 +12,9 @@
     <div class="box">
         <div>
             <style type="text/css">
+            body {
+                background-color: #fff;
+            }
                 table {
                     font-family: arial, sans-serif;
                     border-collapse: collapse;
@@ -153,8 +154,8 @@
                 #third_table td {
                     border: 1px solid #565353;
                     padding: 5px;
-                    padding-left: 11px;
-                    padding-right: 10px;
+                    padding-left: 5px;
+                    padding-right: 0px;
                 }
             </style>
             <!-- form start -->
@@ -171,8 +172,8 @@
 
                                         <td align="center" style="width: 60%;">
                                             <span style="font-size:18px;">
-                                {{ setting.school_name|title }}
-                              </span>
+                                                {{ setting.school_name|title }}
+                                            </span>
                                             <p>&nbsp;</p>
                                             <p style="font-size:12px;  margin-top:-30px;">
                                                 MOTTO: {{ setting.school_slogan }}
@@ -184,7 +185,9 @@
                                         </td>
 
                                         <td align="right" style="width: 20%;">
-                                            <img height="120" width="110" src="{{ result.0.user.get_picture }}" alt="student" style="float: right;">
+                                            {% if result.0.user.picture %}
+                                            <img height="120" width="110" src="{{ result.0.user.get_picture }}" style="float: right;">
+                                            {% endif %}
                                         </td>
                                     </tr>
                                 </table>
@@ -234,7 +237,7 @@
                                                 <tr>
                                                     <td style="color:green;"><b> Term: </b></td>
                                                     <td>&nbsp;&nbsp;{{ term }} </td>
-                                                    <td style="color:green;"><b>&nbsp;&nbsp;Highest Ave. in Class:</b></td>
+                                                    <td style="color:green;"><b>&nbsp;&nbsp;Highest Total. in Class:</b></td>
                                                     <td>{{ highest }}</td>
                                                     <td style="color:green;"><b>Day(s) Present:</b></td>
                                                     <td>0</td>
@@ -242,7 +245,7 @@
                                                 <tr>
                                                     <td style="color:green;"><b>Admission No:</b></td>
                                                     <td>&nbsp;&nbsp;{{ result.0.user.username }}</td>
-                                                    <td style="color:green;"><b>&nbsp;&nbsp;Lowest Ave. in Class:</b></td>
+                                                    <td style="color:green;"><b>&nbsp;&nbsp;Lowest Total. in Class:</b></td>
                                                     <td>{{ lowest }} &nbsp;&nbsp;</td>
                                                     <td style="color:green;"><b>Day(s) Absent:</b></td>
                                                     <td>--</td>
@@ -265,10 +268,10 @@
 
                                 <table cellpadding="0" cellspacing="0" style="font-size:10px; width: 100%; text-align:center;" id="third_table">
                                     <tr>
-                                        <td><b>SUBJECT:</b></td>
-                                        <td><b>CA1</b></td>
-                                        <td><b>CA2</b></td>
-                                        <td><b>Exam</b></td>
+                                        <td colspan="3"><b>SUBJECT:</b></td>
+                                           {% for p in mp %}
+                                           <td>{{ p.name }}</td>
+                                           {% endfor %}
                                         <td><b>TOTAL</br> (100%)</b></td>
                                         <td><b>GRD</b></td>
                                         <td><b>POS</b></td>
@@ -278,20 +281,22 @@
                                         <td><b>CLASS AVE</b></td>
                                         <td><b>COMMENT</b></td>
                                     </tr>
+                                    {% for item in result.1 %}
                                     <tr>
-                                        <td>English</td>
-                                        <td>3</td>
-                                        <td>5</td>
-                                        <td>4</td>
-                                        <td>55</td>
-                                        <td>A</td>
-                                        <td>1st</td>
-                                        <td>3</td>
+                                        <td colspan="3">{% get_subject item.subject_id %}</td>
+                                           {% for p in mp %}
+                                            <td>{% get_score result.0 p item.subject_id %}</td>
+                                           {% endfor %}
+                                        <td>{{ item.total|default_if_none:'-' }}</td>
+                                        <td>{{ item.grade|default_if_none:'-' }}</td>
+                                        <td>{% get_rank item.rank %}</td>
+                                        <td>{{ number_of_student }}</td>
                                         <td>1</td>
                                         <td>9</td>
                                         <td>77.6</td>
-                                        <td>Good</td>
+                                        <td>{{ item.remark|upper|default_if_none:''}}</td>
                                     </tr>
+                                   {% endfor %}
                                 </table>
                                 <br/>
                                 <table cellpadding="0" cellspacing="0" style="width:100%;">
@@ -300,7 +305,7 @@
                                             <p style="font-size:15px;">GRADE DETAILS:</p>
                                         </td>
                                         <td style="width:50%;">
-                                            <p style="font-size:14px;">No. of Subjects: --</p>
+                                            <p style="font-size:14px;">No. of Subjects: {{ result.1.count }}</p>
                                         </td>
                                     </tr>
                                 </table>
@@ -475,48 +480,49 @@
                                                     <td style="">
                                                         <p style="color:green;">
                                                             <b>
-            {% if term == "First" %}
-                    Second Term Begins: {{ setting.st_begins }}
-                {% elif term == "Second" %}
-                    Third Term Begins: {{ setting.tt_begins }}
-                {% else %}
-                    First Term Begins: {{ setting.ft_begins }}
-            {% endif %}
-            </b>
+                                                        {% if term == "First" %}
+                                                                Second Term Begins: {{ setting.st_begins }}
+                                                            {% elif term == "Second" %}
+                                                                Third Term Begins: {{ setting.tt_begins }}
+                                                            {% else %}
+                                                                First Term Begins: {{ setting.ft_begins }}
+                                                        {% endif %}
+                                                        </b>
                                                         </p>
                                                     </td>
                                                 </tr>
                                             </table>
                                         </td>
+
                                         <td style="width:40%;">
 
-                                            <table style="font-size:13px; ">
+                                        <table style="font-size:13px; ">
 
-                                                <tr>
-                                                    <td align="right">
-                                                        <br/>
-                                                        <br/>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td align="right">
-                                                        <br/>
-                                                        <br/>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td align="right">
-                                                        <img src="" alt="signature" style="height: 50px; width: 90px; float: left;">
-                                                        <br/>
-                                                        <p style="font-size:14px; color:green; text-align:center;">Signatury</p>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
+                                          <tr>
+                                            <td align="right">
+                                              <br/>
+                                              <br/>
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <td align="right">
+                                              <br/>
+                                              <br/>
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <td align="right">
+                                              <img src="" alt="signature" style="height: 50px; width: 90px; float: left;">
+                                              <br/>
+                                              <p style="font-size:14px; color:green; text-align:center;">Signatury</p>
+                                            </td>
+                                          </tr>
+                                        </table>
+                                      </td>
                                     </tr>
-                                </table>
+                                  </table>
 
-                                <div class="progresscard-contents progresscardreporttable mCustomScrollbar _mCS_1 mCS_no_scrollbar">
+                                  <div class="progresscard-contents progresscardreporttable mCustomScrollbar _mCS_1 mCS_no_scrollbar">
                                     <div id="mCSB_1" class="mCustomScrollBox mCS-light mCSB_horizontal mCSB_inside" style="max-height: none;" tabindex="0">
                                         <div id="mCSB_1_container" class="mCSB_container mCS_x_hidden mCS_no_scrollbar_x" style="position: relative; top: 0px; left: 0px; width: 100%;" dir="ltr">
 
