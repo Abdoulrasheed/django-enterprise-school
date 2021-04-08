@@ -12,7 +12,7 @@ Click==7.0
 cryptography==2.7
 cssselect2==0.2.1
 defusedxml==0.6.0
-Django==2.2.10
+Django==2.2.20
 django-markdownx==2.0.28
 django-progressive-web-app==0.1.1
 django-sendgrid-v5==0.8.0
