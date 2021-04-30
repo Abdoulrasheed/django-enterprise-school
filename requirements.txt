@@ -72,7 +72,7 @@ tinycss2==1.0.2
 traceback2==1.4.0
 twilio==6.29.2
 unittest2==1.1.0
-urllib3==1.25.3
+urllib3==1.25.8
 WeasyPrint==48
 webencodings==0.5.1
 Werkzeug==0.15.5
