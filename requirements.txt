@@ -37,7 +37,7 @@ html5lib==1.0.1
 htmlmin==0.1.12
 idna==2.8
 itsdangerous==1.1.0
-Jinja2==2.10.1
+Jinja2==2.11.3
 linecache2==1.0.0
 Mako==1.1.0
 Markdown==3.1.1
