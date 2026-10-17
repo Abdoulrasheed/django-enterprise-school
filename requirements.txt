@@ -75,5 +75,5 @@ unittest2==1.1.0
 urllib3==2.8.0
 WeasyPrint==48
 webencodings==0.5.1
-Werkzeug==0.15.5
+Werkzeug==3.1.9
 WTForms==2.1
